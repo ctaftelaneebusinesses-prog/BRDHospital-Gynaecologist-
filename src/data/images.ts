@@ -16,6 +16,7 @@ import coupleWithUltrasound from "../assets/ultra.jpg";
 import pregnancyIllustration from "../assets/motherwithinsidebaby-optimized.webp";
 import babyFeetInParentsHands from "../assets/legs-cropped.jpg";
 import babyGigglingWithMom from "../assets/gigglingimage.webp";
+import babyCryingPortrait from "../assets/newcry.jpg";
 
 const BASE = "https://images.unsplash.com/";
 
@@ -91,7 +92,7 @@ export const photos = {
 
   aboutConsultation: "photo-1632053652571-a6a45052bbbd",
 
-  babyCrying: "photo-1648728248261-0b19f7129607",
+  babyCrying: babyCryingPortrait,
   babyLaughing: babyGigglingWithMom,
   babyTalking: "photo-1607218117995-6256670c21e6",
 } as const;
