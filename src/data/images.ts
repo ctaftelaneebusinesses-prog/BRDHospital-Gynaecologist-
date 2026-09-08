@@ -7,13 +7,14 @@
  * unchanged rather than building an Unsplash URL from it.
  */
 
-import pregnantMotherAtHome from "../assets/PergentMother.png";
+import pregnantMotherAtHome from "../assets/PergentMother-optimized.webp";
 import newbornPortrait from "../assets/baby.webp";
 import deliveryRoomEmbrace from "../assets/hospital.jpg";
 import motherHoldingNewborn from "../assets/motherbaby.jpg";
-import doctorWithNewborn from "../assets/doctorbaby.avif";
+import doctorWithNewborn from "../assets/doctorbaby-optimized.avif";
 import coupleWithUltrasound from "../assets/ultra.jpg";
-import pregnancyIllustration from "../assets/motherwithinsidebaby.png";
+import pregnancyIllustration from "../assets/motherwithinsidebaby-optimized.webp";
+import babyFeetInParentsHands from "../assets/legs-cropped.jpg";
 
 const BASE = "https://images.unsplash.com/";
 
@@ -52,7 +53,7 @@ export const photos = {
   heroParentsNewborn: "photo-1543342384-1f1350e27861",
 
   collageParentsWindow: "photo-1774041259458-1b5be7f70704",
-  collageFatherNewborn: "photo-1773243086594-43577199874f",
+  collageFatherNewborn: babyFeetInParentsHands,
   collageBellyHands: pregnantMotherAtHome,
   collageMotherBabySepia: motherHoldingNewborn,
   collageFamilySofa: newbornPortrait,
@@ -66,8 +67,8 @@ export const photos = {
   serviceUltrasoundMachine: "photo-1691933880113-3c0d20a48451",
 
   journeyFirstTrimester: "photo-1704901901060-36b29dd3b2cb",
-  journeySecondTrimester: "photo-1710897538265-93ca0abac2ff",
-  journeyThirdTrimester: "photo-1710897872621-bcf232f9b368",
+  journeySecondTrimester: "flagged/photo-1572531186838-27a5459566f2",
+  journeyThirdTrimester: "photo-1634577107465-ce5147bac363",
   journeyDelivery: doctorWithNewborn,
   journeyPostnatal: "photo-1620737007484-2d3bd3079a35",
 

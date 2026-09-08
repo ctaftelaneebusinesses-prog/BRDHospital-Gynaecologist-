@@ -30,7 +30,7 @@ export function EmotionalCollage() {
           <div className="relative col-span-2 row-span-3 overflow-hidden rounded-[2rem] shadow-card">
             <Img
               slug={photos.collageFatherNewborn}
-              alt="Father tenderly holding his newborn baby"
+              alt="Parents tenderly cradling their newborn baby's tiny feet"
               width={400}
               className="h-full w-full object-cover"
             />

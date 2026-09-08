@@ -63,7 +63,7 @@ export function Navbar() {
           >
             <Logo className="h-9 w-9 shrink-0" />
             <span className="font-serif text-lg font-medium text-plum">
-              Aura <span className="text-rose-600">Women's Health</span>
+              BRD <span className="text-rose-600">Hospital</span>
             </span>
           </a>
 

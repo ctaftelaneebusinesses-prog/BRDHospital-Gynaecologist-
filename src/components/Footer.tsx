@@ -33,7 +33,7 @@ export function Footer() {
             <a href="#home" onClick={(e) => { e.preventDefault(); handleNav("#home"); }} className="flex items-center gap-2.5">
               <Logo className="h-10 w-10 shrink-0 [&_circle:first-child]:fill-cream [&_circle:last-child]:fill-rose-500 [&_path]:fill-plum" />
               <span className="font-serif text-lg font-medium text-cream">
-                Aura <span className="text-rose-300">Women's Health</span>
+                BRD <span className="text-rose-300">Hospital</span>
               </span>
             </a>
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-cream/60">
@@ -107,7 +107,7 @@ export function Footer() {
               </li>
               <li className="flex items-start gap-3">
                 <Mail size={16} className="mt-0.5 shrink-0 text-rose-300" />
-                care@aurawomenshealth.com
+                care@brdhospital.com
               </li>
               <li className="flex items-start gap-3">
                 <MapPin size={16} className="mt-0.5 shrink-0 text-rose-300" />

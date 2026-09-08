@@ -37,7 +37,7 @@ function buildIcsFile(service: AppointmentService | undefined, doctor: Doctor | 
     "VERSION:2.0",
     "PRODID:-//BRDHospital//Appointment Booking//EN",
     "BEGIN:VEVENT",
-    `UID:${Date.now()}@aurawomenshealth.com`,
+    `UID:${Date.now()}@brdhospital.com`,
     `DTSTAMP:${toIcsDate(new Date())}`,
     `DTSTART:${toIcsDate(start)}`,
     `DTEND:${toIcsDate(end)}`,
@@ -58,7 +58,7 @@ export function StepConfirmation({ doctor, service, date, time, patientName, onC
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = "aura-appointment.ics";
+    link.download = "brd-hospital-appointment.ics";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

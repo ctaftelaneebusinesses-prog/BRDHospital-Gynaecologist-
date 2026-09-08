@@ -38,7 +38,7 @@ export function WhyChooseUs() {
             Care That Feels as Good as It Heals
           </h2>
           <p className="mt-5 max-w-lg text-balance text-base leading-relaxed text-ink/70 sm:text-lg">
-            We built Aura around one simple idea — that exceptional healthcare and
+            We built BRD Hospital around one simple idea — that exceptional healthcare and
             genuine warmth shouldn't be a trade-off. Here's what that looks like in practice.
           </p>
 

@@ -2,8 +2,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Check, Sparkles } from "lucide-react";
 import { Container } from "../ui/Container";
 import { Button } from "../ui/Button";
-import { Img } from "../ui/Img";
-import { photos } from "../../data/images";
+import { WombRevealVisual } from "../WombRevealVisual";
 import { useBooking } from "../../context/BookingContext";
 
 const trustIndicators = ["Experienced Gynecologists", "Personalized Care", "Modern Facilities"];
@@ -89,24 +88,16 @@ export function Hero() {
           initial={{ opacity: 0, scale: 0.94 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mx-auto w-full max-w-md lg:max-w-none"
+          className="relative mx-auto w-full max-w-lg lg:max-w-none"
         >
-          <div className="absolute -inset-6 -z-10 rounded-[3rem] bg-gradient-to-br from-rose-100 via-cream-dark to-sage-100 clip-blob" />
+          <div className="absolute inset-0 -z-10 rounded-[3rem] bg-gradient-to-br from-rose-100/70 via-cream-dark/40 to-sage-100/60 blur-2xl" />
 
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[2.5rem] shadow-soft ring-1 ring-plum/5">
-            <Img
-              slug={photos.heroPregnant}
-              alt="Smiling pregnant woman gently holding her belly"
-              width={900}
-              className="h-full w-full object-cover"
-              loading="eager"
-            />
-          </div>
+          <WombRevealVisual />
 
           <motion.div
             animate={{ y: [0, -14, 0] }}
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -left-6 top-8 rounded-2xl bg-cream/95 px-5 py-4 shadow-soft ring-1 ring-plum/5 backdrop-blur sm:-left-10"
+            className="absolute -left-2 top-2 rounded-2xl bg-cream/95 px-5 py-4 shadow-soft ring-1 ring-plum/5 backdrop-blur sm:-left-6"
           >
             <p className="font-serif text-2xl font-medium text-rose-600">10+ Years</p>
             <p className="text-xs font-medium text-ink/60">of Compassionate Care</p>
@@ -115,7 +106,7 @@ export function Hero() {
           <motion.div
             animate={{ y: [0, 14, 0] }}
             transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-            className="absolute -right-4 bottom-10 rounded-2xl bg-cream/95 px-5 py-4 shadow-soft ring-1 ring-plum/5 backdrop-blur sm:-right-8"
+            className="absolute -right-2 bottom-16 rounded-2xl bg-cream/95 px-5 py-4 shadow-soft ring-1 ring-plum/5 backdrop-blur sm:-right-6"
           >
             <p className="font-serif text-2xl font-medium text-sage-600">5000+</p>
             <p className="text-xs font-medium text-ink/60">Happy Families</p>
