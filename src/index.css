@@ -38,6 +38,7 @@
 
   --animate-float: float 6s ease-in-out infinite;
   --animate-marquee: marquee 32s linear infinite;
+  --animate-kick-shake: kick-shake 0.5s ease-in-out 1;
 
   @keyframes float {
     0%, 100% { transform: translateY(0); }
@@ -46,6 +47,15 @@
   @keyframes marquee {
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
+  }
+  @keyframes kick-shake {
+    0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+    15% { transform: translate(-6px, 2px) rotate(-1.5deg) scale(1.015); }
+    32% { transform: translate(5px, -3px) rotate(1.4deg) scale(0.99); }
+    50% { transform: translate(-4px, 2px) rotate(-1deg) scale(1.02); }
+    68% { transform: translate(3px, -1px) rotate(0.6deg) scale(0.995); }
+    85% { transform: translate(-2px, 1px) rotate(-0.3deg) scale(1.005); }
+    100% { transform: translate(0, 0) rotate(0deg) scale(1); }
   }
 }
 
