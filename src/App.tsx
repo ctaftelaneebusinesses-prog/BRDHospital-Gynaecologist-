@@ -7,6 +7,7 @@ import { EmotionalCollage } from "./components/sections/EmotionalCollage";
 import { PregnancyJourney } from "./components/sections/PregnancyJourney";
 import { WhyChooseUs } from "./components/sections/WhyChooseUs";
 import { MotherBabyStory } from "./components/sections/MotherBabyStory";
+import { BabyEmotions } from "./components/sections/BabyEmotions";
 import { Stats } from "./components/sections/Stats";
 import { FinalCta } from "./components/sections/FinalCta";
 
@@ -20,6 +21,7 @@ function App() {
         <PregnancyJourney />
         <WhyChooseUs />
         <MotherBabyStory />
+        <BabyEmotions />
         <Stats />
         <FinalCta />
       </main>

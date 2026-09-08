@@ -89,6 +89,10 @@ export const photos = {
   finalCta: pregnancyIllustration,
 
   aboutConsultation: "photo-1632053652571-a6a45052bbbd",
+
+  babyCrying: "photo-1648728248261-0b19f7129607",
+  babyLaughing: "photo-1780329935484-9634001a9ca3",
+  babyTalking: "photo-1607218117995-6256670c21e6",
 } as const;
 
 export type PhotoKey = keyof typeof photos;

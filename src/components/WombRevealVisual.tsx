@@ -1,106 +1,200 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useAnimation } from "framer-motion";
+import { X } from "lucide-react";
 import motherDefault from "../assets/backgorundremovedmom.png";
-import motherWithBaby from "../assets/motherwithinsidebaby-optimized.webp";
-import babyLaughSound from "../assets/freesound_community-baby-boy-laughing-70651 (1).mp3";
+import wombIllustration from "../assets/wombIllustration.webp";
+import babyLaughSound from "../assets/baby-laughing.mp3";
 import { playExclusiveSound } from "../lib/sound";
 
-/** Hotspot measured directly on the background-removed mother photo (1024x1536). */
-const BELLY_HOTSPOT = { leftPct: 14, topPct: 55, sizePct: 46 };
-/** Hotspot on the baby-reveal illustration (1536x1024). */
-const BABY_HOTSPOT = { leftPct: 56.6, topPct: 61.6, sizePct: 15.6 };
+/**
+ * Coordinates measured directly on the untouched mother photo
+ * (backgorundremovedmom.png, 1024x1536) — the belly circle sits
+ * naturally between her two hands.
+ */
+const BELLY = { cxPct: 36, cyPct: 70.5, leftPct: 14, topPct: 55.5, sizePct: 44 };
+
+const KICK_MESSAGES = ["Your little one just moved! 💕", "Did you feel that? 💕"];
 
 export function WombRevealVisual({ className = "" }: { className?: string }) {
   const [revealed, setRevealed] = useState(false);
-  const controls = useAnimation();
+  const [kickToast, setKickToast] = useState<string | null>(null);
+  const zoom = useAnimation();
+  const kick = useAnimation();
+  const toastTimer = useRef<number | undefined>(undefined);
+
+  useEffect(() => () => window.clearTimeout(toastTimer.current), []);
 
   function handleReveal() {
     setRevealed(true);
+    zoom.start({ scale: 1.07, transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] } });
+  }
+
+  function handleClose() {
+    setRevealed(false);
+    setKickToast(null);
+    zoom.start({ scale: 1, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } });
   }
 
   function handleKick() {
-    playExclusiveSound(babyLaughSound, 0.65);
-    controls.start({
-      x: [0, -9, 7, -5, 3, 0],
-      y: [0, 3, -4, 2, -1, 0],
-      rotate: [0, -1.6, 1.4, -1, 0.5, 0],
-      scale: [1, 1.025, 0.985, 1.015, 0.995, 1],
-      transition: { duration: 0.55, ease: "easeInOut" },
+    playExclusiveSound(babyLaughSound, 0.6);
+    kick.start({
+      rotate: [0, -3.2, 2.6, -1.6, 0.8, 0],
+      scale: [1, 1.05, 0.97, 1.03, 0.99, 1],
+      transition: { duration: 0.7, ease: "easeInOut" },
     });
+    const msg = KICK_MESSAGES[Math.floor(Math.random() * KICK_MESSAGES.length)];
+    setKickToast(msg);
+    window.clearTimeout(toastTimer.current);
+    toastTimer.current = window.setTimeout(() => setKickToast(null), 2200);
   }
 
   return (
     <div className={`relative ${className}`}>
-      <motion.div animate={controls} className="relative aspect-[3/4] w-full overflow-hidden">
-        <AnimatePresence mode="wait" initial={false}>
-          {!revealed ? (
-            <motion.img
-              key="default"
-              src={motherDefault}
-              alt="Expectant mother gently cradling her belly"
-              className="absolute inset-0 h-full w-full object-contain object-bottom"
+      <motion.div
+        animate={zoom}
+        style={{ transformOrigin: `${BELLY.cxPct}% ${BELLY.cyPct}%` }}
+        className="relative aspect-[3/4] w-full overflow-hidden"
+      >
+        {/* The uploaded mother photo — always present, never replaced. */}
+        <img
+          src={motherDefault}
+          alt="Expectant mother gently cradling her belly"
+          className="absolute inset-0 h-full w-full object-contain object-bottom"
+          loading="eager"
+        />
+
+        {/* Subtle non-button glow hotspot, default state only */}
+        <AnimatePresence>
+          {!revealed && (
+            <motion.button
+              key="hotspot"
+              type="button"
+              onClick={handleReveal}
+              aria-label="Meet your little one"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.4 }}
-              loading="eager"
-            />
-          ) : (
-            <motion.img
-              key="revealed"
-              src={motherWithBaby}
-              alt="Expectant mother with a tasteful illustrated view of her baby inside the womb"
-              className="absolute inset-0 h-full w-full object-contain"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.4 }}
-              loading="eager"
-            />
+              className="absolute cursor-pointer rounded-full bg-transparent"
+              style={{
+                left: `${BELLY.leftPct}%`,
+                top: `${BELLY.topPct}%`,
+                width: `${BELLY.sizePct}%`,
+                aspectRatio: "1 / 1",
+              }}
+            >
+              <motion.span
+                animate={{ scale: [1, 1.12, 1], opacity: [0.25, 0.5, 0.25] }}
+                transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute inset-0 rounded-full bg-rose-200/40 blur-md"
+              />
+              <motion.span
+                animate={{ scale: [1, 1.08, 1], opacity: [0.35, 0.7, 0.35] }}
+                transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute inset-0 rounded-full ring-1 ring-rose-300/70"
+              />
+            </motion.button>
           )}
         </AnimatePresence>
 
-        {!revealed && (
-          <button
-            type="button"
-            onClick={handleReveal}
-            aria-label="Tap the belly to meet the baby"
-            className="absolute flex items-center justify-center rounded-full"
-            style={{
-              left: `${BELLY_HOTSPOT.leftPct}%`,
-              top: `${BELLY_HOTSPOT.topPct}%`,
-              width: `${BELLY_HOTSPOT.sizePct}%`,
-              aspectRatio: "1 / 1",
-            }}
-          >
-            <motion.span
-              animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0.85, 0.5] }}
-              transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute inset-0 rounded-full ring-4 ring-rose-300/70"
-            />
-          </button>
-        )}
+        {/* Separate transparent layer: the womb/baby illustration, precisely over the belly */}
+        <AnimatePresence>
+          {revealed && (
+            <motion.button
+              key="womb"
+              type="button"
+              onClick={handleKick}
+              aria-label="Tap the baby"
+              initial={{ opacity: 0, scale: 0.82 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.82, transition: { duration: 0.35 } }}
+              transition={{ duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute cursor-pointer"
+              style={{
+                left: `${BELLY.leftPct}%`,
+                top: `${BELLY.topPct}%`,
+                width: `${BELLY.sizePct}%`,
+                aspectRatio: "1 / 1",
+              }}
+            >
+              <motion.span animate={kick} className="absolute inset-0 block">
+                <img
+                  src={wombIllustration}
+                  alt="Illustrated view of the baby inside the womb, with umbilical cord and placenta"
+                  className="h-full w-full object-contain drop-shadow-[0_8px_24px_rgba(184,103,122,0.35)]"
+                  loading="eager"
+                />
+              </motion.span>
 
-        {revealed && (
-          <button
-            type="button"
-            onClick={handleKick}
-            aria-label="Tap the baby"
-            className="absolute rounded-full"
-            style={{
-              left: `${BABY_HOTSPOT.leftPct}%`,
-              top: `${BABY_HOTSPOT.topPct}%`,
-              width: `${BABY_HOTSPOT.sizePct}%`,
-              aspectRatio: "1 / 1",
-            }}
-          />
-        )}
+              {kickToast && (
+                <motion.span
+                  initial={{ scale: 0.6, opacity: 0 }}
+                  animate={{ scale: [0.6, 1.5], opacity: [0.5, 0] }}
+                  transition={{ duration: 0.8, ease: "easeOut" }}
+                  className="absolute inset-0 rounded-full ring-2 ring-rose-300"
+                />
+              )}
+            </motion.button>
+          )}
+        </AnimatePresence>
       </motion.div>
 
+      {/* Close / back button */}
+      <AnimatePresence>
+        {revealed && (
+          <motion.button
+            key="close"
+            type="button"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            onClick={handleClose}
+            aria-label="Close and return to the original view"
+            className="absolute right-2 top-2 flex h-9 w-9 items-center justify-center rounded-full bg-cream/95 text-plum shadow-soft sm:right-4 sm:top-4"
+          >
+            <X size={16} />
+          </motion.button>
+        )}
+      </AnimatePresence>
+
+      {/* Glassmorphism info card */}
+      <AnimatePresence>
+        {revealed && (
+          <motion.div
+            key="info-card"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 16 }}
+            transition={{ duration: 0.5, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute inset-x-4 bottom-4 rounded-2xl border border-white/40 bg-white/55 p-4 shadow-soft backdrop-blur-xl sm:inset-x-6 sm:bottom-6 sm:p-5"
+          >
+            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-rose-600">
+              Your baby is growing beautifully
+            </p>
+            <p className="mt-1 font-serif text-2xl font-medium text-plum">24 Weeks</p>
+            <p className="mt-1 text-sm text-ink/65">
+              Baby is developing rapidly and becoming more active.
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Kick reaction toast */}
+      <AnimatePresence>
+        {kickToast && (
+          <motion.div
+            key="kick-toast"
+            initial={{ opacity: 0, y: 8, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.95 }}
+            className="absolute left-1/2 top-4 -translate-x-1/2 whitespace-nowrap rounded-full bg-plum/90 px-4 py-2 text-xs font-medium text-cream shadow-soft"
+          >
+            {kickToast}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {!revealed && (
-        <p className="mt-3 text-center text-xs font-medium text-ink/45">
-          Tap the belly to meet the baby ✨
-        </p>
+        <p className="mt-3 text-center text-xs font-medium text-ink/45">Meet your little one</p>
       )}
     </div>
   );
