@@ -15,7 +15,7 @@ export function FinalCta() {
         <div className="relative overflow-hidden rounded-[2.5rem]">
           <Img
             slug={photos.finalCta}
-            alt="Mother tenderly holding her sleeping newborn baby"
+            alt="Expectant mother tenderly cradling her belly"
             width={1600}
             className="absolute inset-0 h-full w-full object-cover"
           />

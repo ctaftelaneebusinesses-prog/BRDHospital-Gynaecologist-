@@ -14,7 +14,7 @@ export function EmotionalCollage() {
           <div className="relative col-span-4 row-span-4 overflow-hidden rounded-[2rem] shadow-card">
             <Img
               slug={photos.collageFamilySofa}
-              alt="Happy family with newborn baby sitting together on a sofa"
+              alt="Peaceful newborn baby swaddled after birth"
               width={700}
               className="h-full w-full object-cover"
             />
@@ -22,7 +22,7 @@ export function EmotionalCollage() {
           <div className="relative col-span-2 row-span-3 overflow-hidden rounded-[2rem] shadow-card">
             <Img
               slug={photos.collageBellyHands}
-              alt="Pregnant mother gently holding her belly"
+              alt="Expectant mother gently cradling her belly at home"
               width={400}
               className="h-full w-full object-cover"
             />
@@ -38,7 +38,7 @@ export function EmotionalCollage() {
           <div className="relative col-span-4 row-span-2 overflow-hidden rounded-[2rem] shadow-card">
             <Img
               slug={photos.collageMotherBabySepia}
-              alt="Mother laughing joyfully while holding her baby"
+              alt="Mother smiling joyfully while holding her newborn baby"
               width={700}
               className="h-full w-full object-cover"
             />
