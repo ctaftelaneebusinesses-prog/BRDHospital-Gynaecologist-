@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Fraunces", "Georgia", serif;
+  --font-sans: "Manrope", "Segoe UI", sans-serif;
+
+  --color-cream: #fdf9f5;
+  --color-cream-dark: #f4ebe2;
+  --color-cream-deep: #ece0d3;
+
+  --color-ink: #2b2320;
+  --color-plum: #45262e;
+  --color-plum-light: #6b4652;
+
+  --color-rose-50: #fbf1f2;
+  --color-rose-100: #f6e1e4;
+  --color-rose-200: #f0d0d5;
+  --color-rose-300: #e2adb6;
+  --color-rose-400: #cd8794;
+  --color-rose-500: #b8677a;
+  --color-rose-600: #9c4d61;
+  --color-rose-700: #7d3c4e;
+
+  --color-sage-50: #f2f5ee;
+  --color-sage-100: #e3ebdc;
+  --color-sage-200: #c9d9bc;
+  --color-sage-300: #a9c092;
+  --color-sage-400: #87a56e;
+  --color-sage-500: #6b8a54;
+  --color-sage-600: #556e42;
+
+  --color-gold-300: #e8d4a8;
+  --color-gold-400: #d4b479;
+  --color-gold-500: #bb9455;
+
+  --shadow-soft: 0 20px 60px -15px rgba(69, 38, 46, 0.18);
+  --shadow-card: 0 10px 30px -10px rgba(69, 38, 46, 0.12);
+
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-marquee: marquee 32s linear infinite;
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-serif);
+    color: var(--color-plum);
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background: var(--color-rose-200);
+    color: var(--color-plum);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .bg-noise {
+    background-image: radial-gradient(circle at 1px 1px, rgba(69,38,46,0.06) 1px, transparent 0);
+    background-size: 22px 22px;
+  }
+
+  .clip-blob {
+    border-radius: 62% 38% 55% 45% / 48% 45% 55% 52%;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-cream);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-rose-300);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-rose-400);
+}
