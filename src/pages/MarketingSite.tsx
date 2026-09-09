@@ -18,10 +18,10 @@ export function MarketingSite() {
       <Navbar />
       <main>
         <Hero />
+        <DoctorSpotlight />
         <TrustStrip />
         <EmotionalCollage />
         <PregnancyJourney />
-        <DoctorSpotlight />
         <MotherBabyStory />
         <BabyEmotions />
         <Stats />

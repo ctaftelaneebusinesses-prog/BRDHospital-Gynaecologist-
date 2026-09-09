@@ -11,7 +11,7 @@ export function DoctorSpotlight() {
   const { openBooking } = useBooking();
 
   return (
-    <section id="doctor" className="relative overflow-hidden py-24 sm:py-32">
+    <section id="doctor" className="relative overflow-hidden pb-24 pt-8 sm:pb-32 sm:pt-10">
       <div className="pointer-events-none absolute -left-24 top-20 h-80 w-80 rounded-full bg-sage-200/30 blur-3xl" />
       <div className="pointer-events-none absolute -right-24 bottom-10 h-96 w-96 rounded-full bg-rose-200/40 blur-3xl" />
 
