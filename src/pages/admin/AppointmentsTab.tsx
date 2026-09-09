@@ -114,11 +114,12 @@ export function AppointmentsTab() {
   function handleExport() {
     downloadCsv(
       `appointments-${new Date().toISOString().split("T")[0]}.csv`,
-      ["Patient", "Phone", "Email", "Doctor", "Service", "Date", "Time", "Reason", "Status", "Payment Status", "Amount", "Booked At"],
+      ["Patient", "Phone", "Email", "UPI Transaction ID", "Doctor", "Service", "Date", "Time", "Reason", "Status", "Payment Status", "Amount", "Booked At"],
       filtered.map((a) => [
         a.full_name,
         a.phone,
-        a.email,
+        a.email ?? "",
+        a.upi_transaction_id ?? "",
         doctorName(a.doctor_id),
         serviceName(a.service_id),
         a.appointment_date,
@@ -169,6 +170,39 @@ export function AppointmentsTab() {
         ))}
       </div>
 
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        <div className="relative flex-1 min-w-[220px]">
+          <Search size={15} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-ink/35" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by name, phone, email, or UPI ID…"
+            className="w-full rounded-full border border-plum/12 bg-white py-2.5 pl-9 pr-4 text-sm text-ink outline-none focus:border-rose-400"
+          />
+        </div>
+        <div className="flex items-center gap-1.5">
+          <input
+            type="date"
+            value={dateFilter}
+            onChange={(e) => setDateFilter(e.target.value)}
+            className="rounded-full border border-plum/12 bg-white px-4 py-2.5 text-sm text-ink outline-none focus:border-rose-400"
+          />
+          {(dateFilter || search) && (
+            <button
+              onClick={() => {
+                setDateFilter("");
+                setSearch("");
+              }}
+              aria-label="Clear filters"
+              className="flex h-9 w-9 items-center justify-center rounded-full text-ink/40 hover:bg-plum/5 hover:text-ink/70"
+            >
+              <X size={15} />
+            </button>
+          )}
+        </div>
+      </div>
+
       {error && <p className="mt-4 rounded-xl bg-rose-50 p-3 text-sm text-rose-600">{error}</p>}
 
       {loading ? (
@@ -193,9 +227,13 @@ export function AppointmentsTab() {
             </thead>
             <tbody className="divide-y divide-plum/8">
               {filtered.map((a) => (
-                <tr key={a.id}>
-                  <td className="px-5 py-4">
-                    <p className="font-medium text-plum">{a.full_name}</p>
+                <tr key={a.id} className="hover:bg-plum/[0.02]">
+                  <td
+                    className="cursor-pointer px-5 py-4"
+                    onClick={() => setSelected(a)}
+                    title="Click to view full details"
+                  >
+                    <p className="font-medium text-plum hover:underline">{a.full_name}</p>
                     <p className="text-xs text-ink/45">{doctorName(a.doctor_id)}</p>
                   </td>
                   <td className="max-w-[220px] px-5 py-4">
@@ -216,7 +254,7 @@ export function AppointmentsTab() {
                   </td>
                   <td className="px-5 py-4 text-ink/70">
                     <p>{a.phone}</p>
-                    <p className="text-xs text-ink/45">{a.email}</p>
+                    <p className="text-xs text-ink/45">{a.email || <span className="italic text-ink/30">no email</span>}</p>
                   </td>
                   <td className="px-5 py-4">
                     <select
@@ -246,12 +284,26 @@ export function AppointmentsTab() {
                     {a.payment_amount != null && (
                       <p className="mt-1 text-[11px] text-ink/40">₹{a.payment_amount}</p>
                     )}
+                    {a.upi_transaction_id && (
+                      <p className="mt-0.5 truncate text-[11px] text-ink/40" title={a.upi_transaction_id}>
+                        UTR: {a.upi_transaction_id}
+                      </p>
+                    )}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+      )}
+
+      {selected && (
+        <AppointmentDetailModal
+          appointment={selected}
+          doctorName={doctorName(selected.doctor_id)}
+          serviceName={serviceName(selected.service_id)}
+          onClose={() => setSelected(null)}
+        />
       )}
     </div>
   );

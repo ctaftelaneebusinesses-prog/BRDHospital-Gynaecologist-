@@ -9,6 +9,11 @@ seeded and bookings have been verified end-to-end against the live
 database). Still to do: **step 4** (create your own staff login) and,
 optionally, **step 5** (email confirmations).
 
+**⚠️ Re-run `schema.sql` if you set this project up before the payment-flow
+update** — it added the `v3` block at the bottom (optional email, the
+`upi_transaction_id` column, and a `whatsapp_number` setting). It's safe to
+re-run the whole file any time; every statement is idempotent.
+
 ## 1. Create a Supabase project
 
 1. Go to [supabase.com](https://supabase.com) → sign up (free) → **New project**.
@@ -49,6 +54,13 @@ just those inserts.
 There's no self-serve sign-up — staff accounts are only created by you, in the
 dashboard, on purpose (this is a private admin tool, not a public account
 system).
+
+**⚠️ Set the real WhatsApp number.** `schema.sql` seeds `whatsapp_number` with
+a placeholder (`911234567890`) — patients will hit "Share Screenshot on
+WhatsApp" and land on the wrong (or a nonexistent) chat until you change it.
+Sign in to `/admin`, go to **Settings**, and set it (and the UPI ID / payee
+name / booking fee, if the seeded defaults aren't right either) before going
+live.
 
 ## 5. (Optional) Turn on the two email flows
 
@@ -126,10 +138,22 @@ networks can't route to, so direct connections there may hang or fail with
 - **Booking**: the appointment wizard on the site writes real rows to the
   `appointments` table, and checks already-booked slots for the selected date
   live (so two patients can't double-book the same slot).
+- **Payment (manual UPI verification)**: the payment step shows a UPI QR
+  code, a "Share Screenshot on WhatsApp" button (opens `wa.me/<whatsapp_number
+  setting>` with a pre-filled message), and a required field for the patient
+  to type in the UPI transaction/reference ID their payment app gave them.
+  The appointment is only written to the database after this step, with that
+  transaction ID attached — there's no automatic payment verification;
+  staff cross-check the ID (and the WhatsApp screenshot) against their own
+  UPI app before marking a booking Paid.
 - **Admin dashboard** (`/admin`, behind `/admin/login`): lists every
-  appointment, filterable by status, with a dropdown to mark each one
-  pending/confirmed/cancelled/completed.
+  appointment, filterable by status, searchable by name/phone/email/UPI
+  transaction ID, and filterable by date. Click a patient's name for the
+  full detail view (contact info, UPI transaction ID, reason, payment
+  amount, when payment was confirmed, when it was booked). Status and
+  payment each have their own dropdown, independent of each other.
 - **Email notifications**: two Supabase Edge Functions + Resend, once you
   complete step 5 above — staff get notified the moment a patient books
   (`notify-new-booking`), and the patient gets their confirmation email once
-  staff mark the appointment Confirmed + Paid (`send-confirmation`).
+  staff mark the appointment Confirmed + Paid (`send-confirmation`). Skipped
+  automatically if the patient didn't provide an email.

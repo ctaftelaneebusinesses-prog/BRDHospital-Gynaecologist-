@@ -65,7 +65,7 @@ src/
   components/
     sections/                # one file per homepage section (Hero, PregnancyJourney, BabyEmotions, …)
     booking/                 # the multi-step "Book an Appointment" modal
-    admin/                   # ProtectedRoute etc.
+    admin/                   # ProtectedRoute, AppointmentDetailModal
     ui/                      # small shared primitives (Button, Container, Reveal, Img, …)
   context/
     BookingContext.tsx       # controls the booking modal's open/closed state
@@ -129,10 +129,20 @@ Supabase SQL Editor.
   (**Authentication → Users → Add user**), on purpose, since this is a
   private tool.
 - Tabs: **Overview**, **Appointments** (change status: pending / confirmed /
-  cancelled / completed), **Payments** (manually-tracked payment status +
-  CSV export), **Settings**.
+  cancelled / completed / no-show, and payment: pending / paid / failed —
+  independent dropdowns; search by name/phone/email/UPI transaction ID and
+  filter by date; click a patient's name to open `AppointmentDetailModal`
+  with every field), **Payments** (manually-tracked payment status + CSV
+  export), **Settings** (booking fee, UPI ID, payee name, WhatsApp number,
+  reason checklist).
 - All tabs read from `AdminDataContext`, which loads appointments once via
   `listAppointments()` and shares them — a tab doesn't refetch on its own.
+- Payment verification is manual, not automated: the booking flow's payment
+  step shows a UPI QR code plus a WhatsApp button (`wa.me/<whatsapp_number>`)
+  for the patient to send a screenshot, and a required field for them to
+  type in the transaction ID their UPI app showed. Staff see that ID in the
+  Appointments table/detail modal and cross-check it themselves before
+  marking a booking Paid — there's no payment gateway integration.
 
 ## 7. Internationalization (i18n)
 
