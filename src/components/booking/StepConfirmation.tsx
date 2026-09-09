@@ -43,7 +43,7 @@ function buildIcsFile(service: AppointmentService | undefined, doctor: Doctor | 
     `DTEND:${toIcsDate(end)}`,
     `SUMMARY:${service?.name ?? "Appointment"} with ${doctor?.name ?? "your doctor"}`,
     `DESCRIPTION:Appointment at BRDHospital with ${doctor?.name ?? ""}.`,
-    "LOCATION:214 Willowbrook Avenue, Suite 300, Riverdale",
+    "LOCATION:Opposite R&B Guest House, Near Area Hospital Circle, Kuppam, Andhra Pradesh",
     "END:VEVENT",
     "END:VCALENDAR",
   ].join("\r\n");

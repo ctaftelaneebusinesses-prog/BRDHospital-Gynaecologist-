@@ -165,7 +165,7 @@ export function WombRevealVisual({ className = "" }: { className?: string }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 16 }}
             transition={{ duration: 0.5, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute inset-x-4 bottom-4 rounded-2xl border border-white/40 bg-white/55 p-4 shadow-soft backdrop-blur-xl sm:inset-x-6 sm:bottom-6 sm:p-5"
+            className="absolute bottom-4 left-4 right-24 rounded-2xl border border-white/40 bg-white/55 p-4 shadow-soft backdrop-blur-xl sm:bottom-6 sm:left-6 sm:right-28 sm:p-5"
           >
             <p className="text-xs font-semibold uppercase tracking-[0.08em] text-rose-600">
               Your baby is growing beautifully

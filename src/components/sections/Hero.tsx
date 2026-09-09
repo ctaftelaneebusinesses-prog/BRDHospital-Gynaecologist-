@@ -88,7 +88,7 @@ export function Hero() {
           initial={{ opacity: 0, scale: 0.94 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mx-auto w-full max-w-sm lg:max-w-sm"
+          className="relative mx-auto w-full max-w-lg lg:max-w-lg"
         >
           <div className="absolute inset-0 -z-10 rounded-[3rem] bg-gradient-to-br from-rose-100/70 via-cream-dark/40 to-sage-100/60 blur-2xl" />
 

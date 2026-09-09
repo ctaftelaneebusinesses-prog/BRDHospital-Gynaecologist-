@@ -103,7 +103,7 @@ export function Footer() {
             <ul className="mt-5 space-y-4 text-sm text-cream/60">
               <li className="flex items-start gap-3">
                 <Phone size={16} className="mt-0.5 shrink-0 text-rose-300" />
-                +1 (555) 234-7890
+                077290 28405
               </li>
               <li className="flex items-start gap-3">
                 <Mail size={16} className="mt-0.5 shrink-0 text-rose-300" />
@@ -111,11 +111,11 @@ export function Footer() {
               </li>
               <li className="flex items-start gap-3">
                 <MapPin size={16} className="mt-0.5 shrink-0 text-rose-300" />
-                214 Willowbrook Avenue, Suite 300, Riverdale
+                Opposite R&amp;B Guest House, Near Area Hospital Circle, Kuppam, Andhra Pradesh
               </li>
               <li className="flex items-start gap-3">
                 <Clock size={16} className="mt-0.5 shrink-0 text-rose-300" />
-                Mon – Sat: 9:00 AM – 6:00 PM
+                Open 24 Hours, Monday – Sunday
               </li>
             </ul>
           </div>
