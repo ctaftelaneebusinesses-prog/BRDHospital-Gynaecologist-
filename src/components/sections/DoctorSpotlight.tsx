@@ -1,10 +1,93 @@
-import { GraduationCap, Languages, ScanEye, Star, Stethoscope } from "lucide-react";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { GraduationCap, Languages, RotateCw, ScanEye, Star, Stethoscope } from "lucide-react";
 import { Container } from "../ui/Container";
 import { Reveal } from "../ui/Reveal";
 import { Img } from "../ui/Img";
 import { Button } from "../ui/Button";
 import { doctors } from "../../data/doctors";
+import { photos } from "../../data/images";
 import { useBooking } from "../../context/BookingContext";
+
+function DoctorFlipCard({ doctor }: { doctor: (typeof doctors)[number] }) {
+  const [flipped, setFlipped] = useState(false);
+
+  return (
+    <div className="relative mx-auto w-full max-w-sm">
+      <div className="absolute inset-0 -z-10 rounded-[3rem] bg-gradient-to-br from-sage-100/70 via-cream-dark/40 to-rose-100/60 blur-2xl" />
+
+      <button
+        type="button"
+        onClick={() => setFlipped((f) => !f)}
+        aria-label="Click to see another photo of Dr. Haritha"
+        className="relative mx-auto block aspect-[3/4] w-full max-w-[340px] cursor-pointer"
+        style={{ perspective: 1400 }}
+      >
+        <motion.div
+          className="relative h-full w-full"
+          style={{ transformStyle: "preserve-3d" }}
+          animate={{ rotateY: flipped ? 180 : 0 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <div
+            className="absolute inset-0 overflow-hidden rounded-[2.5rem] shadow-soft ring-8 ring-white"
+            style={{ backfaceVisibility: "hidden" }}
+          >
+            <Img
+              slug={doctor.image}
+              alt={doctor.name}
+              width={680}
+              className="h-full w-full object-cover"
+              loading="eager"
+            />
+          </div>
+
+          <div
+            className="absolute inset-0 flex flex-col items-center justify-center overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-plum via-[#3a2029] to-plum shadow-soft ring-8 ring-white"
+            style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+          >
+            <div className="h-40 w-40 overflow-hidden rounded-full ring-4 ring-cream/20 sm:h-44 sm:w-44">
+              <Img slug={photos.doctorFlipBack} alt={doctor.name} width={360} className="h-full w-full object-cover" />
+            </div>
+            <p className="mt-5 text-center font-serif text-xl font-medium text-cream">{doctor.name}</p>
+            <p className="mt-1 text-center text-sm text-rose-200">{doctor.title}</p>
+            <p className="mt-4 text-center text-xs uppercase tracking-[0.14em] text-cream/50">
+              {doctor.qualifications.join(" · ")}
+            </p>
+          </div>
+        </motion.div>
+      </button>
+
+      <motion.span
+        animate={{ rotate: flipped ? 180 : 0 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        className="pointer-events-none absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-cream/90 text-plum shadow-soft sm:right-5 sm:top-5"
+      >
+        <RotateCw size={15} />
+      </motion.span>
+
+      <div className="absolute -right-2 top-1/2 hidden -translate-y-1/2 items-center gap-2 rounded-2xl bg-cream/95 px-4 py-3 shadow-soft ring-1 ring-plum/5 backdrop-blur sm:-right-6 sm:flex">
+        <GraduationCap size={18} className="shrink-0 text-sage-600" />
+        <div>
+          <p className="text-xs font-semibold leading-tight text-plum">Guntur Medical College</p>
+          <p className="text-[11px] text-ink/50">MBBS, MS (OBG)</p>
+        </div>
+      </div>
+
+      <div className="absolute -left-2 bottom-8 flex items-center gap-2 rounded-2xl bg-cream/95 px-4 py-3 shadow-soft ring-1 ring-plum/5 backdrop-blur sm:-left-6">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-rose-50 text-rose-600">
+          <Star size={14} className="fill-current" />
+        </span>
+        <div>
+          <p className="text-xs font-semibold leading-tight text-plum">{doctor.experienceYears}+ Years</p>
+          <p className="text-[11px] text-ink/50">Clinical Experience</p>
+        </div>
+      </div>
+
+      <p className="mt-4 text-center text-xs font-medium text-ink/40">Tap the photo for another look ✨</p>
+    </div>
+  );
+}
 
 export function DoctorSpotlight() {
   const doctor = doctors[0];
@@ -16,36 +99,8 @@ export function DoctorSpotlight() {
       <div className="pointer-events-none absolute -right-24 bottom-10 h-96 w-96 rounded-full bg-rose-200/40 blur-3xl" />
 
       <Container className="grid items-center gap-16 lg:grid-cols-[440px_1fr] lg:gap-20">
-        <Reveal className="relative mx-auto w-full max-w-sm">
-          <div className="absolute inset-0 -z-10 rounded-[3rem] bg-gradient-to-br from-sage-100/70 via-cream-dark/40 to-rose-100/60 blur-2xl" />
-
-          <div className="relative mx-auto aspect-square w-full max-w-[360px] overflow-hidden rounded-full shadow-soft ring-8 ring-white">
-            <Img
-              slug={doctor.image}
-              alt={doctor.name}
-              width={720}
-              className="h-full w-full object-cover"
-              loading="eager"
-            />
-          </div>
-
-          <div className="absolute -right-2 top-6 flex items-center gap-2 rounded-2xl bg-cream/95 px-4 py-3 shadow-soft ring-1 ring-plum/5 backdrop-blur sm:-right-6">
-            <GraduationCap size={18} className="shrink-0 text-sage-600" />
-            <div>
-              <p className="text-xs font-semibold leading-tight text-plum">Guntur Medical College</p>
-              <p className="text-[11px] text-ink/50">MBBS, MS (OBG)</p>
-            </div>
-          </div>
-
-          <div className="absolute -left-2 bottom-8 flex items-center gap-2 rounded-2xl bg-cream/95 px-4 py-3 shadow-soft ring-1 ring-plum/5 backdrop-blur sm:-left-6">
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-rose-50 text-rose-600">
-              <Star size={14} className="fill-current" />
-            </span>
-            <div>
-              <p className="text-xs font-semibold leading-tight text-plum">{doctor.experienceYears}+ Years</p>
-              <p className="text-[11px] text-ink/50">Clinical Experience</p>
-            </div>
-          </div>
+        <Reveal>
+          <DoctorFlipCard doctor={doctor} />
         </Reveal>
 
         <div>
