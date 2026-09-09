@@ -17,7 +17,7 @@ import pregnancyIllustration from "../assets/motherwithinsidebaby-optimized.webp
 import babyFeetInParentsHands from "../assets/legs-cropped.jpg";
 import babyGigglingWithMom from "../assets/gigglingimage.webp";
 import babyCryingPortrait from "../assets/newcry.jpg";
-import doctorHarithaPortrait from "../assets/doctor-haritha-portrait.jpg";
+import doctorHarithaHeadshot from "../assets/doctor-haritha-headshot.png";
 import doctorHarithaProfessional from "../assets/doctor-haritha-headshot-professional.png";
 
 const BASE = "https://images.unsplash.com/";
@@ -76,7 +76,7 @@ export const photos = {
   journeyDelivery: doctorWithNewborn,
   journeyPostnatal: "photo-1620737007484-2d3bd3079a35",
 
-  doctorPrimary: doctorHarithaPortrait,
+  doctorPrimary: doctorHarithaHeadshot,
   doctorFlipBack: doctorHarithaProfessional,
   doctorSecondary: "photo-1756699279298-c89cdef354ab",
   doctorTertiary: "photo-1623854767648-e7bb8009f0db",

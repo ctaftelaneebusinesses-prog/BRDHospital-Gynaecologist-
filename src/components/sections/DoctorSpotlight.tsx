@@ -20,7 +20,7 @@ function DoctorFlipCard({ doctor }: { doctor: (typeof doctors)[number] }) {
         type="button"
         onClick={() => setFlipped((f) => !f)}
         aria-label="Click to see another photo of Dr. Haritha"
-        className="relative mx-auto block aspect-[3/4] w-full max-w-[340px] cursor-pointer"
+        className="relative mx-auto block aspect-square w-full max-w-[360px] cursor-pointer"
         style={{ perspective: 1400 }}
       >
         <motion.div
@@ -30,30 +30,28 @@ function DoctorFlipCard({ doctor }: { doctor: (typeof doctors)[number] }) {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
           <div
-            className="absolute inset-0 overflow-hidden rounded-[2.5rem] shadow-soft ring-8 ring-white"
+            className="absolute inset-0 overflow-hidden rounded-full shadow-soft ring-8 ring-white"
             style={{ backfaceVisibility: "hidden" }}
           >
             <Img
               slug={doctor.image}
               alt={doctor.name}
-              width={680}
+              width={720}
               className="h-full w-full object-cover"
               loading="eager"
             />
           </div>
 
           <div
-            className="absolute inset-0 flex flex-col items-center justify-center overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-plum via-[#3a2029] to-plum shadow-soft ring-8 ring-white"
+            className="absolute inset-0 overflow-hidden rounded-full shadow-soft ring-8 ring-white"
             style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
           >
-            <div className="h-40 w-40 overflow-hidden rounded-full ring-4 ring-cream/20 sm:h-44 sm:w-44">
-              <Img slug={photos.doctorFlipBack} alt={doctor.name} width={360} className="h-full w-full object-cover" />
-            </div>
-            <p className="mt-5 text-center font-serif text-xl font-medium text-cream">{doctor.name}</p>
-            <p className="mt-1 text-center text-sm text-rose-200">{doctor.title}</p>
-            <p className="mt-4 text-center text-xs uppercase tracking-[0.14em] text-cream/50">
-              {doctor.qualifications.join(" · ")}
-            </p>
+            <Img
+              slug={photos.doctorFlipBack}
+              alt={`${doctor.name} — professional portrait`}
+              width={720}
+              className="h-full w-full object-cover"
+            />
           </div>
         </motion.div>
       </button>
@@ -94,7 +92,8 @@ export function DoctorSpotlight() {
   const { openBooking } = useBooking();
 
   return (
-    <section id="doctor" className="relative overflow-hidden pb-24 pt-8 sm:pb-32 sm:pt-10">
+    <section id="doctor" className="relative overflow-hidden pb-24 pt-16 sm:pb-32 sm:pt-20">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-rose-300/60 to-transparent" />
       <div className="pointer-events-none absolute -left-24 top-20 h-80 w-80 rounded-full bg-sage-200/30 blur-3xl" />
       <div className="pointer-events-none absolute -right-24 bottom-10 h-96 w-96 rounded-full bg-rose-200/40 blur-3xl" />
 
