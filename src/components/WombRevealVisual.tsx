@@ -156,28 +156,6 @@ export function WombRevealVisual({ className = "" }: { className?: string }) {
         )}
       </AnimatePresence>
 
-      {/* Glassmorphism info card */}
-      <AnimatePresence>
-        {revealed && (
-          <motion.div
-            key="info-card"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 16 }}
-            transition={{ duration: 0.5, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute bottom-4 left-4 right-24 rounded-2xl border border-white/40 bg-white/55 p-4 shadow-soft backdrop-blur-xl sm:bottom-6 sm:left-6 sm:right-28 sm:p-5"
-          >
-            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-rose-600">
-              Your baby is growing beautifully
-            </p>
-            <p className="mt-1 font-serif text-2xl font-medium text-plum">24 Weeks</p>
-            <p className="mt-1 text-sm text-ink/65">
-              Baby is developing rapidly and becoming more active.
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Kick reaction toast */}
       <AnimatePresence>
         {kickToast && (
@@ -193,8 +171,13 @@ export function WombRevealVisual({ className = "" }: { className?: string }) {
         )}
       </AnimatePresence>
 
-      {!revealed && (
+      {!revealed ? (
         <p className="mt-3 text-center text-xs font-medium text-ink/45">Meet your little one</p>
+      ) : (
+        <p className="mt-3 text-center text-sm text-ink/60">
+          <span className="font-serif text-base font-medium text-rose-600">24 Weeks</span> — Your
+          baby is growing beautifully.
+        </p>
       )}
     </div>
   );
