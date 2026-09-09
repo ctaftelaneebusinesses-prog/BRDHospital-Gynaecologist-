@@ -27,5 +27,3 @@ export const emptyBookingState: BookingState = {
   time: null,
   patient: emptyPatient,
 };
-
-export const STEP_LABELS = ["Date", "Time", "Details", "Confirm"] as const;

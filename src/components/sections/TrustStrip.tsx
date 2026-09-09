@@ -1,15 +1,18 @@
 import { motion } from "framer-motion";
 import { Award, Building2, Clock, HeartHandshake } from "lucide-react";
 import { Container } from "../ui/Container";
-
-const highlights = [
-  { icon: Award, text: "Experienced Specialists" },
-  { icon: HeartHandshake, text: "Personalized Treatment" },
-  { icon: Building2, text: "Modern Facilities" },
-  { icon: Clock, text: "Open 24 Hours, Daily" },
-];
+import { useLanguage } from "../../context/LanguageContext";
 
 export function TrustStrip() {
+  const { t } = useLanguage();
+
+  const highlights = [
+    { icon: Award, text: t("trustStrip.specialists") },
+    { icon: HeartHandshake, text: t("trustStrip.personalized") },
+    { icon: Building2, text: t("trustStrip.facilities") },
+    { icon: Clock, text: t("trustStrip.hours") },
+  ];
+
   return (
     <section className="relative py-10 sm:py-12">
       <Container>

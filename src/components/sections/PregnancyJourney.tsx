@@ -8,6 +8,15 @@ import { Img } from "../ui/Img";
 import { Button } from "../ui/Button";
 import { journeyStages } from "../../data/journey";
 import { useBooking } from "../../context/BookingContext";
+import { useLanguage } from "../../context/LanguageContext";
+
+const STAGE_TEXT_KEYS: Record<string, string> = {
+  "first-trimester": "firstTrimester",
+  "second-trimester": "secondTrimester",
+  "third-trimester": "thirdTrimester",
+  delivery: "delivery",
+  postnatal: "postnatal",
+};
 
 const STAGE_ICONS: Record<string, typeof Sparkles> = {
   "first-trimester": Sparkles,
@@ -38,7 +47,20 @@ function HeartBurst() {
 
 export function PregnancyJourney() {
   const { openBooking } = useBooking();
+  const { t, tList } = useLanguage();
   const [burstId, setBurstId] = useState<string | null>(null);
+
+  const stages = journeyStages.map((stage) => {
+    const key = STAGE_TEXT_KEYS[stage.id];
+    return {
+      ...stage,
+      stage: t(`journey.${key}Stage`),
+      weeks: t(`journey.${key}Weeks`),
+      title: t(`journey.${key}Title`),
+      description: t(`journey.${key}Description`),
+      careInfo: tList(`journey.${key}Care`),
+    };
+  });
 
   function triggerBurst(id: string) {
     setBurstId(id);
@@ -51,9 +73,9 @@ export function PregnancyJourney() {
 
       <Container>
         <SectionHeading
-          eyebrow="A Journey, Not Just Appointments"
-          title="Your Pregnancy Journey"
-          description="From the earliest signs to the fourth trimester, here's how our care evolves alongside you — one milestone at a time."
+          eyebrow={t("journey.eyebrow")}
+          title={t("journey.title")}
+          description={t("journey.description")}
         />
 
         <div className="mt-16 hidden lg:block">
@@ -66,7 +88,7 @@ export function PregnancyJourney() {
               transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
             />
             <div className="grid grid-cols-5 gap-5">
-              {journeyStages.map((stage, index) => {
+              {stages.map((stage, index) => {
                 const StageIcon = STAGE_ICONS[stage.id] ?? Sparkles;
                 return (
                   <Reveal key={stage.id} delay={index * 0.1}>
@@ -115,7 +137,7 @@ export function PregnancyJourney() {
         </div>
 
         <div className="mt-4 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 lg:hidden">
-          {journeyStages.map((stage, index) => {
+          {stages.map((stage, index) => {
             const StageIcon = STAGE_ICONS[stage.id] ?? Sparkles;
             return (
               <div
@@ -161,7 +183,7 @@ export function PregnancyJourney() {
             icon={<ArrowRight size={18} />}
             onClick={() => openBooking()}
           >
-            Start Your Pregnancy Care Journey
+            {t("journey.ctaButton")}
           </Button>
         </Reveal>
       </Container>

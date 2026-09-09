@@ -17,8 +17,8 @@ export interface Doctor {
 
 export const doctors: Doctor[] = [
   {
-    id: "dr-ananya-sharma",
-    name: "Dr. Ananya Sharma",
+    id: "dr-haritha",
+    name: "Dr. Haritha",
     title: "Gynecologist & Obstetrician",
     specializations: ["Gynecological Care", "Reproductive Health", "Gynecological Surgery"],
     experienceYears: 14,
@@ -27,7 +27,7 @@ export const doctors: Doctor[] = [
     availability: "Mon – Sat, 9:00 AM – 6:00 PM",
     rating: 4.9,
     reviewCount: 612,
-    bio: "Dr. Ananya Sharma has spent over a decade guiding women through every stage of reproductive health, from routine wellness visits to complex gynecological care. Patients describe her as attentive, plain-spoken and endlessly reassuring.",
+    bio: "Dr. Haritha has spent over a decade guiding women through every stage of reproductive health, from routine wellness visits to complex gynecological care. Patients describe her as attentive, plain-spoken and endlessly reassuring.",
     image: photos.doctorPrimary,
   },
 ];

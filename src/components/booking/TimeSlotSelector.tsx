@@ -1,5 +1,6 @@
 import { Clock } from "lucide-react";
 import { timeSlots } from "../../data/booking";
+import { useLanguage } from "../../context/LanguageContext";
 
 interface TimeSlotSelectorProps {
   selected: string | null;
@@ -8,8 +9,9 @@ interface TimeSlotSelectorProps {
 }
 
 export function TimeSlotSelector({ selected, onSelect, unavailable = [] }: TimeSlotSelectorProps) {
-  const morning = timeSlots.filter((t) => t.includes("AM"));
-  const afternoon = timeSlots.filter((t) => t.includes("PM"));
+  const { t } = useLanguage();
+  const morning = timeSlots.filter((slot) => slot.includes("AM"));
+  const afternoon = timeSlots.filter((slot) => slot.includes("PM"));
 
   function renderGroup(label: string, slots: string[]) {
     return (
@@ -46,10 +48,10 @@ export function TimeSlotSelector({ selected, onSelect, unavailable = [] }: TimeS
     <div className="space-y-6 rounded-[1.75rem] bg-white p-5 shadow-card ring-1 ring-plum/5 sm:p-7">
       <div className="flex items-center gap-2 text-sm text-ink/50">
         <Clock size={15} />
-        All times shown in your local timezone
+        {t("timeSlot.timezoneNote")}
       </div>
-      {renderGroup("Morning", morning)}
-      {renderGroup("Afternoon", afternoon)}
+      {renderGroup(t("timeSlot.morning"), morning)}
+      {renderGroup(t("timeSlot.afternoon"), afternoon)}
     </div>
   );
 }

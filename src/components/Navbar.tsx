@@ -3,19 +3,22 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { Container } from "./ui/Container";
 import { Button } from "./ui/Button";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { useBooking } from "../context/BookingContext";
+import { useLanguage } from "../context/LanguageContext";
 import { Logo } from "./Logo";
-
-const navLinks = [
-  { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
-  { label: "Pregnancy Care", href: "#pregnancy-journey" },
-];
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { openBooking } = useBooking();
+  const { t } = useLanguage();
+
+  const navLinks = [
+    { label: t("nav.home"), href: "#home" },
+    { label: t("nav.about"), href: "#about" },
+    { label: t("nav.pregnancyCare"), href: "#pregnancy-journey" },
+  ];
 
   useEffect(() => {
     function onScroll() {
@@ -83,19 +86,23 @@ export function Navbar() {
             ))}
           </nav>
 
-          <div className="hidden lg:block">
+          <div className="hidden items-center gap-1 lg:flex">
+            <LanguageSwitcher />
             <Button size="sm" onClick={() => openBooking()}>
-              Book an Appointment
+              {t("nav.bookAppointment")}
             </Button>
           </div>
 
-          <button
-            className="flex h-10 w-10 items-center justify-center rounded-full text-plum lg:hidden"
-            onClick={() => setMobileOpen((v) => !v)}
-            aria-label="Toggle menu"
-          >
-            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-          </button>
+          <div className="flex items-center gap-1 lg:hidden">
+            <LanguageSwitcher />
+            <button
+              className="flex h-10 w-10 items-center justify-center rounded-full text-plum"
+              onClick={() => setMobileOpen((v) => !v)}
+              aria-label="Toggle menu"
+            >
+              {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
         </div>
       </Container>
 
@@ -129,7 +136,7 @@ export function Navbar() {
                   openBooking();
                 }}
               >
-                Book an Appointment
+                {t("nav.bookAppointment")}
               </Button>
             </nav>
           </motion.div>

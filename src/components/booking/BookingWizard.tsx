@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Check, X } from "lucide-react";
 import { useBooking } from "../../context/BookingContext";
+import { useLanguage } from "../../context/LanguageContext";
 import { Button } from "../ui/Button";
 import { DatePicker } from "./DatePicker";
 import { TimeSlotSelector } from "./TimeSlotSelector";
 import { StepDetails } from "./StepDetails";
 import { StepConfirmation } from "./StepConfirmation";
-import { emptyBookingState, STEP_LABELS, type BookingState, type PatientDetails } from "./types";
+import { emptyBookingState, type BookingState, type PatientDetails } from "./types";
 import { appointmentServices, unavailableSlotsByDate } from "../../data/booking";
 import { doctors } from "../../data/doctors";
 import { createAppointment, getBookedSlots, BookingError } from "../../lib/api/appointments";
@@ -21,6 +22,8 @@ const selectedService = appointmentServices[0];
 
 export function BookingWizard() {
   const { isOpen, closeBooking } = useBooking();
+  const { t } = useLanguage();
+  const STEP_LABELS = [t("booking.stepDate"), t("booking.stepTime"), t("booking.stepDetails"), t("booking.stepConfirm")];
   const [step, setStep] = useState(0);
   const [state, setState] = useState<BookingState>(emptyBookingState);
   const [errors, setErrors] = useState<Partial<Record<keyof PatientDetails, string>>>({});
@@ -83,13 +86,13 @@ export function BookingWizard() {
     const nextErrors: Partial<Record<keyof PatientDetails, string>> = {};
     const { fullName, phone, email, dob, reason } = state.patient;
 
-    if (!fullName.trim()) nextErrors.fullName = "Please enter your full name.";
-    if (!phone.trim()) nextErrors.phone = "Please enter a phone number.";
-    else if (!PHONE_RE.test(phone.trim())) nextErrors.phone = "Please enter a valid phone number.";
-    if (!email.trim()) nextErrors.email = "Please enter your email.";
-    else if (!EMAIL_RE.test(email.trim())) nextErrors.email = "Please enter a valid email address.";
-    if (!dob) nextErrors.dob = "Please enter your date of birth.";
-    if (!reason.trim()) nextErrors.reason = "Please tell us the reason for your visit.";
+    if (!fullName.trim()) nextErrors.fullName = t("errors.fullNameRequired");
+    if (!phone.trim()) nextErrors.phone = t("errors.phoneRequired");
+    else if (!PHONE_RE.test(phone.trim())) nextErrors.phone = t("errors.phoneInvalid");
+    if (!email.trim()) nextErrors.email = t("errors.emailRequired");
+    else if (!EMAIL_RE.test(email.trim())) nextErrors.email = t("errors.emailInvalid");
+    if (!dob) nextErrors.dob = t("errors.dobRequired");
+    if (!reason.trim()) nextErrors.reason = t("errors.reasonRequired");
 
     setErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
@@ -126,7 +129,7 @@ export function BookingWizard() {
         setStep(3);
       } catch (err) {
         setSubmitError(
-          err instanceof BookingError ? err.message : "Something went wrong. Please try again.",
+          err instanceof BookingError ? err.message : t("errors.genericSubmit"),
         );
       } finally {
         setSubmitting(false);
@@ -170,18 +173,18 @@ export function BookingWizard() {
             <div className="flex shrink-0 items-center justify-between border-b border-plum/8 px-5 py-4 sm:px-8">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.1em] text-rose-500">
-                  Book an Appointment
+                  {t("booking.title")}
                 </p>
                 {!isConfirmation && (
                   <p className="mt-0.5 font-serif text-lg font-medium text-plum">
-                    Step {step + 1} of 4 — {STEP_LABELS[step]}
+                    {t("booking.stepOf", { n: step + 1, label: STEP_LABELS[step] })}
                   </p>
                 )}
               </div>
               <button
                 onClick={closeBooking}
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-plum/60 transition-colors hover:bg-plum/5 hover:text-plum"
-                aria-label="Close booking"
+                aria-label={t("booking.closeAria")}
               >
                 <X size={20} />
               </button>
@@ -261,14 +264,18 @@ export function BookingWizard() {
                     icon={<ArrowLeft size={16} />}
                     iconPosition="left"
                   >
-                    Back
+                    {t("booking.back")}
                   </Button>
                   <Button
                     onClick={handleNext}
                     disabled={!canProceed || submitting}
                     icon={isLastStep ? undefined : <ArrowRight size={16} />}
                   >
-                    {step === 2 ? (submitting ? "Booking…" : "Confirm Appointment") : "Continue"}
+                    {step === 2
+                      ? submitting
+                        ? t("booking.bookingInProgress")
+                        : t("booking.confirmAppointment")
+                      : t("booking.continueBtn")}
                   </Button>
                 </div>
               </div>

@@ -38,30 +38,34 @@ function toIsoDate(date: Date): string {
 /** Thrown when a booking can't be created — the message is safe to show to the patient. */
 export class BookingError extends Error {}
 
-/** Creates a new appointment. Throws BookingError with a user-facing message on failure. */
-export async function createAppointment(input: NewAppointmentInput): Promise<Appointment> {
+/**
+ * Creates a new appointment. Throws BookingError with a user-facing message on failure.
+ *
+ * Deliberately does NOT chain `.select()` after `.insert()`: patients can only ever
+ * INSERT into appointments (by RLS design, to keep other patients' data private), and
+ * Postgres additionally checks the table's SELECT policy against any row an INSERT
+ * tries to return — so asking for the inserted row back would fail even though the
+ * insert itself succeeds. The caller already has everything it needs client-side.
+ */
+export async function createAppointment(input: NewAppointmentInput): Promise<void> {
   if (!isSupabaseConfigured) {
     throw new BookingError(
       "Booking isn't connected to the server yet. Please contact the clinic directly to confirm your appointment.",
     );
   }
 
-  const { data, error } = await supabase
-    .from("appointments")
-    .insert({
-      doctor_id: input.doctorId,
-      service_id: input.serviceId,
-      appointment_date: toIsoDate(input.date),
-      appointment_time: input.time,
-      full_name: input.fullName,
-      phone: input.phone,
-      email: input.email,
-      date_of_birth: input.dob || null,
-      reason: input.reason,
-      message: input.message || null,
-    })
-    .select()
-    .single();
+  const { error } = await supabase.from("appointments").insert({
+    doctor_id: input.doctorId,
+    service_id: input.serviceId,
+    appointment_date: toIsoDate(input.date),
+    appointment_time: input.time,
+    full_name: input.fullName,
+    phone: input.phone,
+    email: input.email,
+    date_of_birth: input.dob || null,
+    reason: input.reason,
+    message: input.message || null,
+  });
 
   if (error) {
     if (error.code === "23505") {
@@ -69,8 +73,6 @@ export async function createAppointment(input: NewAppointmentInput): Promise<App
     }
     throw new BookingError("We couldn't save your booking. Please check your connection and try again.");
   }
-
-  return data as Appointment;
 }
 
 /** Returns the list of time-slot labels already booked for a doctor on a given date. */

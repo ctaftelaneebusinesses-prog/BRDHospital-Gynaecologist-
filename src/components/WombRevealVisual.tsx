@@ -5,6 +5,7 @@ import motherDefault from "../assets/backgorundremovedmom.png";
 import wombIllustration from "../assets/wombIllustration.webp";
 import babyLaughSound from "../assets/BabyLau.mp3";
 import { playExclusiveSound } from "../lib/sound";
+import { useLanguage } from "../context/LanguageContext";
 
 /**
  * Coordinates measured directly on the untouched mother photo
@@ -16,6 +17,7 @@ const BELLY = { cxPct: 36, cyPct: 70.5, leftPct: 14, topPct: 55.5, sizePct: 44 }
 const KICK_MESSAGES = ["Your little one just moved! 💕", "Did you feel that? 💕"];
 
 export function WombRevealVisual({ className = "" }: { className?: string }) {
+  const { t } = useLanguage();
   const [revealed, setRevealed] = useState(false);
   const [kickToast, setKickToast] = useState<string | null>(null);
   const zoom = useAnimation();
@@ -172,11 +174,11 @@ export function WombRevealVisual({ className = "" }: { className?: string }) {
       </AnimatePresence>
 
       {!revealed ? (
-        <p className="mt-3 text-center text-xs font-medium text-ink/45">Meet your little one</p>
+        <p className="mt-3 text-center text-xs font-medium text-ink/45">{t("hero.meetLittleOne")}</p>
       ) : (
         <p className="mt-3 text-center text-sm text-ink/60">
-          <span className="font-serif text-base font-medium text-rose-600">24 Weeks</span> — Your
-          baby is growing beautifully.
+          <span className="font-serif text-base font-medium text-rose-600">{t("hero.weeks")}</span> —{" "}
+          {t("hero.babyGrowing")}
         </p>
       )}
     </div>

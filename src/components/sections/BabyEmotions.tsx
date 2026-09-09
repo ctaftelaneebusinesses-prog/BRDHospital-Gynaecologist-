@@ -6,8 +6,22 @@ import { Reveal } from "../ui/Reveal";
 import { Img } from "../ui/Img";
 import { babyEmotions } from "../../data/babyEmotions";
 import { playExclusiveSound, stopCurrentSound } from "../../lib/sound";
+import { useLanguage } from "../../context/LanguageContext";
+
+const LABEL_KEYS: Record<string, string> = {
+  crying: "babyEmotions.cryingLabel",
+  laughing: "babyEmotions.laughingLabel",
+  talking: "babyEmotions.talkingLabel",
+};
+
+const DESCRIPTION_KEYS: Record<string, string> = {
+  crying: "babyEmotions.cryingDescription",
+  laughing: "babyEmotions.laughingDescription",
+  talking: "babyEmotions.talkingDescription",
+};
 
 export function BabyEmotions() {
+  const { t } = useLanguage();
   const [playingId, setPlayingId] = useState<string | null>(null);
 
   function play(id: string, sound: string) {
@@ -27,14 +41,16 @@ export function BabyEmotions() {
     <section id="baby-emotions" className="relative py-24 sm:py-32">
       <Container>
         <SectionHeading
-          eyebrow="Little Voices, Big Moments"
-          title="The Sounds of Baby Emotions"
-          description="Every coo, giggle and cry tells its own story. Hover or tap a moment below to hear it come to life."
+          eyebrow={t("babyEmotions.eyebrow")}
+          title={t("babyEmotions.title")}
+          description={t("babyEmotions.description")}
         />
 
         <div className="mt-16 grid gap-6 md:grid-cols-3">
           {babyEmotions.map((emotion, index) => {
             const isPlaying = playingId === emotion.id;
+            const label = t(LABEL_KEYS[emotion.id] ?? "") || emotion.label;
+            const description = t(DESCRIPTION_KEYS[emotion.id] ?? "") || emotion.description;
             return (
               <Reveal key={emotion.id} delay={index * 0.1}>
                 <div
@@ -48,12 +64,12 @@ export function BabyEmotions() {
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") play(emotion.id, emotion.sound);
                   }}
-                  aria-label={`${emotion.label} — hover or tap to hear`}
+                  aria-label={`${label} — hover or tap to hear`}
                   className="group relative block aspect-[3/4] w-full cursor-pointer overflow-hidden rounded-[2rem] shadow-card outline-none ring-rose-300 transition-shadow focus-visible:ring-4"
                 >
                   <Img
                     slug={emotion.image}
-                    alt={emotion.label}
+                    alt={label}
                     width={600}
                     className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                   />
@@ -69,10 +85,10 @@ export function BabyEmotions() {
                   <div className="absolute inset-x-0 bottom-0 p-7 text-left">
                     <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-rose-200">
                       <Volume2 size={13} />
-                      {isPlaying ? "Now Playing" : "Hover to Listen"}
+                      {isPlaying ? t("babyEmotions.nowPlaying") : t("babyEmotions.hoverToListen")}
                     </p>
-                    <h3 className="mt-2 font-serif text-2xl font-medium text-cream">{emotion.label}</h3>
-                    <p className="mt-1.5 text-sm text-cream/75">{emotion.description}</p>
+                    <h3 className="mt-2 font-serif text-2xl font-medium text-cream">{label}</h3>
+                    <p className="mt-1.5 text-sm text-cream/75">{description}</p>
                   </div>
                 </div>
               </Reveal>

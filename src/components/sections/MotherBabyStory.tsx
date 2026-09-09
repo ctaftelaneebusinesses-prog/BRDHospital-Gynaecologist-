@@ -3,39 +3,42 @@ import { SectionHeading } from "../ui/SectionHeading";
 import { Reveal } from "../ui/Reveal";
 import { Img } from "../ui/Img";
 import { photos } from "../../data/images";
-
-const storyCards = [
-  {
-    id: "beginning",
-    label: "Chapter One",
-    title: "The Beginning",
-    description: "Pregnancy & prenatal care",
-    image: photos.storyBeginning,
-  },
-  {
-    id: "moment",
-    label: "Chapter Two",
-    title: "The Moment",
-    description: "Delivery & maternity care",
-    image: photos.storyMoment,
-  },
-  {
-    id: "journey",
-    label: "Chapter Three",
-    title: "The Journey Continues",
-    description: "Postnatal & women's wellness",
-    image: photos.storyJourneyContinues,
-  },
-];
+import { useLanguage } from "../../context/LanguageContext";
 
 export function MotherBabyStory() {
+  const { t } = useLanguage();
+
+  const storyCards = [
+    {
+      id: "beginning",
+      label: t("motherBabyStory.beginningLabel"),
+      title: t("motherBabyStory.beginningTitle"),
+      description: t("motherBabyStory.beginningDescription"),
+      image: photos.storyBeginning,
+    },
+    {
+      id: "moment",
+      label: t("motherBabyStory.momentLabel"),
+      title: t("motherBabyStory.momentTitle"),
+      description: t("motherBabyStory.momentDescription"),
+      image: photos.storyMoment,
+    },
+    {
+      id: "journey",
+      label: t("motherBabyStory.journeyLabel"),
+      title: t("motherBabyStory.journeyTitle"),
+      description: t("motherBabyStory.journeyDescription"),
+      image: photos.storyJourneyContinues,
+    },
+  ];
+
   return (
     <section className="relative py-24 sm:py-32">
       <Container>
         <SectionHeading
-          eyebrow="Every Story Is Different"
-          title="Because Every Mother Has a Story"
-          description="Some stories begin with nervous excitement. Others with quiet strength. Whatever yours looks like, we're honored to be part of it."
+          eyebrow={t("motherBabyStory.eyebrow")}
+          title={t("motherBabyStory.title")}
+          description={t("motherBabyStory.description")}
         />
 
         <div className="mt-16 grid gap-6 md:grid-cols-3">

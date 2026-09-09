@@ -2,8 +2,11 @@ import { Container } from "../ui/Container";
 import { Reveal } from "../ui/Reveal";
 import { Img } from "../ui/Img";
 import { photos } from "../../data/images";
+import { useLanguage } from "../../context/LanguageContext";
 
 export function EmotionalCollage() {
+  const { t } = useLanguage();
+
   return (
     <section id="about" className="relative pb-24 pt-8 sm:pb-32 sm:pt-10">
       <Container className="grid gap-14 lg:grid-cols-2 lg:items-center lg:gap-20">
@@ -47,20 +50,16 @@ export function EmotionalCollage() {
 
         <Reveal delay={0.1}>
           <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-sage-100 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-sage-600">
-            Beyond Medicine
+            {t("emotionalCollage.eyebrow")}
           </span>
           <h2 className="text-balance text-3xl font-medium leading-[1.15] text-plum sm:text-4xl lg:text-[2.75rem]">
-            Caring for You Through Every Chapter
+            {t("emotionalCollage.title")}
           </h2>
           <p className="mt-6 text-balance text-base leading-relaxed text-ink/70 sm:text-lg">
-            Healthcare isn't just about treatment — it's about walking alongside you
-            through every chapter of womanhood. From your first consultation to the
-            moment you hold your baby, and every quiet, ordinary day in between, we're
-            here — not just as doctors, but as a steady, familiar presence you can lean on.
+            {t("emotionalCollage.paragraph1")}
           </p>
           <p className="mt-4 text-balance text-base leading-relaxed text-ink/70 sm:text-lg">
-            Our approach blends clinical expertise with genuine warmth, because we
-            believe the best care sees the whole person, not just the patient.
+            {t("emotionalCollage.paragraph2")}
           </p>
         </Reveal>
       </Container>

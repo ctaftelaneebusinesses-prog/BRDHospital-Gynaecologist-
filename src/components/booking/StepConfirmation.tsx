@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { CalendarPlus, CheckCircle2, Home } from "lucide-react";
 import { Button } from "../ui/Button";
 import { Img } from "../ui/Img";
+import { useLanguage } from "../../context/LanguageContext";
 import type { Doctor } from "../../data/doctors";
 import type { AppointmentService } from "../../data/booking";
 
@@ -52,6 +53,8 @@ function buildIcsFile(service: AppointmentService | undefined, doctor: Doctor | 
 }
 
 export function StepConfirmation({ doctor, service, date, time, patientName, onClose }: StepConfirmationProps) {
+  const { t } = useLanguage();
+
   function handleAddToCalendar() {
     const blob = buildIcsFile(service, doctor, date, time);
     if (!blob) return;
@@ -76,9 +79,9 @@ export function StepConfirmation({ doctor, service, date, time, patientName, onC
         <CheckCircle2 size={40} />
       </motion.div>
 
-      <h3 className="mt-6 font-serif text-2xl font-medium text-plum sm:text-3xl">Appointment Confirmed</h3>
+      <h3 className="mt-6 font-serif text-2xl font-medium text-plum sm:text-3xl">{t("confirmation.confirmed")}</h3>
       <p className="mt-2 text-sm text-ink/60">
-        Thank you, {patientName.split(" ")[0] || "there"} — your appointment has been successfully scheduled.
+        {t("confirmation.thankYou", { name: patientName.split(" ")[0] || "" })}
       </p>
 
       <div className="mt-8 flex w-full max-w-md items-center gap-4 overflow-hidden rounded-[1.75rem] bg-white p-5 text-left shadow-card ring-1 ring-plum/5">
@@ -88,22 +91,22 @@ export function StepConfirmation({ doctor, service, date, time, patientName, onC
           </div>
         )}
         <div className="min-w-0 flex-1 divide-y divide-plum/8 text-sm">
-          <Row label="Doctor" value={doctor?.name ?? "—"} />
+          <Row label={t("confirmation.doctor")} value={doctor?.name ?? "—"} />
         </div>
       </div>
 
       <div className="mt-4 grid w-full max-w-md grid-cols-1 gap-3 rounded-[1.75rem] bg-white p-5 text-left shadow-card ring-1 ring-plum/5 sm:grid-cols-3">
-        <SummaryTile label="Service" value={service?.name ?? "—"} />
-        <SummaryTile label="Date" value={date ? DATE_FORMAT.format(date) : "—"} />
-        <SummaryTile label="Time" value={time ?? "—"} />
+        <SummaryTile label={t("confirmation.service")} value={service?.name ?? "—"} />
+        <SummaryTile label={t("confirmation.date")} value={date ? DATE_FORMAT.format(date) : "—"} />
+        <SummaryTile label={t("confirmation.time")} value={time ?? "—"} />
       </div>
 
       <div className="mt-9 flex flex-wrap justify-center gap-3">
         <Button variant="outline" icon={<CalendarPlus size={17} />} iconPosition="left" onClick={handleAddToCalendar}>
-          Add to Calendar
+          {t("confirmation.addToCalendar")}
         </Button>
         <Button icon={<Home size={17} />} iconPosition="left" onClick={onClose}>
-          Back to Home
+          {t("confirmation.backToHome")}
         </Button>
       </div>
     </div>

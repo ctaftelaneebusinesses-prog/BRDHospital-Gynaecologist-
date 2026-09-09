@@ -4,11 +4,13 @@ import { Container } from "../ui/Container";
 import { Button } from "../ui/Button";
 import { WombRevealVisual } from "../WombRevealVisual";
 import { useBooking } from "../../context/BookingContext";
-
-const trustIndicators = ["Experienced Gynecologists", "Personalized Care", "Modern Facilities"];
+import { useLanguage } from "../../context/LanguageContext";
 
 export function Hero() {
   const { openBooking } = useBooking();
+  const { t } = useLanguage();
+
+  const trustIndicators = [t("hero.trust1"), t("hero.trust2"), t("hero.trust3")];
 
   function scrollToServices() {
     document.querySelector("#services")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -29,7 +31,7 @@ export function Hero() {
             className="mb-6 inline-flex items-center gap-2 rounded-full border border-rose-200 bg-rose-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-rose-600"
           >
             <Sparkles size={14} />
-            Compassionate Care for Every Stage of Womanhood
+            {t("hero.badge")}
           </motion.div>
 
           <motion.h1
@@ -38,8 +40,8 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             className="text-balance text-4xl font-medium leading-[1.1] text-plum sm:text-5xl lg:text-6xl"
           >
-            Your Health. <br className="hidden sm:block" />
-            Your Journey. <span className="text-rose-500">Our Care.</span>
+            {t("hero.titleLine1")} <br className="hidden sm:block" />
+            {t("hero.titleLine2")} <span className="text-rose-500">{t("hero.titleHighlight")}</span>
           </motion.h1>
 
           <motion.p
@@ -48,9 +50,7 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             className="mt-6 max-w-xl text-balance text-base leading-relaxed text-ink/70 sm:text-lg"
           >
-            We provide personalized gynecological, pregnancy, maternity and women's
-            wellness care — guided by experienced doctors who take the time to listen,
-            explain and support you through every stage of womanhood.
+            {t("hero.paragraph")}
           </motion.p>
 
           <motion.div
@@ -60,10 +60,10 @@ export function Hero() {
             className="mt-9 flex flex-wrap items-center gap-4"
           >
             <Button size="lg" icon={<ArrowRight size={18} />} onClick={() => openBooking()}>
-              Book an Appointment
+              {t("hero.bookAppointment")}
             </Button>
             <Button size="lg" variant="outline" onClick={scrollToServices}>
-              Explore Our Services
+              {t("hero.exploreServices")}
             </Button>
           </motion.div>
 
@@ -91,11 +91,11 @@ export function Hero() {
           >
             <div className="rounded-2xl bg-white/70 p-5 shadow-[0_4px_20px_-8px_rgba(69,38,46,0.1)] ring-1 ring-plum/5">
               <p className="font-serif text-3xl font-medium text-rose-600">15+</p>
-              <p className="mt-1 text-sm font-medium text-ink/60">Healthcare Services</p>
+              <p className="mt-1 text-sm font-medium text-ink/60">{t("hero.statService")}</p>
             </div>
             <div className="rounded-2xl bg-white/70 p-5 shadow-[0_4px_20px_-8px_rgba(69,38,46,0.1)] ring-1 ring-plum/5">
               <p className="font-serif text-3xl font-medium text-sage-600">98%</p>
-              <p className="mt-1 text-sm font-medium text-ink/60">Patient Satisfaction</p>
+              <p className="mt-1 text-sm font-medium text-ink/60">{t("hero.statSatisfaction")}</p>
             </div>
           </motion.div>
         </div>
@@ -115,8 +115,8 @@ export function Hero() {
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
             className="absolute -left-2 top-2 rounded-2xl bg-cream/95 px-5 py-4 shadow-soft ring-1 ring-plum/5 backdrop-blur sm:-left-6"
           >
-            <p className="font-serif text-2xl font-medium text-rose-600">10+ Years</p>
-            <p className="text-xs font-medium text-ink/60">of Compassionate Care</p>
+            <p className="font-serif text-2xl font-medium text-rose-600">{t("hero.yearsCount")}</p>
+            <p className="text-xs font-medium text-ink/60">{t("hero.yearsLabel")}</p>
           </motion.div>
 
           <motion.div
@@ -125,7 +125,7 @@ export function Hero() {
             className="absolute -right-2 bottom-16 rounded-2xl bg-cream/95 px-5 py-4 shadow-soft ring-1 ring-plum/5 backdrop-blur sm:-right-6"
           >
             <p className="font-serif text-2xl font-medium text-sage-600">5000+</p>
-            <p className="text-xs font-medium text-ink/60">Happy Families</p>
+            <p className="text-xs font-medium text-ink/60">{t("hero.familiesLabel")}</p>
           </motion.div>
         </motion.div>
       </Container>

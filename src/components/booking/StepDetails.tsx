@@ -1,4 +1,5 @@
 import type { PatientDetails } from "./types";
+import { useLanguage } from "../../context/LanguageContext";
 
 interface StepDetailsProps {
   patient: PatientDetails;
@@ -12,6 +13,7 @@ const errorClass = "border-red-300 focus:border-red-400 focus:ring-red-100";
 const labelClass = "mb-1.5 block text-xs font-semibold uppercase tracking-[0.06em] text-ink/55";
 
 export function StepDetails({ patient, errors, onChange }: StepDetailsProps) {
+  const { t } = useLanguage();
   const todayISO = new Date().toISOString().split("T")[0];
 
   return (
@@ -19,14 +21,14 @@ export function StepDetails({ patient, errors, onChange }: StepDetailsProps) {
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <label className={labelClass} htmlFor="fullName">
-            Full Name
+            {t("stepDetails.fullName")}
           </label>
           <input
             id="fullName"
             type="text"
             value={patient.fullName}
             onChange={(e) => onChange("fullName", e.target.value)}
-            placeholder="Jane Doe"
+            placeholder={t("stepDetails.fullNamePlaceholder")}
             className={`${inputClass} ${errors.fullName ? errorClass : ""}`}
           />
           {errors.fullName && <p className="mt-1.5 text-xs text-red-500">{errors.fullName}</p>}
@@ -34,14 +36,14 @@ export function StepDetails({ patient, errors, onChange }: StepDetailsProps) {
 
         <div>
           <label className={labelClass} htmlFor="phone">
-            Phone Number
+            {t("stepDetails.phone")}
           </label>
           <input
             id="phone"
             type="tel"
             value={patient.phone}
             onChange={(e) => onChange("phone", e.target.value)}
-            placeholder="+1 (555) 123-4567"
+            placeholder={t("stepDetails.phonePlaceholder")}
             className={`${inputClass} ${errors.phone ? errorClass : ""}`}
           />
           {errors.phone && <p className="mt-1.5 text-xs text-red-500">{errors.phone}</p>}
@@ -49,14 +51,14 @@ export function StepDetails({ patient, errors, onChange }: StepDetailsProps) {
 
         <div>
           <label className={labelClass} htmlFor="email">
-            Email
+            {t("stepDetails.email")}
           </label>
           <input
             id="email"
             type="email"
             value={patient.email}
             onChange={(e) => onChange("email", e.target.value)}
-            placeholder="jane@example.com"
+            placeholder={t("stepDetails.emailPlaceholder")}
             className={`${inputClass} ${errors.email ? errorClass : ""}`}
           />
           {errors.email && <p className="mt-1.5 text-xs text-red-500">{errors.email}</p>}
@@ -64,7 +66,7 @@ export function StepDetails({ patient, errors, onChange }: StepDetailsProps) {
 
         <div>
           <label className={labelClass} htmlFor="dob">
-            Date of Birth
+            {t("stepDetails.dob")}
           </label>
           <input
             id="dob"
@@ -79,14 +81,14 @@ export function StepDetails({ patient, errors, onChange }: StepDetailsProps) {
 
         <div className="sm:col-span-2">
           <label className={labelClass} htmlFor="reason">
-            Reason for Visit
+            {t("stepDetails.reason")}
           </label>
           <input
             id="reason"
             type="text"
             value={patient.reason}
             onChange={(e) => onChange("reason", e.target.value)}
-            placeholder="e.g. Routine checkup, pregnancy consultation..."
+            placeholder={t("stepDetails.reasonPlaceholder")}
             className={`${inputClass} ${errors.reason ? errorClass : ""}`}
           />
           {errors.reason && <p className="mt-1.5 text-xs text-red-500">{errors.reason}</p>}
@@ -94,14 +96,14 @@ export function StepDetails({ patient, errors, onChange }: StepDetailsProps) {
 
         <div className="sm:col-span-2">
           <label className={labelClass} htmlFor="message">
-            Optional Message
+            {t("stepDetails.message")}
           </label>
           <textarea
             id="message"
             rows={3}
             value={patient.message}
             onChange={(e) => onChange("message", e.target.value)}
-            placeholder="Anything else you'd like us to know before your visit..."
+            placeholder={t("stepDetails.messagePlaceholder")}
             className={`${inputClass} resize-none`}
           />
         </div>

@@ -3,6 +3,12 @@
 The frontend is fully wired to a Supabase backend — you just need to create the
 project and plug in the keys. Everything below is a one-time setup.
 
+**Status:** steps 1–3 are done — the project exists, `.env.local` has the
+keys, and `supabase/schema.sql` has been run (one doctor, "Dr. Haritha", is
+seeded and bookings have been verified end-to-end against the live
+database). Still to do: **step 4** (create your own staff login) and,
+optionally, **step 5** (email confirmations).
+
 ## 1. Create a Supabase project
 
 1. Go to [supabase.com](https://supabase.com) → sign up (free) → **New project**.
@@ -68,6 +74,32 @@ step. Skip it if you don't need that yet.
 
 If this step is skipped or fails, bookings still save normally — the email is
 best-effort and never blocks a booking.
+
+## Troubleshooting
+
+**"new row violates row-level security policy" when the policy clearly
+exists.** This bit us during setup: if application code does
+`.insert(...).select()` (asking Supabase to hand back the row it just
+created), Postgres also requires that row to satisfy the table's **SELECT**
+policy, not just the INSERT policy — even though the insert itself is
+completely valid. Since only staff can read `appointments`, that combination
+always fails for a public booking. Fix: don't chain `.select()` after
+inserting into `appointments` (already done in `src/lib/api/appointments.ts`
+— noted here in case a similar pattern gets added later).
+
+**A policy change in the SQL Editor doesn't seem to take effect.**
+PostgREST (the API layer in front of Postgres) caches the schema and
+usually reloads within a few seconds of a DDL change, but occasionally
+doesn't. Force it:
+```
+node --env-file=.env.local scripts/reload-schema-cache.mjs
+```
+This needs `SUPABASE_DB_PASSWORD` in `.env.local` (Project Settings →
+Database → Database password) and connects via the **connection pooler**
+(Project Settings → Database → Connection pooling) rather than the direct
+`db.<ref>.supabase.co` host — that host is IPv6-only, which many home/office
+networks can't route to, so direct connections there may hang or fail with
+`ENOTFOUND` even though the credentials are correct.
 
 ## What's already built
 

@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { Container } from "../ui/Container";
 import { stats } from "../../data/stats";
 import { useCountUp } from "../../hooks/useCountUp";
+import { useLanguage } from "../../context/LanguageContext";
 
 function StatItem({ value, suffix, label }: { value: number; suffix: string; label: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -21,12 +22,15 @@ function StatItem({ value, suffix, label }: { value: number; suffix: string; lab
 }
 
 export function Stats() {
+  const { tList } = useLanguage();
+  const labels = tList("stats.list");
+
   return (
     <section className="relative bg-plum py-16 sm:py-20">
       <Container>
         <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
-          {stats.map((stat) => (
-            <StatItem key={stat.label} {...stat} />
+          {stats.map((stat, index) => (
+            <StatItem key={stat.label} value={stat.value} suffix={stat.suffix} label={labels[index] ?? stat.label} />
           ))}
         </div>
       </Container>

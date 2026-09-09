@@ -113,7 +113,7 @@ grant execute on function get_booked_slots(text, date) to anon, authenticated;
 -- ─────────────────────────────────────────────────────────────────────────
 
 insert into doctors (id, name, title) values
-  ('dr-ananya-sharma', 'Dr. Ananya Sharma', 'Gynecologist & Obstetrician')
+  ('dr-haritha', 'Dr. Haritha', 'Gynecologist & Obstetrician')
 on conflict (id) do update set name = excluded.name, title = excluded.title;
 
 insert into services (id, name, duration_minutes) values
