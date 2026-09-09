@@ -98,14 +98,13 @@ export function BookingWizard() {
 
   function validatePatientDetails(): boolean {
     const nextErrors: Partial<Record<keyof PatientDetails, string>> = {};
-    const { fullName, phone, email, dob, reason, reasonTags } = state.patient;
+    const { fullName, phone, email, reason, reasonTags } = state.patient;
 
     if (!fullName.trim()) nextErrors.fullName = t("errors.fullNameRequired");
     if (!phone.trim()) nextErrors.phone = t("errors.phoneRequired");
     else if (!PHONE_RE.test(phone.trim())) nextErrors.phone = t("errors.phoneInvalid");
     if (!email.trim()) nextErrors.email = t("errors.emailRequired");
     else if (!EMAIL_RE.test(email.trim())) nextErrors.email = t("errors.emailInvalid");
-    if (!dob) nextErrors.dob = t("errors.dobRequired");
     if (reasonTags.length === 0 && !reason.trim()) {
       nextErrors.reason = "Select at least one option, describe it, or use the mic.";
     }
@@ -130,10 +129,8 @@ export function BookingWizard() {
           fullName: state.patient.fullName.trim(),
           phone: state.patient.phone.trim(),
           email: state.patient.email.trim(),
-          dob: state.patient.dob,
           reasonTags: state.patient.reasonTags,
           reason: state.patient.reason.trim(),
-          message: state.patient.message.trim(),
           paymentAmount: settings?.bookingFeeAmount ?? 0,
         });
         sendConfirmationEmail({

@@ -31,10 +31,8 @@ export interface NewAppointmentInput {
   fullName: string;
   phone: string;
   email: string;
-  dob: string;
   reasonTags: string[];
   reason: string;
-  message: string;
   paymentAmount: number;
 }
 
@@ -69,10 +67,8 @@ export async function createAppointment(input: NewAppointmentInput): Promise<voi
     full_name: input.fullName,
     phone: input.phone,
     email: input.email,
-    date_of_birth: input.dob || null,
     reason_tags: input.reasonTags,
     reason: input.reason || null,
-    message: input.message || null,
     payment_amount: input.paymentAmount,
   });
 

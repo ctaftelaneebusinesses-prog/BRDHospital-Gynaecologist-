@@ -2,10 +2,8 @@ export interface PatientDetails {
   fullName: string;
   phone: string;
   email: string;
-  dob: string;
   reasonTags: string[];
   reason: string;
-  message: string;
 }
 
 export interface BookingState {
@@ -18,10 +16,8 @@ export const emptyPatient: PatientDetails = {
   fullName: "",
   phone: "",
   email: "",
-  dob: "",
   reasonTags: [],
   reason: "",
-  message: "",
 };
 
 export const emptyBookingState: BookingState = {

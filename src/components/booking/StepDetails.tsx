@@ -18,7 +18,6 @@ const labelClass = "mb-1.5 block text-xs font-semibold uppercase tracking-[0.06e
 
 export function StepDetails({ patient, errors, reasonOptions, onChange, onToggleReasonTag }: StepDetailsProps) {
   const { t } = useLanguage();
-  const todayISO = new Date().toISOString().split("T")[0];
 
   return (
     <div className="rounded-[1.75rem] bg-white p-5 shadow-card ring-1 ring-plum/5 sm:p-7">
@@ -71,22 +70,6 @@ export function StepDetails({ patient, errors, reasonOptions, onChange, onToggle
           {errors.email && <p className="mt-1.5 text-xs text-red-500">{errors.email}</p>}
         </div>
 
-        <div>
-          <label className={labelClass} htmlFor="dob">
-            {t("stepDetails.dob")}
-          </label>
-          <input
-            id="dob"
-            type="date"
-            autoComplete="off"
-            value={patient.dob}
-            max={todayISO}
-            onChange={(e) => onChange("dob", e.target.value)}
-            className={`${inputClass} ${errors.dob ? errorClass : ""}`}
-          />
-          {errors.dob && <p className="mt-1.5 text-xs text-red-500">{errors.dob}</p>}
-        </div>
-
         <div className="sm:col-span-2">
           <label className={labelClass}>{t("stepDetails.reason")}</label>
 
@@ -130,21 +113,6 @@ export function StepDetails({ patient, errors, reasonOptions, onChange, onToggle
             />
           </div>
           {errors.reason && <p className="mt-1.5 text-xs text-red-500">{errors.reason}</p>}
-        </div>
-
-        <div className="sm:col-span-2">
-          <label className={labelClass} htmlFor="message">
-            {t("stepDetails.message")}
-          </label>
-          <textarea
-            id="message"
-            rows={3}
-            autoComplete="off"
-            value={patient.message}
-            onChange={(e) => onChange("message", e.target.value)}
-            placeholder={t("stepDetails.messagePlaceholder")}
-            className={`${inputClass} resize-none`}
-          />
         </div>
       </div>
     </div>
