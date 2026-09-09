@@ -8,8 +8,28 @@ import { Button } from "../ui/Button";
 import { doctors } from "../../data/doctors";
 import { photos } from "../../data/images";
 import { useBooking } from "../../context/BookingContext";
+import { useLanguage } from "../../context/LanguageContext";
 
-function DoctorFlipCard({ doctor }: { doctor: (typeof doctors)[number] }) {
+// Language names are always shown in their own script, regardless of the active site language.
+const NATIVE_LANGUAGE_NAMES: Record<string, string> = {
+  English: "English",
+  Telugu: "తెలుగు",
+  Tamil: "தமிழ்",
+  Hindi: "हिन्दी",
+  Kannada: "ಕನ್ನಡ",
+};
+
+function DoctorFlipCard({
+  doctor,
+  flipAria,
+  tapPhoto,
+  clinicalExperience,
+}: {
+  doctor: (typeof doctors)[number];
+  flipAria: string;
+  tapPhoto: string;
+  clinicalExperience: string;
+}) {
   const [flipped, setFlipped] = useState(false);
 
   return (
@@ -19,7 +39,7 @@ function DoctorFlipCard({ doctor }: { doctor: (typeof doctors)[number] }) {
       <button
         type="button"
         onClick={() => setFlipped((f) => !f)}
-        aria-label="Click to see another photo of Dr. Haritha"
+        aria-label={flipAria}
         className="relative mx-auto block aspect-square w-full max-w-[360px] cursor-pointer"
         style={{ perspective: 1400 }}
       >
@@ -78,11 +98,11 @@ function DoctorFlipCard({ doctor }: { doctor: (typeof doctors)[number] }) {
         </span>
         <div>
           <p className="text-xs font-semibold leading-tight text-plum">{doctor.experienceYears}+ Years</p>
-          <p className="text-[11px] text-ink/50">Clinical Experience</p>
+          <p className="text-[11px] text-ink/50">{clinicalExperience}</p>
         </div>
       </div>
 
-      <p className="mt-4 text-center text-xs font-medium text-ink/40">Tap the photo for another look ✨</p>
+      <p className="mt-4 text-center text-xs font-medium text-ink/40">{tapPhoto}</p>
     </div>
   );
 }
@@ -90,6 +110,14 @@ function DoctorFlipCard({ doctor }: { doctor: (typeof doctors)[number] }) {
 export function DoctorSpotlight() {
   const doctor = doctors[0];
   const { openBooking } = useBooking();
+  const { t, tList } = useLanguage();
+
+  const profileTitle = t(`doctorProfiles.${doctor.id}.title`) || doctor.title;
+  const profileBio = t(`doctorProfiles.${doctor.id}.bio`) || doctor.bio;
+  const profileSpecializations = tList(`doctorProfiles.${doctor.id}.specializations`);
+  const specializations = profileSpecializations.length ? profileSpecializations : doctor.specializations;
+
+  const languageNames = doctor.languages.map((lang) => NATIVE_LANGUAGE_NAMES[lang] ?? lang);
 
   return (
     <section id="doctor" className="relative overflow-hidden pb-24 pt-16 sm:pb-32 sm:pt-20">
@@ -99,20 +127,25 @@ export function DoctorSpotlight() {
 
       <Container className="grid items-center gap-16 lg:grid-cols-[440px_1fr] lg:gap-20">
         <Reveal>
-          <DoctorFlipCard doctor={doctor} />
+          <DoctorFlipCard
+            doctor={doctor}
+            flipAria={t("doctorSpotlight.flipAria", { name: doctor.name })}
+            tapPhoto={t("doctorSpotlight.tapPhoto")}
+            clinicalExperience={t("doctorSpotlight.clinicalExperience")}
+          />
         </Reveal>
 
         <div>
           <Reveal>
             <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-rose-100 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-rose-600">
-              Meet Your Doctor
+              {t("doctorSpotlight.eyebrow")}
             </span>
             <h2 className="text-balance font-serif text-3xl font-medium leading-[1.15] text-plum sm:text-4xl lg:text-[2.75rem]">
               {doctor.name}
             </h2>
-            <p className="mt-2 text-base font-medium text-rose-600 sm:text-lg">{doctor.title}</p>
+            <p className="mt-2 text-base font-medium text-rose-600 sm:text-lg">{profileTitle}</p>
             <p className="mt-6 max-w-xl text-balance text-base leading-relaxed text-ink/70 sm:text-lg">
-              {doctor.bio}
+              {profileBio}
             </p>
           </Reveal>
 
@@ -122,8 +155,10 @@ export function DoctorSpotlight() {
                 <Stethoscope size={18} />
               </span>
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-ink/45">Specializations</p>
-                <p className="mt-1 text-sm text-plum">{doctor.specializations.join(" · ")}</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-ink/45">
+                  {t("doctorSpotlight.specializationsLabel")}
+                </p>
+                <p className="mt-1 text-sm text-plum">{specializations.join(" · ")}</p>
               </div>
             </div>
 
@@ -132,8 +167,10 @@ export function DoctorSpotlight() {
                 <ScanEye size={18} />
               </span>
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-ink/45">In-house Sonologist</p>
-                <p className="mt-1 text-sm text-plum">Personally performs &amp; reads every ultrasound</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-ink/45">
+                  {t("doctorSpotlight.sonologistLabel")}
+                </p>
+                <p className="mt-1 text-sm text-plum">{t("doctorSpotlight.sonologistDescription")}</p>
               </div>
             </div>
 
@@ -142,7 +179,9 @@ export function DoctorSpotlight() {
                 <GraduationCap size={18} />
               </span>
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-ink/45">Qualifications</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-ink/45">
+                  {t("doctorSpotlight.qualificationsLabel")}
+                </p>
                 <p className="mt-1 text-sm text-plum">{doctor.qualifications.join(", ")}</p>
               </div>
             </div>
@@ -152,15 +191,17 @@ export function DoctorSpotlight() {
                 <Languages size={18} />
               </span>
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-ink/45">Languages</p>
-                <p className="mt-1 text-sm text-plum">{doctor.languages.join(", ")}</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-ink/45">
+                  {t("doctorSpotlight.languagesLabel")}
+                </p>
+                <p className="mt-1 text-sm text-plum">{languageNames.join(", ")}</p>
               </div>
             </div>
           </Reveal>
 
           <Reveal delay={0.2} className="mt-9">
             <Button size="lg" onClick={() => openBooking()}>
-              Book a Consultation
+              {t("doctorSpotlight.bookConsultation")}
             </Button>
           </Reveal>
         </div>

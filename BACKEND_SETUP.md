@@ -50,10 +50,24 @@ There's no self-serve sign-up — staff accounts are only created by you, in the
 dashboard, on purpose (this is a private admin tool, not a public account
 system).
 
-## 5. (Optional) Turn on email confirmations
+## 5. (Optional) Turn on the two email flows
 
-Booking works fully without this — it's just the "send a confirmation email"
-step. Skip it if you don't need that yet.
+Booking works fully without this — the two email steps below are best-effort
+and never block a booking. Skip this section if you don't need email yet.
+
+There are **two separate emails**, sent at two different moments:
+
+- **`notify-new-booking`** — fires immediately when a patient books, to
+  **staff** (`ADMIN_NOTIFICATION_EMAIL`), so someone knows to go verify the
+  payment and confirm the appointment.
+- **`send-confirmation`** — fires to the **patient**, but only once staff set
+  both *Status → Confirmed* and *Payment → Paid* on that appointment in
+  `/admin` → Appointments (see `notifyIfFullyConfirmed` in
+  `src/pages/admin/AppointmentsTab.tsx`). It does **not** fire at booking
+  time — a patient only gets "your appointment is confirmed" once it
+  actually is.
+
+Setup (both functions share the same Resend account/key):
 
 1. Create a free account at [resend.com](https://resend.com) and grab an API key
    (**API Keys** in their dashboard).
@@ -63,8 +77,13 @@ step. Skip it if you don't need that yet.
    supabase login
    supabase link --project-ref your-project-ref   (find this in your project's Settings → General)
    supabase functions deploy send-confirmation
+   supabase functions deploy notify-new-booking
    supabase secrets set RESEND_API_KEY=re_your_key_here
+   supabase secrets set ADMIN_NOTIFICATION_EMAIL=care@brdhospital.com
    ```
+   (`ADMIN_NOTIFICATION_EMAIL` defaults to `care@brdhospital.com` if you skip
+   setting it — override it if staff should be notified at a different
+   inbox.)
 3. By default, emails send from `onboarding@resend.dev` (works immediately,
    but looks like a test address). To send from your own domain, verify a
    domain in Resend, then also run:
@@ -72,8 +91,9 @@ step. Skip it if you don't need that yet.
    supabase secrets set CONFIRMATION_FROM_EMAIL="BRD Hospital <appointments@yourdomain.com>"
    ```
 
-If this step is skipped or fails, bookings still save normally — the email is
-best-effort and never blocks a booking.
+If either function is skipped, not deployed, or fails, bookings still save
+normally and the admin dashboard still works — each email call is
+fire-and-forget and swallows its own errors.
 
 ## Troubleshooting
 
@@ -109,5 +129,7 @@ networks can't route to, so direct connections there may hang or fail with
 - **Admin dashboard** (`/admin`, behind `/admin/login`): lists every
   appointment, filterable by status, with a dropdown to mark each one
   pending/confirmed/cancelled/completed.
-- **Email confirmations**: sent via a Supabase Edge Function + Resend, once
-  you complete step 5 above.
+- **Email notifications**: two Supabase Edge Functions + Resend, once you
+  complete step 5 above — staff get notified the moment a patient books
+  (`notify-new-booking`), and the patient gets their confirmation email once
+  staff mark the appointment Confirmed + Paid (`send-confirmation`).

@@ -13,7 +13,7 @@ import { emptyBookingState, type BookingState, type PatientDetails } from "./typ
 import { appointmentServices, unavailableSlotsByDate } from "../../data/booking";
 import { doctors } from "../../data/doctors";
 import { createAppointment, getBookedSlots, BookingError } from "../../lib/api/appointments";
-import { sendConfirmationEmail } from "../../lib/api/notifications";
+import { notifyNewBooking } from "../../lib/api/notifications";
 import { getActiveReasonOptions, type ReasonOption } from "../../lib/api/reasonOptions";
 import { getSettings, type AppSettings } from "../../lib/api/settings";
 
@@ -133,13 +133,15 @@ export function BookingWizard() {
           reason: state.patient.reason.trim(),
           paymentAmount: settings?.bookingFeeAmount ?? 0,
         });
-        sendConfirmationEmail({
-          toEmail: state.patient.email.trim(),
-          toName: state.patient.fullName.trim(),
+        notifyNewBooking({
+          patientName: state.patient.fullName.trim(),
+          patientPhone: state.patient.phone.trim(),
+          patientEmail: state.patient.email.trim(),
           doctorName: selectedDoctor.name,
           serviceName: selectedService.name,
           date: state.date,
           time: state.time,
+          reason: [...state.patient.reasonTags, state.patient.reason.trim()].filter(Boolean).join(", "),
         });
         setStep(3);
       } catch (err) {

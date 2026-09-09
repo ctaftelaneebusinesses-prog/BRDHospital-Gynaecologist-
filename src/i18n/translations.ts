@@ -187,6 +187,25 @@ export const translations = {
         "Recovery matters just as much as delivery. We support your healing, your feeding journey, and your emotional wellbeing as you settle into motherhood.",
       postnatalCare: ["Postpartum recovery checkups", "Lactation & feeding support", "Emotional wellness guidance"],
     },
+    doctorSpotlight: {
+      eyebrow: "Meet Your Doctor",
+      specializationsLabel: "Specializations",
+      sonologistLabel: "In-house Sonologist",
+      sonologistDescription: "Personally performs & reads every ultrasound",
+      qualificationsLabel: "Qualifications",
+      languagesLabel: "Languages",
+      bookConsultation: "Book a Consultation",
+      tapPhoto: "Tap the photo for another look ✨",
+      clinicalExperience: "Clinical Experience",
+      flipAria: "Click to see another photo of {name}",
+    },
+    doctorProfiles: {
+      "dr-haritha": {
+        title: "Obstetrician, Gynaecologist & Sonologist",
+        bio: "A graduate of Guntur Medical College, Dr. Haritha Mandava brings over a decade of experience guiding women through every stage of reproductive health — from routine wellness visits to high-risk pregnancies. As a qualified sonologist, she personally performs and reads ultrasound scans, so patients get clear answers from the same doctor they trust for their care.",
+        specializations: ["Obstetrics & Gynaecology", "High-Risk Pregnancy Care", "Ultrasound & Sonology"],
+      },
+    },
     language: {
       label: "Language",
     },
@@ -368,6 +387,25 @@ export const translations = {
       postnatalDescription:
         "रिकवरी उतनी ही मायने रखती है जितनी डिलीवरी। जैसे ही आप मातृत्व में बसती हैं, हम आपकी रिकवरी, आपकी फीडिंग यात्रा और आपकी भावनात्मक सेहत में साथ देते हैं।",
       postnatalCare: ["प्रसवोत्तर रिकवरी जांच", "स्तनपान और फीडिंग सहायता", "भावनात्मक स्वास्थ्य मार्गदर्शन"],
+    },
+    doctorSpotlight: {
+      eyebrow: "अपने डॉक्टर से मिलें",
+      specializationsLabel: "विशेषज्ञता",
+      sonologistLabel: "इन-हाउस सोनोलॉजिस्ट",
+      sonologistDescription: "हर अल्ट्रासाउंड खुद करती हैं और पढ़ती हैं",
+      qualificationsLabel: "योग्यताएं",
+      languagesLabel: "भाषाएं",
+      bookConsultation: "परामर्श बुक करें",
+      tapPhoto: "दूसरी तस्वीर देखने के लिए फोटो पर टैप करें ✨",
+      clinicalExperience: "नैदानिक अनुभव",
+      flipAria: "{name} की एक और तस्वीर देखने के लिए क्लिक करें",
+    },
+    doctorProfiles: {
+      "dr-haritha": {
+        title: "प्रसूति एवं स्त्री रोग विशेषज्ञ एवं सोनोलॉजिस्ट",
+        bio: "गुंटूर मेडिकल कॉलेज की स्नातक, डॉ. हरिता मंडावा को प्रजनन स्वास्थ्य के हर चरण में महिलाओं का मार्गदर्शन करने का एक दशक से अधिक का अनुभव है — नियमित स्वास्थ्य जांच से लेकर उच्च जोखिम वाली गर्भावस्था तक। एक योग्य सोनोलॉजिस्ट के रूप में, वे खुद अल्ट्रासाउंड स्कैन करती हैं और पढ़ती हैं, ताकि मरीज़ों को उसी डॉक्टर से स्पष्ट जवाब मिलें जिस पर वे अपनी देखभाल के लिए भरोसा करते हैं।",
+        specializations: ["प्रसूति एवं स्त्री रोग", "उच्च जोखिम गर्भावस्था देखभाल", "अल्ट्रासाउंड एवं सोनोलॉजी"],
+      },
     },
     language: {
       label: "भाषा",
@@ -551,6 +589,25 @@ export const translations = {
         "ప్రసవం ఎంత ముఖ్యమో కోలుకోవడం కూడా అంతే ముఖ్యం. మీరు మాతృత్వంలో స్థిరపడుతున్న కొద్దీ మేము మీ కోలుకోవడం, మీ ఫీడింగ్ ప్రయాణం మరియు మీ భావోద్వేగ శ్రేయస్సుకు మద్దతు ఇస్తాము.",
       postnatalCare: ["ప్రసవానంతర కోలుకునే తనిఖీలు", "పాలివ్వడం & ఫీడింగ్ మద్దతు", "భావోద్వేగ ఆరోగ్య మార్గదర్శకత్వం"],
     },
+    doctorSpotlight: {
+      eyebrow: "మీ వైద్యురాలిని కలవండి",
+      specializationsLabel: "ప్రత్యేకతలు",
+      sonologistLabel: "ఇన్-హౌస్ సోనాలజిస్ట్",
+      sonologistDescription: "ప్రతి అల్ట్రాసౌండ్‌ను స్వయంగా చేసి చదువుతారు",
+      qualificationsLabel: "అర్హతలు",
+      languagesLabel: "భాషలు",
+      bookConsultation: "సంప్రదింపు బుక్ చేయండి",
+      tapPhoto: "మరో ఫోటో చూడటానికి తాకండి ✨",
+      clinicalExperience: "క్లినికల్ అనుభవం",
+      flipAria: "{name} యొక్క మరో ఫోటో చూడటానికి క్లిక్ చేయండి",
+    },
+    doctorProfiles: {
+      "dr-haritha": {
+        title: "ప్రసూతి, స్త్రీ వైద్య నిపుణురాలు & సోనాలజిస్ట్",
+        bio: "గుంటూరు వైద్య కళాశాల నుండి పట్టభద్రురాలైన డాక్టర్ హరిత మందవ, సాధారణ ఆరోగ్య తనిఖీల నుండి అధిక-ప్రమాద గర్భధారణల వరకు, పునరుత్పత్తి ఆరోగ్యంలోని ప్రతి దశలోనూ మహిళలకు మార్గనిర్దేశం చేయడంలో దశాబ్దానికి పైగా అనుభవం కలిగి ఉన్నారు. అర్హత కలిగిన సోనాలజిస్ట్‌గా, ఆమె స్వయంగా అల్ట్రాసౌండ్ స్కాన్‌లను నిర్వహించి చదువుతారు, తద్వారా రోగులు తాము నమ్మే అదే వైద్యురాలి నుండి స్పష్టమైన సమాధానాలు పొందుతారు.",
+        specializations: ["ప్రసూతి & స్త్రీ వైద్యం", "అధిక-ప్రమాద గర్భధారణ సంరక్షణ", "అల్ట్రాసౌండ్ & సోనాలజీ"],
+      },
+    },
     language: {
       label: "భాష",
     },
@@ -733,6 +790,25 @@ export const translations = {
         "பிரசவம் எவ்வளவு முக்கியமோ, குணமடைவதும் அவ்வளவு முக்கியம். நீங்கள் தாய்மையில் குடியேறும்போது உங்கள் குணமடைதல், உணவளிக்கும் பயணம் மற்றும் உணர்ச்சி நலனுக்கு நாங்கள் ஆதரவளிக்கிறோம்.",
       postnatalCare: ["பிரசவத்திற்குப் பிந்தைய குணமடைதல் பரிசோதனைகள்", "தாய்ப்பால் & உணவளிப்பு ஆதரவு", "உணர்ச்சி நல வழிகாட்டுதல்"],
     },
+    doctorSpotlight: {
+      eyebrow: "உங்கள் மருத்துவரை சந்திக்கவும்",
+      specializationsLabel: "நிபுணத்துவங்கள்",
+      sonologistLabel: "இன்-ஹவுஸ் சோனாலஜிஸ்ட்",
+      sonologistDescription: "ஒவ்வொரு அல்ட்ராசவுண்டையும் நேரடியாக செய்து படிக்கிறார்",
+      qualificationsLabel: "தகுதிகள்",
+      languagesLabel: "மொழிகள்",
+      bookConsultation: "ஆலோசனையை பதிவு செய்யவும்",
+      tapPhoto: "மற்றொரு புகைப்படத்தைப் பார்க்க தட்டவும் ✨",
+      clinicalExperience: "மருத்துவ அனுபவம்",
+      flipAria: "{name} இன் மற்றொரு புகைப்படத்தைப் பார்க்க கிளிக் செய்யவும்",
+    },
+    doctorProfiles: {
+      "dr-haritha": {
+        title: "மகப்பேறு, மகளிர் மருத்துவ நிபுணர் & சோனாலஜிஸ்ட்",
+        bio: "குண்டூர் மருத்துவக் கல்லூரியில் பட்டம் பெற்ற டாக்டர் அரிதா மண்டாவா, வழக்கமான நல பரிசோதனைகள் முதல் அதிக ஆபத்துள்ள கர்ப்பங்கள் வரை, இனப்பெருக்க ஆரோக்கியத்தின் ஒவ்வொரு கட்டத்திலும் பெண்களுக்கு வழிகாட்டுவதில் ஒரு தசாப்தத்திற்கும் மேலான அனுபவத்தைக் கொண்டுள்ளார். தகுதி வாய்ந்த சோனாலஜிஸ்டாக, அவர் நேரடியாக அல்ட்ராசவுண்ட் ஸ்கேன்களைச் செய்து படிக்கிறார், இதனால் நோயாளிகள் தாங்கள் நம்பும் அதே மருத்துவரிடமிருந்து தெளிவான பதில்களைப் பெறுகிறார்கள்.",
+        specializations: ["மகப்பேறு & மகளிர் மருத்துவம்", "அதிக ஆபத்து கர்ப்ப பராமரிப்பு", "அல்ட்ராசவுண்ட் & சோனாலஜி"],
+      },
+    },
     language: {
       label: "மொழி",
     },
@@ -914,6 +990,25 @@ export const translations = {
       postnatalDescription:
         "ಹೆರಿಗೆಯಷ್ಟೇ ಚೇತರಿಕೆಯೂ ಮುಖ್ಯ. ನೀವು ಮಾತೃತ್ವದಲ್ಲಿ ನೆಲೆಸುತ್ತಿದ್ದಂತೆ ನಿಮ್ಮ ಚೇತರಿಕೆ, ನಿಮ್ಮ ಆಹಾರ ಪಯಣ ಮತ್ತು ನಿಮ್ಮ ಭಾವನಾತ್ಮಕ ಯೋಗಕ್ಷೇಮಕ್ಕೆ ನಾವು ಬೆಂಬಲ ನೀಡುತ್ತೇವೆ.",
       postnatalCare: ["ಹೆರಿಗೆಯ ನಂತರದ ಚೇತರಿಕೆ ತಪಾಸಣೆ", "ಸ್ತನ್ಯಪಾನ & ಆಹಾರ ಬೆಂಬಲ", "ಭಾವನಾತ್ಮಕ ಆರೋಗ್ಯ ಮಾರ್ಗದರ್ಶನ"],
+    },
+    doctorSpotlight: {
+      eyebrow: "ನಿಮ್ಮ ವೈದ್ಯರನ್ನು ಭೇಟಿ ಮಾಡಿ",
+      specializationsLabel: "ವಿಶೇಷತೆಗಳು",
+      sonologistLabel: "ಇನ್-ಹೌಸ್ ಸೋನಾಲಜಿಸ್ಟ್",
+      sonologistDescription: "ಪ್ರತಿ ಅಲ್ಟ್ರಾಸೌಂಡ್ ಅನ್ನು ಸ್ವತಃ ಮಾಡಿ ಓದುತ್ತಾರೆ",
+      qualificationsLabel: "ಅರ್ಹತೆಗಳು",
+      languagesLabel: "ಭಾಷೆಗಳು",
+      bookConsultation: "ಸಮಾಲೋಚನೆ ಬುಕ್ ಮಾಡಿ",
+      tapPhoto: "ಇನ್ನೊಂದು ಫೋಟೋ ನೋಡಲು ಸ್ಪರ್ಶಿಸಿ ✨",
+      clinicalExperience: "ವೈದ್ಯಕೀಯ ಅನುಭವ",
+      flipAria: "{name} ಅವರ ಇನ್ನೊಂದು ಫೋಟೋ ನೋಡಲು ಕ್ಲಿಕ್ ಮಾಡಿ",
+    },
+    doctorProfiles: {
+      "dr-haritha": {
+        title: "ಪ್ರಸೂತಿ, ಸ್ತ್ರೀರೋಗ ತಜ್ಞೆ & ಸೋನಾಲಜಿಸ್ಟ್",
+        bio: "ಗುಂಟೂರು ವೈದ್ಯಕೀಯ ಕಾಲೇಜಿನ ಪದವೀಧರೆಯಾದ ಡಾ. ಹರಿತಾ ಮಂಡಾವ, ಸಾಮಾನ್ಯ ಆರೋಗ್ಯ ತಪಾಸಣೆಗಳಿಂದ ಹಿಡಿದು ಹೆಚ್ಚಿನ ಅಪಾಯದ ಗರ್ಭಧಾರಣೆಗಳವರೆಗೆ, ಸಂತಾನೋತ್ಪತ್ತಿ ಆರೋಗ್ಯದ ಪ್ರತಿ ಹಂತದಲ್ಲೂ ಮಹಿಳೆಯರಿಗೆ ಮಾರ್ಗದರ್ಶನ ನೀಡುವಲ್ಲಿ ಒಂದು ದಶಕಕ್ಕೂ ಹೆಚ್ಚಿನ ಅನುಭವವನ್ನು ಹೊಂದಿದ್ದಾರೆ. ಅರ್ಹ ಸೋನಾಲಜಿಸ್ಟ್ ಆಗಿ, ಅವರು ಸ್ವತಃ ಅಲ್ಟ್ರಾಸೌಂಡ್ ಸ್ಕ್ಯಾನ್‌ಗಳನ್ನು ನಿರ್ವಹಿಸಿ ಓದುತ್ತಾರೆ, ಇದರಿಂದ ರೋಗಿಗಳು ತಾವು ನಂಬುವ ಅದೇ ವೈದ್ಯರಿಂದ ಸ್ಪಷ್ಟ ಉತ್ತರಗಳನ್ನು ಪಡೆಯುತ್ತಾರೆ.",
+        specializations: ["ಪ್ರಸೂತಿ & ಸ್ತ್ರೀರೋಗ ಶಾಸ್ತ್ರ", "ಹೆಚ್ಚಿನ ಅಪಾಯದ ಗರ್ಭಧಾರಣೆ ಆರೈಕೆ", "ಅಲ್ಟ್ರಾಸೌಂಡ್ & ಸೋನಾಲಜಿ"],
+      },
     },
     language: {
       label: "ಭಾಷೆ",

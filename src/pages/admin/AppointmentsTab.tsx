@@ -4,12 +4,14 @@ import { useAdminData } from "../../context/AdminDataContext";
 import {
   updateAppointmentStatus,
   updatePaymentStatus,
+  type Appointment,
   type AppointmentStatus,
   type PaymentStatus,
 } from "../../lib/api/appointments";
 import { doctors } from "../../data/doctors";
 import { appointmentServices } from "../../data/booking";
 import { downloadCsv } from "../../lib/csvExport";
+import { sendConfirmationEmail } from "../../lib/api/notifications";
 
 const STATUS_FILTERS: (AppointmentStatus | "all")[] = [
   "all",
@@ -59,20 +61,35 @@ export function AppointmentsTab() {
     return c;
   }, [appointments]);
 
-  async function handleStatusChange(id: string, status: AppointmentStatus) {
-    setUpdatingId(id);
+  /** Fires the "your appointment is confirmed" email once status + payment are both good — never before. */
+  function notifyIfFullyConfirmed(appointment: Appointment, status: AppointmentStatus, paymentStatus: PaymentStatus) {
+    if (status !== "confirmed" || paymentStatus !== "paid") return;
+    sendConfirmationEmail({
+      toEmail: appointment.email,
+      toName: appointment.full_name,
+      doctorName: doctorName(appointment.doctor_id),
+      serviceName: serviceName(appointment.service_id),
+      date: new Date(appointment.appointment_date + "T00:00:00"),
+      time: appointment.appointment_time,
+    });
+  }
+
+  async function handleStatusChange(appointment: Appointment, status: AppointmentStatus) {
+    setUpdatingId(appointment.id);
     try {
-      await updateAppointmentStatus(id, status);
+      await updateAppointmentStatus(appointment.id, status);
+      notifyIfFullyConfirmed(appointment, status, appointment.payment_status);
       await refresh();
     } finally {
       setUpdatingId(null);
     }
   }
 
-  async function handlePaymentChange(id: string, status: PaymentStatus) {
-    setUpdatingId(id);
+  async function handlePaymentChange(appointment: Appointment, paymentStatus: PaymentStatus) {
+    setUpdatingId(appointment.id);
     try {
-      await updatePaymentStatus(id, status);
+      await updatePaymentStatus(appointment.id, paymentStatus);
+      notifyIfFullyConfirmed(appointment, appointment.status, paymentStatus);
       await refresh();
     } finally {
       setUpdatingId(null);
@@ -190,7 +207,7 @@ export function AppointmentsTab() {
                     <select
                       value={a.status}
                       disabled={updatingId === a.id}
-                      onChange={(e) => handleStatusChange(a.id, e.target.value as AppointmentStatus)}
+                      onChange={(e) => handleStatusChange(a, e.target.value as AppointmentStatus)}
                       className={`rounded-lg border-none px-2 py-1.5 text-xs font-medium capitalize outline-none disabled:opacity-50 ${STATUS_STYLES[a.status]}`}
                     >
                       <option value="pending">Pending</option>
@@ -204,7 +221,7 @@ export function AppointmentsTab() {
                     <select
                       value={a.payment_status}
                       disabled={updatingId === a.id}
-                      onChange={(e) => handlePaymentChange(a.id, e.target.value as PaymentStatus)}
+                      onChange={(e) => handlePaymentChange(a, e.target.value as PaymentStatus)}
                       className={`rounded-lg border-none px-2 py-1.5 text-xs font-medium capitalize outline-none disabled:opacity-50 ${PAYMENT_STYLES[a.payment_status]}`}
                     >
                       <option value="pending">Pending</option>

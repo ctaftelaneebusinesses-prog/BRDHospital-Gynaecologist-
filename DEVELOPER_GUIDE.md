@@ -80,10 +80,12 @@ src/
     csvExport.ts             # admin "Download Excel" (CSV) helper
     api/
       appointments.ts        # createAppointment, getBookedSlots, listAppointments, updateAppointmentStatus
-      notifications.ts       # sendConfirmationEmail (calls the Supabase Edge Function)
+      notifications.ts       # notifyNewBooking (fires at booking time) + sendConfirmationEmail (fires once staff confirm status + payment)
 supabase/
   schema.sql                 # full DB schema + row-level security + seed data — run this once, see BACKEND_SETUP.md
-  functions/send-confirmation/  # Edge Function that emails a booking confirmation via Resend
+  functions/
+    notify-new-booking/         # emails staff the moment a patient books
+    send-confirmation/          # emails the patient once staff confirm status + payment
 scripts/
   apply-schema.mjs           # applies schema.sql directly via psql (alternative to pasting into the SQL Editor)
   reload-schema-cache.mjs    # forces PostgREST to pick up a schema change (see BACKEND_SETUP.md troubleshooting)
