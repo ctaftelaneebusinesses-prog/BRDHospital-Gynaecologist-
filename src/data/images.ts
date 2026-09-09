@@ -56,7 +56,7 @@ export const photos = {
 
   collageParentsWindow: "photo-1774041259458-1b5be7f70704",
   collageFatherNewborn: babyFeetInParentsHands,
-  collageBellyHands: pregnantMotherAtHome,
+  collageBellyHands: "photo-1538678867871-8a43e7487746",
   collageMotherBabySepia: motherHoldingNewborn,
   collageFamilySofa: newbornPortrait,
 

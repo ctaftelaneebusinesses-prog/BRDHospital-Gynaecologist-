@@ -22,7 +22,7 @@ export function EmotionalCollage() {
           <div className="relative col-span-2 row-span-3 overflow-hidden rounded-[2rem] shadow-card">
             <Img
               slug={photos.collageBellyHands}
-              alt="Expectant mother gently cradling her belly at home"
+              alt="Expectant mother smiling gently at her belly in golden evening light"
               width={400}
               className="h-full w-full object-cover"
             />
