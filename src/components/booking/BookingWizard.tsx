@@ -10,6 +10,8 @@ import { StepConfirmation } from "./StepConfirmation";
 import { emptyBookingState, STEP_LABELS, type BookingState, type PatientDetails } from "./types";
 import { appointmentServices, unavailableSlotsByDate } from "../../data/booking";
 import { doctors } from "../../data/doctors";
+import { createAppointment, getBookedSlots, BookingError } from "../../lib/api/appointments";
+import { sendConfirmationEmail } from "../../lib/api/notifications";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^[+]?[\d\s()-]{7,}$/;
@@ -22,13 +24,31 @@ export function BookingWizard() {
   const [step, setStep] = useState(0);
   const [state, setState] = useState<BookingState>(emptyBookingState);
   const [errors, setErrors] = useState<Partial<Record<keyof PatientDetails, string>>>({});
+  const [serverBookedSlots, setServerBookedSlots] = useState<string[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isOpen) return;
     setState(emptyBookingState);
     setErrors({});
+    setSubmitError(null);
     setStep(0);
   }, [isOpen]);
+
+  useEffect(() => {
+    if (!state.date) {
+      setServerBookedSlots([]);
+      return;
+    }
+    let cancelled = false;
+    getBookedSlots(selectedDoctor.id, state.date).then((slots) => {
+      if (!cancelled) setServerBookedSlots(slots);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [state.date]);
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
@@ -50,7 +70,7 @@ export function BookingWizard() {
   const isLastStep = step === 3;
   const isConfirmation = step === 3;
   const dateKey = state.date ? state.date.toISOString().split("T")[0] : "";
-  const unavailable = unavailableSlotsByDate[dateKey] ?? [];
+  const unavailable = Array.from(new Set([...(unavailableSlotsByDate[dateKey] ?? []), ...serverBookedSlots]));
 
   function validateStep(current: number): boolean {
     if (current === 0) return Boolean(state.date);
@@ -75,8 +95,45 @@ export function BookingWizard() {
     return Object.keys(nextErrors).length === 0;
   }
 
-  function handleNext() {
+  async function handleNext() {
     if (!validateStep(step)) return;
+
+    if (step === 2) {
+      if (!state.date || !state.time) return;
+      setSubmitError(null);
+      setSubmitting(true);
+      try {
+        await createAppointment({
+          doctorId: selectedDoctor.id,
+          serviceId: selectedService.id,
+          date: state.date,
+          time: state.time,
+          fullName: state.patient.fullName.trim(),
+          phone: state.patient.phone.trim(),
+          email: state.patient.email.trim(),
+          dob: state.patient.dob,
+          reason: state.patient.reason.trim(),
+          message: state.patient.message.trim(),
+        });
+        sendConfirmationEmail({
+          toEmail: state.patient.email.trim(),
+          toName: state.patient.fullName.trim(),
+          doctorName: selectedDoctor.name,
+          serviceName: selectedService.name,
+          date: state.date,
+          time: state.time,
+        });
+        setStep(3);
+      } catch (err) {
+        setSubmitError(
+          err instanceof BookingError ? err.message : "Something went wrong. Please try again.",
+        );
+      } finally {
+        setSubmitting(false);
+      }
+      return;
+    }
+
     setStep((s) => Math.min(s + 1, 3));
   }
 
@@ -194,13 +251,26 @@ export function BookingWizard() {
             </div>
 
             {!isConfirmation && (
-              <div className="flex shrink-0 items-center justify-between border-t border-plum/8 px-5 py-4 sm:px-8">
-                <Button variant="ghost" onClick={handleBack} disabled={step === 0} icon={<ArrowLeft size={16} />} iconPosition="left">
-                  Back
-                </Button>
-                <Button onClick={handleNext} disabled={!canProceed} icon={isLastStep ? undefined : <ArrowRight size={16} />}>
-                  {step === 2 ? "Confirm Appointment" : "Continue"}
-                </Button>
+              <div className="shrink-0 border-t border-plum/8 px-5 py-4 sm:px-8">
+                {submitError && <p className="mb-3 text-sm text-rose-600">{submitError}</p>}
+                <div className="flex items-center justify-between">
+                  <Button
+                    variant="ghost"
+                    onClick={handleBack}
+                    disabled={step === 0 || submitting}
+                    icon={<ArrowLeft size={16} />}
+                    iconPosition="left"
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    onClick={handleNext}
+                    disabled={!canProceed || submitting}
+                    icon={isLastStep ? undefined : <ArrowRight size={16} />}
+                  >
+                    {step === 2 ? (submitting ? "Booking…" : "Confirm Appointment") : "Continue"}
+                  </Button>
+                </div>
               </div>
             )}
           </motion.div>

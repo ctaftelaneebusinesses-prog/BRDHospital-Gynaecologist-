@@ -23,7 +23,7 @@ export const doctors: Doctor[] = [
     specializations: ["Gynecological Care", "Reproductive Health", "Gynecological Surgery"],
     experienceYears: 14,
     qualifications: ["MBBS", "MS (Obstetrics & Gynecology)", "FICOG"],
-    languages: ["English", "Hindi", "Bengali"],
+    languages: ["English", "Telugu", "Tamil", "Hindi", "Kannada"],
     availability: "Mon – Sat, 9:00 AM – 6:00 PM",
     rating: 4.9,
     reviewCount: 612,

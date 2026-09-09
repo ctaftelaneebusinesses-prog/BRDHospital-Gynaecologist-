@@ -5,7 +5,7 @@ import { photos } from "../../data/images";
 
 export function EmotionalCollage() {
   return (
-    <section id="about" className="relative py-24 sm:py-32">
+    <section id="about" className="relative pb-24 pt-8 sm:pb-32 sm:pt-10">
       <Container className="grid gap-14 lg:grid-cols-2 lg:items-center lg:gap-20">
         <Reveal
           className="grid h-[520px] grid-cols-6 grid-rows-6 gap-3 sm:h-[600px] sm:gap-4 lg:h-[640px]"

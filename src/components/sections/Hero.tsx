@@ -15,7 +15,7 @@ export function Hero() {
   }
 
   return (
-    <section id="home" className="relative overflow-hidden pb-20 pt-32 sm:pb-28 sm:pt-40">
+    <section id="home" className="relative overflow-hidden pb-8 pt-32 sm:pb-10 sm:pt-40">
       <div className="pointer-events-none absolute inset-0 bg-noise opacity-[0.35]" />
       <div className="pointer-events-none absolute -left-32 top-10 h-96 w-96 rounded-full bg-rose-200/50 blur-3xl" />
       <div className="pointer-events-none absolute -right-24 top-1/3 h-80 w-80 rounded-full bg-sage-200/40 blur-3xl" />
@@ -82,6 +82,22 @@ export function Hero() {
               </li>
             ))}
           </motion.ul>
+
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-10 grid max-w-md grid-cols-2 gap-4"
+          >
+            <div className="rounded-2xl bg-white/70 p-5 shadow-[0_4px_20px_-8px_rgba(69,38,46,0.1)] ring-1 ring-plum/5">
+              <p className="font-serif text-3xl font-medium text-rose-600">15+</p>
+              <p className="mt-1 text-sm font-medium text-ink/60">Healthcare Services</p>
+            </div>
+            <div className="rounded-2xl bg-white/70 p-5 shadow-[0_4px_20px_-8px_rgba(69,38,46,0.1)] ring-1 ring-plum/5">
+              <p className="font-serif text-3xl font-medium text-sage-600">98%</p>
+              <p className="mt-1 text-sm font-medium text-ink/60">Patient Satisfaction</p>
+            </div>
+          </motion.div>
         </div>
 
         <motion.div

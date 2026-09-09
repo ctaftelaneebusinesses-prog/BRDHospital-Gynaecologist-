@@ -3,7 +3,7 @@ import { AnimatePresence, motion, useAnimation } from "framer-motion";
 import { X } from "lucide-react";
 import motherDefault from "../assets/backgorundremovedmom.png";
 import wombIllustration from "../assets/wombIllustration.webp";
-import babyLaughSound from "../assets/baby-laughing.mp3";
+import babyLaughSound from "../assets/BabyLau.mp3";
 import { playExclusiveSound } from "../lib/sound";
 
 /**

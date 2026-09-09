@@ -1,31 +1,25 @@
-import { BookingProvider } from "./context/BookingContext";
-import { Navbar } from "./components/Navbar";
-import { Footer } from "./components/Footer";
-import { BookingWizard } from "./components/booking/BookingWizard";
-import { Hero } from "./components/sections/Hero";
-import { EmotionalCollage } from "./components/sections/EmotionalCollage";
-import { PregnancyJourney } from "./components/sections/PregnancyJourney";
-import { MotherBabyStory } from "./components/sections/MotherBabyStory";
-import { BabyEmotions } from "./components/sections/BabyEmotions";
-import { Stats } from "./components/sections/Stats";
-import { FinalCta } from "./components/sections/FinalCta";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { MarketingSite } from "./pages/MarketingSite";
+import { AdminLogin } from "./pages/admin/AdminLogin";
+import { AdminDashboard } from "./pages/admin/AdminDashboard";
+import { ProtectedRoute } from "./components/admin/ProtectedRoute";
 
 function App() {
   return (
-    <BookingProvider>
-      <Navbar />
-      <main>
-        <Hero />
-        <EmotionalCollage />
-        <PregnancyJourney />
-        <MotherBabyStory />
-        <BabyEmotions />
-        <Stats />
-        <FinalCta />
-      </main>
-      <Footer />
-      <BookingWizard />
-    </BookingProvider>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<MarketingSite />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
