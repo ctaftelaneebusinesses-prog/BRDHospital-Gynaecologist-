@@ -20,8 +20,8 @@ export function Hero() {
       <div className="pointer-events-none absolute -left-32 top-10 h-96 w-96 rounded-full bg-rose-200/50 blur-3xl" />
       <div className="pointer-events-none absolute -right-24 top-1/3 h-80 w-80 rounded-full bg-sage-200/40 blur-3xl" />
 
-      <Container className="relative grid items-start gap-16 lg:grid-cols-2 lg:gap-10">
-        <div className="lg:pt-6">
+      <Container className="relative grid items-center gap-16 lg:grid-cols-2 lg:gap-10">
+        <div>
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
@@ -88,7 +88,7 @@ export function Hero() {
           initial={{ opacity: 0, scale: 0.94 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mx-auto w-full max-w-md lg:max-w-none"
+          className="relative mx-auto w-full max-w-sm lg:max-w-sm"
         >
           <div className="absolute inset-0 -z-10 rounded-[3rem] bg-gradient-to-br from-rose-100/70 via-cream-dark/40 to-sage-100/60 blur-2xl" />
 

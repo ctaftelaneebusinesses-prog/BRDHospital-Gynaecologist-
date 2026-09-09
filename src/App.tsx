@@ -5,7 +5,6 @@ import { BookingWizard } from "./components/booking/BookingWizard";
 import { Hero } from "./components/sections/Hero";
 import { EmotionalCollage } from "./components/sections/EmotionalCollage";
 import { PregnancyJourney } from "./components/sections/PregnancyJourney";
-import { WhyChooseUs } from "./components/sections/WhyChooseUs";
 import { MotherBabyStory } from "./components/sections/MotherBabyStory";
 import { BabyEmotions } from "./components/sections/BabyEmotions";
 import { Stats } from "./components/sections/Stats";
@@ -19,7 +18,6 @@ function App() {
         <Hero />
         <EmotionalCollage />
         <PregnancyJourney />
-        <WhyChooseUs />
         <MotherBabyStory />
         <BabyEmotions />
         <Stats />
