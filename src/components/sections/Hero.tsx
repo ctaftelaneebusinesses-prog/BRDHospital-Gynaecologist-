@@ -89,11 +89,11 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
             className="mt-10 grid max-w-md grid-cols-2 gap-4"
           >
-            <div className="rounded-2xl bg-white/70 p-5 shadow-[0_4px_20px_-8px_rgba(69,38,46,0.1)] ring-1 ring-plum/5">
+            <div className="rounded-2xl bg-white/70 p-5 shadow-[0_4px_20px_-8px_rgba(74,15,31,0.1)] ring-1 ring-plum/5">
               <p className="font-serif text-3xl font-medium text-rose-600">15+</p>
               <p className="mt-1 text-sm font-medium text-ink/60">{t("hero.statService")}</p>
             </div>
-            <div className="rounded-2xl bg-white/70 p-5 shadow-[0_4px_20px_-8px_rgba(69,38,46,0.1)] ring-1 ring-plum/5">
+            <div className="rounded-2xl bg-white/70 p-5 shadow-[0_4px_20px_-8px_rgba(74,15,31,0.1)] ring-1 ring-plum/5">
               <p className="font-serif text-3xl font-medium text-sage-600">98%</p>
               <p className="mt-1 text-sm font-medium text-ink/60">{t("hero.statSatisfaction")}</p>
             </div>

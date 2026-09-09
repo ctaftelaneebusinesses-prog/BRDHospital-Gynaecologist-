@@ -122,7 +122,7 @@ export function WombRevealVisual({ className = "" }: { className?: string }) {
                 <img
                   src={wombIllustration}
                   alt="Illustrated view of the baby inside the womb, with umbilical cord and placenta"
-                  className="h-full w-full object-contain drop-shadow-[0_8px_24px_rgba(184,103,122,0.35)]"
+                  className="h-full w-full object-contain drop-shadow-[0_8px_24px_rgba(233,75,130,0.35)]"
                   loading="eager"
                 />
               </motion.span>

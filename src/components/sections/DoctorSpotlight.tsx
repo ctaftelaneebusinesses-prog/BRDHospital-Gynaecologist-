@@ -117,7 +117,7 @@ export function DoctorSpotlight() {
           </Reveal>
 
           <Reveal delay={0.1} className="mt-8 grid gap-4 sm:grid-cols-2">
-            <div className="flex items-start gap-3 rounded-2xl bg-white/70 p-4 shadow-[0_4px_20px_-8px_rgba(69,38,46,0.1)] ring-1 ring-plum/5">
+            <div className="flex items-start gap-3 rounded-2xl bg-white/70 p-4 shadow-[0_4px_20px_-8px_rgba(74,15,31,0.1)] ring-1 ring-plum/5">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sage-50 text-sage-600">
                 <Stethoscope size={18} />
               </span>
@@ -127,7 +127,7 @@ export function DoctorSpotlight() {
               </div>
             </div>
 
-            <div className="flex items-start gap-3 rounded-2xl bg-white/70 p-4 shadow-[0_4px_20px_-8px_rgba(69,38,46,0.1)] ring-1 ring-plum/5">
+            <div className="flex items-start gap-3 rounded-2xl bg-white/70 p-4 shadow-[0_4px_20px_-8px_rgba(74,15,31,0.1)] ring-1 ring-plum/5">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-rose-600">
                 <ScanEye size={18} />
               </span>
@@ -137,7 +137,7 @@ export function DoctorSpotlight() {
               </div>
             </div>
 
-            <div className="flex items-start gap-3 rounded-2xl bg-white/70 p-4 shadow-[0_4px_20px_-8px_rgba(69,38,46,0.1)] ring-1 ring-plum/5">
+            <div className="flex items-start gap-3 rounded-2xl bg-white/70 p-4 shadow-[0_4px_20px_-8px_rgba(74,15,31,0.1)] ring-1 ring-plum/5">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gold-300/30 text-[#8a6a1f]">
                 <GraduationCap size={18} />
               </span>
@@ -147,7 +147,7 @@ export function DoctorSpotlight() {
               </div>
             </div>
 
-            <div className="flex items-start gap-3 rounded-2xl bg-white/70 p-4 shadow-[0_4px_20px_-8px_rgba(69,38,46,0.1)] ring-1 ring-plum/5">
+            <div className="flex items-start gap-3 rounded-2xl bg-white/70 p-4 shadow-[0_4px_20px_-8px_rgba(74,15,31,0.1)] ring-1 ring-plum/5">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-plum/8 text-plum">
                 <Languages size={18} />
               </span>

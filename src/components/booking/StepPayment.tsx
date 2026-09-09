@@ -15,7 +15,7 @@ export function StepPayment({ settings }: StepPaymentProps) {
       settings.payeeName,
     )}&am=${settings.bookingFeeAmount}&cu=INR&tn=${encodeURIComponent("Appointment booking fee")}`;
 
-    QRCode.toDataURL(upiUri, { width: 240, margin: 1, color: { dark: "#45262e", light: "#ffffff" } })
+    QRCode.toDataURL(upiUri, { width: 240, margin: 1, color: { dark: "#4a0f1f", light: "#ffffff" } })
       .then(setQrDataUrl)
       .catch(() => setQrDataUrl(null));
   }, [settings]);

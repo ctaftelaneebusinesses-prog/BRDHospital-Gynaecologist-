@@ -4,6 +4,7 @@ import { Logo } from "./Logo";
 import { FacebookIcon, InstagramIcon, TwitterIcon } from "./SocialIcons";
 import { useBooking } from "../context/BookingContext";
 import { useLanguage } from "../context/LanguageContext";
+import craftlaneeLogo from "../assets/craftlanee-logo-mark-white.png";
 
 const socials = [
   { icon: FacebookIcon, label: "Facebook" },
@@ -124,12 +125,21 @@ export function Footer() {
 
         <div className="flex flex-col items-center justify-between gap-4 border-t border-cream/10 py-7 text-xs text-cream/50 sm:flex-row">
           <p>&copy; {new Date().getFullYear()} BRDHospital. {t("footer.rights")}</p>
-          <div className="flex gap-6">
+          <div className="flex flex-wrap items-center justify-center gap-6">
             <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-rose-300">
               {t("footer.privacyPolicy")}
             </a>
             <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-rose-300">
               {t("footer.terms")}
+            </a>
+            <a
+              href="https://craftlanee.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-cream/40 transition-colors hover:text-cream/70"
+            >
+              Powered by
+              <img src={craftlaneeLogo} alt="Craftlanee" className="h-4 w-auto" />
             </a>
           </div>
         </div>

@@ -7,6 +7,7 @@ import { LanguageSwitcher } from "./LanguageSwitcher";
 import { useBooking } from "../context/BookingContext";
 import { useLanguage } from "../context/LanguageContext";
 import { Logo } from "./Logo";
+import craftlaneeLogo from "../assets/craftlanee-logo-mark.png";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -52,7 +53,7 @@ export function Navbar() {
         <div
           className={`flex items-center justify-between rounded-full border transition-all duration-300 ${
             scrolled
-              ? "border-plum/10 bg-cream/90 px-4 py-2 shadow-[0_8px_30px_-12px_rgba(69,38,46,0.25)] backdrop-blur-xl"
+              ? "border-plum/10 bg-cream/90 px-4 py-2 shadow-[0_8px_30px_-12px_rgba(74,15,31,0.25)] backdrop-blur-xl"
               : "border-transparent bg-cream/40 px-4 py-2.5 backdrop-blur-md"
           }`}
         >
@@ -138,6 +139,16 @@ export function Navbar() {
               >
                 {t("nav.bookAppointment")}
               </Button>
+
+              <a
+                href="https://craftlanee.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 flex items-center justify-center gap-1.5 border-t border-plum/8 pt-3 text-xs text-ink/40 transition-colors hover:text-ink/70"
+              >
+                Powered by
+                <img src={craftlaneeLogo} alt="Craftlanee" className="h-4 w-auto" />
+              </a>
             </nav>
           </motion.div>
         )}

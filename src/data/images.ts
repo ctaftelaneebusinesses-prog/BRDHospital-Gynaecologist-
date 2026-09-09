@@ -19,6 +19,7 @@ import babyGigglingWithMom from "../assets/gigglingimage.webp";
 import babyCryingPortrait from "../assets/newcry.jpg";
 import doctorHarithaHeadshot from "../assets/doctor-haritha-headshot.png";
 import doctorHarithaAlt from "../assets/doctor-haritha-headshot-alt.png";
+import babyCooingPortrait from "../assets/cooing image.jpg";
 
 const BASE = "https://images.unsplash.com/";
 
@@ -97,7 +98,7 @@ export const photos = {
 
   babyCrying: babyCryingPortrait,
   babyLaughing: babyGigglingWithMom,
-  babyTalking: "photo-1607218117995-6256670c21e6",
+  babyTalking: babyCooingPortrait,
 } as const;
 
 export type PhotoKey = keyof typeof photos;
