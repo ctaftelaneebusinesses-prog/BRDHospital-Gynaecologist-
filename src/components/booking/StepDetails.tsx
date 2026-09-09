@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from "react";
+import { Check, ChevronDown } from "lucide-react";
 import type { PatientDetails } from "./types";
 import type { ReasonOption } from "../../lib/api/reasonOptions";
 import { VoiceDictationButton } from "./VoiceDictationButton";
@@ -18,6 +20,16 @@ const labelClass = "mb-1.5 block text-xs font-semibold uppercase tracking-[0.06e
 
 export function StepDetails({ patient, errors, reasonOptions, onChange, onToggleReasonTag }: StepDetailsProps) {
   const { t } = useLanguage();
+  const [reasonOpen, setReasonOpen] = useState(false);
+  const reasonRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function onClickOutside(e: MouseEvent) {
+      if (reasonRef.current && !reasonRef.current.contains(e.target as Node)) setReasonOpen(false);
+    }
+    document.addEventListener("mousedown", onClickOutside);
+    return () => document.removeEventListener("mousedown", onClickOutside);
+  }, []);
 
   return (
     <div className="rounded-[1.75rem] bg-white p-5 shadow-card ring-1 ring-plum/5 sm:p-7">
@@ -73,25 +85,50 @@ export function StepDetails({ patient, errors, reasonOptions, onChange, onToggle
         <div className="sm:col-span-2">
           <label className={labelClass}>{t("stepDetails.reason")}</label>
 
-          <div className="flex flex-wrap gap-2">
-            {reasonOptions.map((option) => {
-              const selected = patient.reasonTags.includes(option.label);
-              return (
-                <button
-                  key={option.id}
-                  type="button"
-                  onClick={() => onToggleReasonTag(option.label)}
-                  aria-pressed={selected}
-                  className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors ${
-                    selected
-                      ? "border-rose-500 bg-rose-500 text-cream"
-                      : "border-plum/15 bg-white text-ink/65 hover:border-rose-300 hover:bg-rose-50"
-                  }`}
-                >
-                  {option.label}
-                </button>
-              );
-            })}
+          <div className="relative" ref={reasonRef}>
+            <button
+              type="button"
+              onClick={() => setReasonOpen((v) => !v)}
+              aria-expanded={reasonOpen}
+              className={`${inputClass} flex items-center justify-between gap-3 text-left ${errors.reason ? errorClass : ""}`}
+            >
+              <span className={`truncate ${patient.reasonTags.length ? "text-ink" : "text-ink/35"}`}>
+                {patient.reasonTags.length ? patient.reasonTags.join(", ") : "Tap to select reason(s) for visit"}
+              </span>
+              <ChevronDown
+                size={16}
+                className={`shrink-0 text-ink/40 transition-transform duration-200 ${reasonOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+
+            {reasonOpen && (
+              <div className="absolute z-10 mt-2 max-h-64 w-full overflow-y-auto rounded-2xl border border-plum/10 bg-white p-2 shadow-card">
+                {reasonOptions.map((option) => {
+                  const selected = patient.reasonTags.includes(option.label);
+                  return (
+                    <label
+                      key={option.id}
+                      className="flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-plum transition-colors hover:bg-rose-50"
+                    >
+                      <input
+                        type="checkbox"
+                        className="sr-only"
+                        checked={selected}
+                        onChange={() => onToggleReasonTag(option.label)}
+                      />
+                      <span
+                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition-colors ${
+                          selected ? "border-rose-500 bg-rose-500" : "border-plum/20 bg-white"
+                        }`}
+                      >
+                        {selected && <Check size={13} strokeWidth={3} className="text-cream" />}
+                      </span>
+                      {option.label}
+                    </label>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           <p className="mb-1.5 mt-4 text-xs text-ink/45">
