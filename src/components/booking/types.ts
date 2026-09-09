@@ -4,6 +4,7 @@ export interface PatientDetails {
   email: string;
   reasonTags: string[];
   reason: string;
+  upiTransactionId: string;
 }
 
 export interface BookingState {
@@ -18,6 +19,7 @@ export const emptyPatient: PatientDetails = {
   email: "",
   reasonTags: [],
   reason: "",
+  upiTransactionId: "",
 };
 
 export const emptyBookingState: BookingState = {

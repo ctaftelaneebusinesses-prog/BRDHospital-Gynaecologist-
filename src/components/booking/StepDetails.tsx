@@ -68,7 +68,7 @@ export function StepDetails({ patient, errors, reasonOptions, onChange, onToggle
 
         <div>
           <label className={labelClass} htmlFor="email">
-            {t("stepDetails.email")}
+            {t("stepDetails.email")} <span className="normal-case text-ink/35">({t("stepDetails.optional")})</span>
           </label>
           <input
             id="email"

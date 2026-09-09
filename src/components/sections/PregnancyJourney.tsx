@@ -150,23 +150,23 @@ export function PregnancyJourney() {
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
               className="grid gap-0 sm:grid-cols-2"
             >
-              <div className="relative aspect-[4/3] sm:aspect-auto">
+              <button
+                type="button"
+                onClick={triggerBurst}
+                aria-label={`Celebrate ${active.title}`}
+                className="group relative block aspect-[4/3] w-full cursor-pointer sm:aspect-auto"
+              >
                 <Img
                   slug={active.image}
                   alt={active.title}
                   width={640}
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <AnimatePresence>{bursting && <HeartBurst />}</AnimatePresence>
-                <button
-                  type="button"
-                  onClick={triggerBurst}
-                  aria-label={`Celebrate ${active.title}`}
-                  className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border-2 border-cream bg-white text-rose-500 shadow-md transition-transform duration-200 hover:scale-110 active:scale-95"
-                >
+                <span className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border-2 border-cream bg-white text-rose-500 shadow-md transition-transform duration-200 group-hover:scale-110">
                   <ActiveIcon size={17} strokeWidth={2.25} />
-                </button>
-              </div>
+                </span>
+              </button>
 
               <div className="p-7 sm:p-8">
                 <p className="text-xs font-semibold uppercase tracking-[0.1em] text-rose-500">{active.weeks}</p>

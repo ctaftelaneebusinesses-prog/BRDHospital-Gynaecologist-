@@ -199,3 +199,21 @@ insert into app_settings (key, value) values
   ('booking_fee_amount', '100'),
   ('payee_name', 'BRD Hospital')
 on conflict (key) do nothing;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- v3 — optional email, UPI transaction ID (manual payment verification),
+-- WhatsApp number setting (for the "share your payment screenshot" step).
+-- ─────────────────────────────────────────────────────────────────────────
+
+-- Not everyone has an email address — make it optional. The app stores it
+-- as null (not empty string) when the patient leaves it blank.
+alter table appointments alter column email drop not null;
+
+-- The reference/transaction ID the patient's UPI app shows after paying.
+-- Staff cross-check this against their own UPI app before marking a booking
+-- Confirmed + Paid — see notifyIfFullyConfirmed in AppointmentsTab.tsx.
+alter table appointments add column if not exists upi_transaction_id text;
+
+insert into app_settings (key, value) values
+  ('whatsapp_number', '911234567890')
+on conflict (key) do nothing;

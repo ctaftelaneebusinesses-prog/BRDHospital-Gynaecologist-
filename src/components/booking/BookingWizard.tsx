@@ -93,6 +93,7 @@ export function BookingWizard() {
     if (current === 0) return Boolean(state.date);
     if (current === 1) return Boolean(state.time);
     if (current === 2) return validatePatientDetails();
+    if (current === 3) return validatePayment();
     return true;
   }
 
@@ -103,8 +104,8 @@ export function BookingWizard() {
     if (!fullName.trim()) nextErrors.fullName = t("errors.fullNameRequired");
     if (!phone.trim()) nextErrors.phone = t("errors.phoneRequired");
     else if (!PHONE_RE.test(phone.trim())) nextErrors.phone = t("errors.phoneInvalid");
-    if (!email.trim()) nextErrors.email = t("errors.emailRequired");
-    else if (!EMAIL_RE.test(email.trim())) nextErrors.email = t("errors.emailInvalid");
+    // Email is optional — only validate its format if the patient entered one.
+    if (email.trim() && !EMAIL_RE.test(email.trim())) nextErrors.email = t("errors.emailInvalid");
     if (reasonTags.length === 0 && !reason.trim()) {
       nextErrors.reason = "Select at least one option, describe it, or use the mic.";
     }
@@ -113,10 +114,19 @@ export function BookingWizard() {
     return Object.keys(nextErrors).length === 0;
   }
 
+  function validatePayment(): boolean {
+    if (!state.patient.upiTransactionId.trim()) {
+      setErrors((prev) => ({ ...prev, upiTransactionId: "Please enter the UPI transaction ID from your payment." }));
+      return false;
+    }
+    setErrors((prev) => ({ ...prev, upiTransactionId: undefined }));
+    return true;
+  }
+
   async function handleNext() {
     if (!validateStep(step)) return;
 
-    if (step === 2) {
+    if (step === 3) {
       if (!state.date || !state.time) return;
       setSubmitError(null);
       setSubmitting(true);
@@ -132,6 +142,7 @@ export function BookingWizard() {
           reasonTags: state.patient.reasonTags,
           reason: state.patient.reason.trim(),
           paymentAmount: settings?.bookingFeeAmount ?? 0,
+          upiTransactionId: state.patient.upiTransactionId.trim(),
         });
         notifyNewBooking({
           patientName: state.patient.fullName.trim(),
@@ -143,7 +154,7 @@ export function BookingWizard() {
           time: state.time,
           reason: [...state.patient.reasonTags, state.patient.reason.trim()].filter(Boolean).join(", "),
         });
-        setStep(3);
+        setStep(4);
       } catch (err) {
         setSubmitError(err instanceof BookingError ? err.message : t("errors.genericSubmit"));
       } finally {
@@ -274,7 +285,14 @@ export function BookingWizard() {
                   onToggleReasonTag={toggleReasonTag}
                 />
               )}
-              {step === 3 && <StepPayment settings={settings ?? { upiId: "", payeeName: "", bookingFeeAmount: 0 }} />}
+              {step === 3 && (
+                <StepPayment
+                  settings={settings ?? { upiId: "", payeeName: "", bookingFeeAmount: 0, whatsappNumber: "" }}
+                  patient={state.patient}
+                  errors={errors}
+                  onChange={updatePatient}
+                />
+              )}
               {step === 4 && (
                 <StepConfirmation
                   doctor={selectedDoctor}
@@ -305,13 +323,11 @@ export function BookingWizard() {
                     disabled={!canProceed || submitting}
                     icon={isLastStep ? undefined : <ArrowRight size={16} />}
                   >
-                    {step === 2
+                    {step === 3
                       ? submitting
                         ? t("booking.bookingInProgress")
                         : t("booking.confirmAppointment")
-                      : step === 3
-                        ? "I've Paid, Continue"
-                        : t("booking.continueBtn")}
+                      : t("booking.continueBtn")}
                   </Button>
                 </div>
               </div>

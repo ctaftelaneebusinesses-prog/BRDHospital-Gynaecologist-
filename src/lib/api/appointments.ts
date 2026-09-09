@@ -11,7 +11,7 @@ export interface Appointment {
   appointment_time: string; // e.g. "09:00 AM"
   full_name: string;
   phone: string;
-  email: string;
+  email: string | null;
   date_of_birth: string | null;
   reason: string | null;
   reason_tags: string[];
@@ -20,6 +20,7 @@ export interface Appointment {
   payment_status: PaymentStatus;
   payment_amount: number | null;
   payment_confirmed_at: string | null;
+  upi_transaction_id: string | null;
   created_at: string;
 }
 
@@ -34,6 +35,7 @@ export interface NewAppointmentInput {
   reasonTags: string[];
   reason: string;
   paymentAmount: number;
+  upiTransactionId: string;
 }
 
 function toIsoDate(date: Date): string {
@@ -66,10 +68,11 @@ export async function createAppointment(input: NewAppointmentInput): Promise<voi
     appointment_time: input.time,
     full_name: input.fullName,
     phone: input.phone,
-    email: input.email,
+    email: input.email.trim() || null,
     reason_tags: input.reasonTags,
     reason: input.reason || null,
     payment_amount: input.paymentAmount,
+    upi_transaction_id: input.upiTransactionId.trim() || null,
   });
 
   if (error) {

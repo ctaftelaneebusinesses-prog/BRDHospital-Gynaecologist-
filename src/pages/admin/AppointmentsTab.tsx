@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Download, RefreshCw, CalendarClock } from "lucide-react";
+import { Download, RefreshCw, CalendarClock, Search, X } from "lucide-react";
 import { useAdminData } from "../../context/AdminDataContext";
 import {
   updateAppointmentStatus,
@@ -12,6 +12,7 @@ import { doctors } from "../../data/doctors";
 import { appointmentServices } from "../../data/booking";
 import { downloadCsv } from "../../lib/csvExport";
 import { sendConfirmationEmail } from "../../lib/api/notifications";
+import { AppointmentDetailModal } from "../../components/admin/AppointmentDetailModal";
 
 const STATUS_FILTERS: (AppointmentStatus | "all")[] = [
   "all",
@@ -49,11 +50,24 @@ export function AppointmentsTab() {
   const { appointments, loading, error, refresh } = useAdminData();
   const [filter, setFilter] = useState<(typeof STATUS_FILTERS)[number]>("all");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+  const [dateFilter, setDateFilter] = useState("");
+  const [selected, setSelected] = useState<Appointment | null>(null);
 
-  const filtered = useMemo(
-    () => (filter === "all" ? appointments : appointments.filter((a) => a.status === filter)),
-    [appointments, filter],
-  );
+  const filtered = useMemo(() => {
+    const term = search.trim().toLowerCase();
+    return appointments.filter((a) => {
+      if (filter !== "all" && a.status !== filter) return false;
+      if (dateFilter && a.appointment_date !== dateFilter) return false;
+      if (term) {
+        const haystack = [a.full_name, a.phone, a.email ?? "", a.upi_transaction_id ?? ""]
+          .join(" ")
+          .toLowerCase();
+        if (!haystack.includes(term)) return false;
+      }
+      return true;
+    });
+  }, [appointments, filter, search, dateFilter]);
 
   const counts = useMemo(() => {
     const c: Record<string, number> = { all: appointments.length };
@@ -64,6 +78,7 @@ export function AppointmentsTab() {
   /** Fires the "your appointment is confirmed" email once status + payment are both good — never before. */
   function notifyIfFullyConfirmed(appointment: Appointment, status: AppointmentStatus, paymentStatus: PaymentStatus) {
     if (status !== "confirmed" || paymentStatus !== "paid") return;
+    if (!appointment.email) return; // no email on file — nothing to send to
     sendConfirmationEmail({
       toEmail: appointment.email,
       toName: appointment.full_name,

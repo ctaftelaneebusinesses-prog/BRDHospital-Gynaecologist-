@@ -39,6 +39,7 @@ export function SettingsTab() {
       await updateSetting("upi_id", settings.upiId);
       await updateSetting("booking_fee_amount", String(settings.bookingFeeAmount));
       await updateSetting("payee_name", settings.payeeName);
+      await updateSetting("whatsapp_number", settings.whatsappNumber);
       setSavedNotice(true);
       setTimeout(() => setSavedNotice(false), 2500);
     } finally {
@@ -106,6 +107,18 @@ export function SettingsTab() {
               type="text"
               value={settings?.payeeName ?? ""}
               onChange={(e) => setSettings((s) => (s ? { ...s, payeeName: e.target.value } : s))}
+              className="w-full rounded-xl border border-plum/12 bg-cream px-4 py-2.5 text-sm text-plum outline-none focus:border-rose-400"
+            />
+          </div>
+          <div className="sm:col-span-2">
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-ink/55">
+              WhatsApp number (patients are sent here to share their payment screenshot)
+            </label>
+            <input
+              type="text"
+              value={settings?.whatsappNumber ?? ""}
+              onChange={(e) => setSettings((s) => (s ? { ...s, whatsappNumber: e.target.value } : s))}
+              placeholder="Country code + number, no spaces or +, e.g. 911234567890"
               className="w-full rounded-xl border border-plum/12 bg-cream px-4 py-2.5 text-sm text-plum outline-none focus:border-rose-400"
             />
           </div>

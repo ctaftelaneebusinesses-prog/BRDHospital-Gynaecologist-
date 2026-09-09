@@ -4,12 +4,14 @@ export interface AppSettings {
   upiId: string;
   bookingFeeAmount: number;
   payeeName: string;
+  whatsappNumber: string;
 }
 
 const DEFAULTS: AppSettings = {
   upiId: "brdhospital@upi",
   bookingFeeAmount: 100,
   payeeName: "BRD Hospital",
+  whatsappNumber: "911234567890",
 };
 
 export async function getSettings(): Promise<AppSettings> {
@@ -23,6 +25,7 @@ export async function getSettings(): Promise<AppSettings> {
     upiId: map.upi_id ?? DEFAULTS.upiId,
     bookingFeeAmount: Number(map.booking_fee_amount ?? DEFAULTS.bookingFeeAmount),
     payeeName: map.payee_name ?? DEFAULTS.payeeName,
+    whatsappNumber: map.whatsapp_number ?? DEFAULTS.whatsappNumber,
   };
 }
 
