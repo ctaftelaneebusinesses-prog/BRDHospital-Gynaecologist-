@@ -26,19 +26,32 @@ const STAGE_ICONS: Record<string, typeof Sparkles> = {
   postnatal: HeartHandshake,
 };
 
+const HEART_CONFIG = [
+  { x: -90, size: 30, delay: 0.0 },
+  { x: 60, size: 42, delay: 0.6 },
+  { x: -30, size: 26, delay: 1.2 },
+  { x: 100, size: 34, delay: 1.9 },
+  { x: -110, size: 38, delay: 2.6 },
+  { x: 10, size: 46, delay: 3.4 },
+  { x: 80, size: 28, delay: 4.3 },
+  { x: -60, size: 36, delay: 5.3 },
+  { x: 40, size: 30, delay: 6.4 },
+  { x: -20, size: 40, delay: 7.6 },
+];
+const HEART_BURST_MS = 10000;
+
 function HeartBurst() {
-  const hearts = [-26, -8, 10, 26];
   return (
     <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
-      {hearts.map((x, i) => (
+      {HEART_CONFIG.map(({ x, size, delay }, i) => (
         <motion.span
           key={i}
-          className="absolute text-rose-500"
-          initial={{ opacity: 1, scale: 0.4, x: 0, y: 0 }}
-          animate={{ opacity: 0, scale: 1.1, x, y: -46 }}
-          transition={{ duration: 0.9, ease: "easeOut", delay: i * 0.04 }}
+          className="absolute text-rose-500 drop-shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
+          initial={{ opacity: 0, scale: 0.3, x, y: 0 }}
+          animate={{ opacity: [0, 1, 1, 0], scale: [0.3, 1.15, 1, 0.9], y: -140 }}
+          transition={{ duration: 2.2, ease: "easeOut", delay, times: [0, 0.15, 0.7, 1] }}
         >
-          <Heart size={16} fill="currentColor" />
+          <Heart size={size} fill="currentColor" />
         </motion.span>
       ))}
     </div>
@@ -48,13 +61,13 @@ function HeartBurst() {
 export function PregnancyJourney() {
   const { openBooking } = useBooking();
   const { t, tList } = useLanguage();
-  const [burstId, setBurstId] = useState<string | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [bursting, setBursting] = useState(false);
 
   const stages = journeyStages.map((stage) => {
     const key = STAGE_TEXT_KEYS[stage.id];
     return {
       ...stage,
-      stage: t(`journey.${key}Stage`),
       weeks: t(`journey.${key}Weeks`),
       title: t(`journey.${key}Title`),
       description: t(`journey.${key}Description`),
@@ -62,9 +75,12 @@ export function PregnancyJourney() {
     };
   });
 
-  function triggerBurst(id: string) {
-    setBurstId(id);
-    window.setTimeout(() => setBurstId((current) => (current === id ? null : current)), 900);
+  const active = stages[activeIndex];
+  const ActiveIcon = STAGE_ICONS[active.id] ?? Sparkles;
+
+  function triggerBurst() {
+    setBursting(true);
+    window.setTimeout(() => setBursting(false), HEART_BURST_MS);
   }
 
   return (
@@ -78,106 +94,98 @@ export function PregnancyJourney() {
           description={t("journey.description")}
         />
 
-        <div className="mt-16 hidden lg:block">
-          <div className="relative">
-            <motion.div
-              className="absolute left-0 right-0 top-[7.5rem] h-px origin-left bg-gradient-to-r from-rose-300 via-plum/20 to-rose-300"
-              initial={{ scaleX: 0 }}
-              whileInView={{ scaleX: 1 }}
-              viewport={{ once: true, amount: 0.4 }}
-              transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-            />
-            <div className="grid grid-cols-5 gap-5">
-              {stages.map((stage, index) => {
-                const StageIcon = STAGE_ICONS[stage.id] ?? Sparkles;
-                return (
-                  <Reveal key={stage.id} delay={index * 0.1}>
-                    <div className="group flex flex-col items-center text-center">
-                      <div className="relative">
-                        <div className="relative h-40 w-40 overflow-hidden rounded-full shadow-card ring-4 ring-cream transition-all duration-300 group-hover:-translate-y-1.5 group-hover:shadow-xl group-hover:ring-rose-200">
-                          <Img
-                            slug={stage.image}
-                            alt={stage.title}
-                            width={320}
-                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                          />
-                          <AnimatePresence>{burstId === stage.id && <HeartBurst />}</AnimatePresence>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => triggerBurst(stage.id)}
-                          aria-label={`Celebrate ${stage.title}`}
-                          className="absolute -right-1 top-1 flex h-9 w-9 items-center justify-center rounded-full border-2 border-cream bg-white text-rose-500 shadow-md transition-transform duration-200 hover:scale-110 active:scale-95"
-                        >
-                          <StageIcon size={16} strokeWidth={2.25} />
-                        </button>
-                        <div className="relative z-10 -mt-5 flex h-10 w-10 items-center justify-center rounded-full border-4 border-cream-dark bg-rose-600 text-sm font-semibold text-cream transition-transform duration-300 group-hover:-translate-y-1.5">
-                          {index + 1}
-                        </div>
-                      </div>
-                      <p className="mt-4 text-xs font-semibold uppercase tracking-[0.1em] text-rose-500">
-                        {stage.weeks}
-                      </p>
-                      <h3 className="mt-1 font-serif text-xl font-medium text-plum">{stage.title}</h3>
-                      <p className="mt-3 text-sm leading-relaxed text-ink/65">{stage.description}</p>
-                      <ul className="mt-4 space-y-2 text-left">
-                        {stage.careInfo.map((item) => (
-                          <li key={item} className="flex items-start gap-2 text-xs text-ink/60">
-                            <CheckCircle2 size={14} className="mt-0.5 shrink-0 text-sage-500" />
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </Reveal>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-4 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 lg:hidden">
+        {/* Stage picker — click a stage to load its content below, no added page height */}
+        <div className="mt-12 flex justify-center gap-4 overflow-x-auto px-1 pb-2 sm:gap-6">
           {stages.map((stage, index) => {
-            const StageIcon = STAGE_ICONS[stage.id] ?? Sparkles;
+            const Icon = STAGE_ICONS[stage.id] ?? Sparkles;
+            const isActive = index === activeIndex;
             return (
-              <div
+              <button
                 key={stage.id}
-                className="w-[78vw] shrink-0 snap-start overflow-hidden rounded-[1.75rem] bg-white shadow-card ring-1 ring-plum/5 sm:w-[340px]"
+                type="button"
+                onClick={() => setActiveIndex(index)}
+                aria-label={stage.title}
+                aria-pressed={isActive}
+                className="group flex shrink-0 flex-col items-center gap-2"
               >
-                <div className="relative h-48">
-                  <Img slug={stage.image} alt={stage.title} width={500} className="h-full w-full object-cover" />
-                  <div className="absolute left-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-rose-600 text-sm font-semibold text-cream shadow-md">
-                    {index + 1}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => triggerBurst(stage.id)}
-                    aria-label={`Celebrate ${stage.title}`}
-                    className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white text-rose-500 shadow-md active:scale-95"
+                <span
+                  className={`relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-full ring-4 transition-all duration-300 sm:h-20 sm:w-20 ${
+                    isActive ? "ring-rose-400 shadow-lg" : "ring-cream group-hover:ring-rose-200"
+                  }`}
+                >
+                  <Img
+                    slug={stage.image}
+                    alt={stage.title}
+                    width={160}
+                    className={`h-full w-full object-cover transition-opacity duration-300 ${isActive ? "" : "opacity-60 group-hover:opacity-90"}`}
+                  />
+                  <span
+                    className={`absolute inset-0 flex items-center justify-center bg-plum/40 text-cream transition-opacity duration-300 ${
+                      isActive ? "opacity-0" : "opacity-0 group-hover:opacity-100"
+                    }`}
                   >
-                    <StageIcon size={16} strokeWidth={2.25} />
-                  </button>
-                  <AnimatePresence>{burstId === stage.id && <HeartBurst />}</AnimatePresence>
-                </div>
-                <div className="p-6">
-                  <p className="text-xs font-semibold uppercase tracking-[0.1em] text-rose-500">{stage.weeks}</p>
-                  <h3 className="mt-1 font-serif text-xl font-medium text-plum">{stage.title}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-ink/65">{stage.description}</p>
-                  <ul className="mt-4 space-y-2">
-                    {stage.careInfo.map((item) => (
-                      <li key={item} className="flex items-start gap-2 text-xs text-ink/60">
-                        <CheckCircle2 size={14} className="mt-0.5 shrink-0 text-sage-500" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
+                    <Icon size={18} />
+                  </span>
+                </span>
+                <span
+                  className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-semibold transition-colors ${
+                    isActive ? "bg-rose-600 text-cream" : "bg-plum/8 text-ink/40"
+                  }`}
+                >
+                  {index + 1}
+                </span>
+              </button>
             );
           })}
         </div>
 
-        <Reveal className="mt-16 flex justify-center">
+        {/* Active stage content — same footprint regardless of which stage is selected */}
+        <div className="relative mx-auto mt-10 max-w-3xl overflow-hidden rounded-[2rem] bg-white shadow-card ring-1 ring-plum/5">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={active.id}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              className="grid gap-0 sm:grid-cols-2"
+            >
+              <div className="relative aspect-[4/3] sm:aspect-auto">
+                <Img
+                  slug={active.image}
+                  alt={active.title}
+                  width={640}
+                  className="h-full w-full object-cover"
+                />
+                <AnimatePresence>{bursting && <HeartBurst />}</AnimatePresence>
+                <button
+                  type="button"
+                  onClick={triggerBurst}
+                  aria-label={`Celebrate ${active.title}`}
+                  className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border-2 border-cream bg-white text-rose-500 shadow-md transition-transform duration-200 hover:scale-110 active:scale-95"
+                >
+                  <ActiveIcon size={17} strokeWidth={2.25} />
+                </button>
+              </div>
+
+              <div className="p-7 sm:p-8">
+                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-rose-500">{active.weeks}</p>
+                <h3 className="mt-1.5 font-serif text-2xl font-medium text-plum">{active.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-ink/65">{active.description}</p>
+                <ul className="mt-4 space-y-2">
+                  {active.careInfo.map((item) => (
+                    <li key={item} className="flex items-start gap-2 text-xs text-ink/60">
+                      <CheckCircle2 size={14} className="mt-0.5 shrink-0 text-sage-500" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        <Reveal className="mt-12 flex justify-center">
           <Button
             size="lg"
             icon={<ArrowRight size={18} />}

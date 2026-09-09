@@ -1,0 +1,226 @@
+import { useMemo, useState } from "react";
+import { Download, RefreshCw, CalendarClock } from "lucide-react";
+import { useAdminData } from "../../context/AdminDataContext";
+import {
+  updateAppointmentStatus,
+  updatePaymentStatus,
+  type AppointmentStatus,
+  type PaymentStatus,
+} from "../../lib/api/appointments";
+import { doctors } from "../../data/doctors";
+import { appointmentServices } from "../../data/booking";
+import { downloadCsv } from "../../lib/csvExport";
+
+const STATUS_FILTERS: (AppointmentStatus | "all")[] = [
+  "all",
+  "pending",
+  "confirmed",
+  "completed",
+  "cancelled",
+  "no-show",
+];
+
+const STATUS_STYLES: Record<AppointmentStatus, string> = {
+  pending: "bg-gold-300/40 text-[#8a6a1f]",
+  confirmed: "bg-sage-100 text-sage-600",
+  cancelled: "bg-rose-100 text-rose-600",
+  completed: "bg-plum/10 text-plum",
+  "no-show": "bg-ink/10 text-ink/60",
+};
+
+const PAYMENT_STYLES: Record<PaymentStatus, string> = {
+  pending: "bg-gold-300/40 text-[#8a6a1f]",
+  paid: "bg-sage-100 text-sage-600",
+  failed: "bg-rose-100 text-rose-600",
+};
+
+const DATE_FORMAT = new Intl.DateTimeFormat("en-US", { day: "2-digit", month: "short", year: "numeric" });
+
+function doctorName(id: string) {
+  return doctors.find((d) => d.id === id)?.name ?? id;
+}
+function serviceName(id: string) {
+  return appointmentServices.find((s) => s.id === id)?.name ?? id;
+}
+
+export function AppointmentsTab() {
+  const { appointments, loading, error, refresh } = useAdminData();
+  const [filter, setFilter] = useState<(typeof STATUS_FILTERS)[number]>("all");
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+
+  const filtered = useMemo(
+    () => (filter === "all" ? appointments : appointments.filter((a) => a.status === filter)),
+    [appointments, filter],
+  );
+
+  const counts = useMemo(() => {
+    const c: Record<string, number> = { all: appointments.length };
+    for (const a of appointments) c[a.status] = (c[a.status] ?? 0) + 1;
+    return c;
+  }, [appointments]);
+
+  async function handleStatusChange(id: string, status: AppointmentStatus) {
+    setUpdatingId(id);
+    try {
+      await updateAppointmentStatus(id, status);
+      await refresh();
+    } finally {
+      setUpdatingId(null);
+    }
+  }
+
+  async function handlePaymentChange(id: string, status: PaymentStatus) {
+    setUpdatingId(id);
+    try {
+      await updatePaymentStatus(id, status);
+      await refresh();
+    } finally {
+      setUpdatingId(null);
+    }
+  }
+
+  function handleExport() {
+    downloadCsv(
+      `appointments-${new Date().toISOString().split("T")[0]}.csv`,
+      ["Patient", "Phone", "Email", "Doctor", "Service", "Date", "Time", "Reason", "Status", "Payment Status", "Amount", "Booked At"],
+      filtered.map((a) => [
+        a.full_name,
+        a.phone,
+        a.email,
+        doctorName(a.doctor_id),
+        serviceName(a.service_id),
+        a.appointment_date,
+        a.appointment_time,
+        [...(a.reason_tags ?? []), a.reason].filter(Boolean).join("; "),
+        a.status,
+        a.payment_status,
+        a.payment_amount ?? "",
+        a.created_at,
+      ]),
+    );
+  }
+
+  return (
+    <div>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="font-serif text-2xl font-medium text-plum">Appointments</h1>
+          <p className="mt-1 text-sm text-ink/55">{appointments.length} total bookings.</p>
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={handleExport}
+            className="flex items-center gap-1.5 rounded-full bg-plum px-4 py-2 text-sm font-medium text-cream hover:bg-plum/90"
+          >
+            <Download size={14} /> Download Excel
+          </button>
+          <button
+            onClick={() => refresh()}
+            className="flex items-center gap-1.5 rounded-full px-3 py-2 text-sm text-ink/60 hover:bg-plum/5"
+          >
+            <RefreshCw size={14} /> Refresh
+          </button>
+        </div>
+      </div>
+
+      <div className="mt-6 flex flex-wrap gap-2">
+        {STATUS_FILTERS.map((status) => (
+          <button
+            key={status}
+            onClick={() => setFilter(status)}
+            className={`rounded-full px-4 py-2 text-sm font-medium capitalize transition-colors ${
+              filter === status ? "bg-plum text-cream" : "bg-white text-ink/60 ring-1 ring-plum/10 hover:bg-plum/5"
+            }`}
+          >
+            {status} {counts[status] ? `(${counts[status]})` : ""}
+          </button>
+        ))}
+      </div>
+
+      {error && <p className="mt-4 rounded-xl bg-rose-50 p-3 text-sm text-rose-600">{error}</p>}
+
+      {loading ? (
+        <p className="mt-6 text-sm text-ink/50">Loading appointments…</p>
+      ) : filtered.length === 0 ? (
+        <div className="mt-6 flex flex-col items-center gap-3 rounded-[1.75rem] bg-white py-16 text-center shadow-card ring-1 ring-plum/5">
+          <CalendarClock className="text-ink/30" size={32} />
+          <p className="text-sm text-ink/50">No appointments here yet.</p>
+        </div>
+      ) : (
+        <div className="mt-6 overflow-x-auto rounded-[1.75rem] bg-white shadow-card ring-1 ring-plum/5">
+          <table className="w-full min-w-[900px] text-left text-sm">
+            <thead className="border-b border-plum/8 bg-plum/[0.03] text-xs uppercase tracking-wide text-ink/45">
+              <tr>
+                <th className="px-5 py-3 font-medium">Patient</th>
+                <th className="px-5 py-3 font-medium">Reason</th>
+                <th className="px-5 py-3 font-medium">Date &amp; Time</th>
+                <th className="px-5 py-3 font-medium">Contact</th>
+                <th className="px-5 py-3 font-medium">Status</th>
+                <th className="px-5 py-3 font-medium">Payment</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-plum/8">
+              {filtered.map((a) => (
+                <tr key={a.id}>
+                  <td className="px-5 py-4">
+                    <p className="font-medium text-plum">{a.full_name}</p>
+                    <p className="text-xs text-ink/45">{doctorName(a.doctor_id)}</p>
+                  </td>
+                  <td className="max-w-[220px] px-5 py-4">
+                    {a.reason_tags?.length > 0 && (
+                      <div className="mb-1 flex flex-wrap gap-1">
+                        {a.reason_tags.map((tag) => (
+                          <span key={tag} className="rounded-full bg-sage-50 px-2 py-0.5 text-[10px] font-medium text-sage-600">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    {a.reason && <p className="truncate text-xs text-ink/50">{a.reason}</p>}
+                  </td>
+                  <td className="px-5 py-4 text-ink/70">
+                    <p>{DATE_FORMAT.format(new Date(a.appointment_date + "T00:00:00"))}</p>
+                    <p className="text-xs text-ink/45">{a.appointment_time}</p>
+                  </td>
+                  <td className="px-5 py-4 text-ink/70">
+                    <p>{a.phone}</p>
+                    <p className="text-xs text-ink/45">{a.email}</p>
+                  </td>
+                  <td className="px-5 py-4">
+                    <select
+                      value={a.status}
+                      disabled={updatingId === a.id}
+                      onChange={(e) => handleStatusChange(a.id, e.target.value as AppointmentStatus)}
+                      className={`rounded-lg border-none px-2 py-1.5 text-xs font-medium capitalize outline-none disabled:opacity-50 ${STATUS_STYLES[a.status]}`}
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="confirmed">Confirmed</option>
+                      <option value="completed">Completed</option>
+                      <option value="cancelled">Cancelled</option>
+                      <option value="no-show">No-show</option>
+                    </select>
+                  </td>
+                  <td className="px-5 py-4">
+                    <select
+                      value={a.payment_status}
+                      disabled={updatingId === a.id}
+                      onChange={(e) => handlePaymentChange(a.id, e.target.value as PaymentStatus)}
+                      className={`rounded-lg border-none px-2 py-1.5 text-xs font-medium capitalize outline-none disabled:opacity-50 ${PAYMENT_STYLES[a.payment_status]}`}
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="paid">Paid</option>
+                      <option value="failed">Failed</option>
+                    </select>
+                    {a.payment_amount != null && (
+                      <p className="mt-1 text-[11px] text-ink/40">₹{a.payment_amount}</p>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}

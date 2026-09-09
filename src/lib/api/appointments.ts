@@ -1,6 +1,7 @@
 import { supabase, isSupabaseConfigured } from "../supabase";
 
-export type AppointmentStatus = "pending" | "confirmed" | "cancelled" | "completed";
+export type AppointmentStatus = "pending" | "confirmed" | "cancelled" | "completed" | "no-show";
+export type PaymentStatus = "pending" | "paid" | "failed";
 
 export interface Appointment {
   id: string;
@@ -12,9 +13,13 @@ export interface Appointment {
   phone: string;
   email: string;
   date_of_birth: string | null;
-  reason: string;
+  reason: string | null;
+  reason_tags: string[];
   message: string | null;
   status: AppointmentStatus;
+  payment_status: PaymentStatus;
+  payment_amount: number | null;
+  payment_confirmed_at: string | null;
   created_at: string;
 }
 
@@ -27,8 +32,10 @@ export interface NewAppointmentInput {
   phone: string;
   email: string;
   dob: string;
+  reasonTags: string[];
   reason: string;
   message: string;
+  paymentAmount: number;
 }
 
 function toIsoDate(date: Date): string {
@@ -63,8 +70,10 @@ export async function createAppointment(input: NewAppointmentInput): Promise<voi
     phone: input.phone,
     email: input.email,
     date_of_birth: input.dob || null,
-    reason: input.reason,
+    reason_tags: input.reasonTags,
+    reason: input.reason || null,
     message: input.message || null,
+    payment_amount: input.paymentAmount,
   });
 
   if (error) {
@@ -103,5 +112,17 @@ export async function listAppointments(): Promise<Appointment[]> {
 /** Admin only (requires an authenticated session — enforced by RLS). */
 export async function updateAppointmentStatus(id: string, status: AppointmentStatus): Promise<void> {
   const { error } = await supabase.from("appointments").update({ status }).eq("id", id);
+  if (error) throw error;
+}
+
+/** Admin only. Setting "paid" also stamps payment_confirmed_at. */
+export async function updatePaymentStatus(id: string, paymentStatus: PaymentStatus): Promise<void> {
+  const { error } = await supabase
+    .from("appointments")
+    .update({
+      payment_status: paymentStatus,
+      payment_confirmed_at: paymentStatus === "paid" ? new Date().toISOString() : null,
+    })
+    .eq("id", id);
   if (error) throw error;
 }

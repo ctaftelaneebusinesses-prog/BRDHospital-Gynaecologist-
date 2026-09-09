@@ -3,6 +3,7 @@ export interface PatientDetails {
   phone: string;
   email: string;
   dob: string;
+  reasonTags: string[];
   reason: string;
   message: string;
 }
@@ -18,6 +19,7 @@ export const emptyPatient: PatientDetails = {
   phone: "",
   email: "",
   dob: "",
+  reasonTags: [],
   reason: "",
   message: "",
 };

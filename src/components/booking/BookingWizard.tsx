@@ -7,15 +7,19 @@ import { Button } from "../ui/Button";
 import { DatePicker } from "./DatePicker";
 import { TimeSlotSelector } from "./TimeSlotSelector";
 import { StepDetails } from "./StepDetails";
+import { StepPayment } from "./StepPayment";
 import { StepConfirmation } from "./StepConfirmation";
 import { emptyBookingState, type BookingState, type PatientDetails } from "./types";
 import { appointmentServices, unavailableSlotsByDate } from "../../data/booking";
 import { doctors } from "../../data/doctors";
 import { createAppointment, getBookedSlots, BookingError } from "../../lib/api/appointments";
 import { sendConfirmationEmail } from "../../lib/api/notifications";
+import { getActiveReasonOptions, type ReasonOption } from "../../lib/api/reasonOptions";
+import { getSettings, type AppSettings } from "../../lib/api/settings";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^[+]?[\d\s()-]{7,}$/;
+const LAST_STEP = 4;
 
 const selectedDoctor = doctors[0];
 const selectedService = appointmentServices[0];
@@ -23,13 +27,21 @@ const selectedService = appointmentServices[0];
 export function BookingWizard() {
   const { isOpen, closeBooking } = useBooking();
   const { t } = useLanguage();
-  const STEP_LABELS = [t("booking.stepDate"), t("booking.stepTime"), t("booking.stepDetails"), t("booking.stepConfirm")];
+  const STEP_LABELS = [
+    t("booking.stepDate"),
+    t("booking.stepTime"),
+    t("booking.stepDetails"),
+    t("booking.stepPayment"),
+    t("booking.stepConfirm"),
+  ];
   const [step, setStep] = useState(0);
   const [state, setState] = useState<BookingState>(emptyBookingState);
   const [errors, setErrors] = useState<Partial<Record<keyof PatientDetails, string>>>({});
   const [serverBookedSlots, setServerBookedSlots] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [reasonOptions, setReasonOptions] = useState<ReasonOption[]>([]);
+  const [settings, setSettings] = useState<AppSettings | null>(null);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -37,6 +49,8 @@ export function BookingWizard() {
     setErrors({});
     setSubmitError(null);
     setStep(0);
+    getActiveReasonOptions().then(setReasonOptions);
+    getSettings().then(setSettings);
   }, [isOpen]);
 
   useEffect(() => {
@@ -70,8 +84,8 @@ export function BookingWizard() {
 
   if (!isOpen) return null;
 
-  const isLastStep = step === 3;
-  const isConfirmation = step === 3;
+  const isLastStep = step === LAST_STEP;
+  const isConfirmation = step === LAST_STEP;
   const dateKey = state.date ? state.date.toISOString().split("T")[0] : "";
   const unavailable = Array.from(new Set([...(unavailableSlotsByDate[dateKey] ?? []), ...serverBookedSlots]));
 
@@ -84,7 +98,7 @@ export function BookingWizard() {
 
   function validatePatientDetails(): boolean {
     const nextErrors: Partial<Record<keyof PatientDetails, string>> = {};
-    const { fullName, phone, email, dob, reason } = state.patient;
+    const { fullName, phone, email, dob, reason, reasonTags } = state.patient;
 
     if (!fullName.trim()) nextErrors.fullName = t("errors.fullNameRequired");
     if (!phone.trim()) nextErrors.phone = t("errors.phoneRequired");
@@ -92,7 +106,9 @@ export function BookingWizard() {
     if (!email.trim()) nextErrors.email = t("errors.emailRequired");
     else if (!EMAIL_RE.test(email.trim())) nextErrors.email = t("errors.emailInvalid");
     if (!dob) nextErrors.dob = t("errors.dobRequired");
-    if (!reason.trim()) nextErrors.reason = t("errors.reasonRequired");
+    if (reasonTags.length === 0 && !reason.trim()) {
+      nextErrors.reason = "Select at least one option, describe it, or use the mic.";
+    }
 
     setErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
@@ -115,8 +131,10 @@ export function BookingWizard() {
           phone: state.patient.phone.trim(),
           email: state.patient.email.trim(),
           dob: state.patient.dob,
+          reasonTags: state.patient.reasonTags,
           reason: state.patient.reason.trim(),
           message: state.patient.message.trim(),
+          paymentAmount: settings?.bookingFeeAmount ?? 0,
         });
         sendConfirmationEmail({
           toEmail: state.patient.email.trim(),
@@ -128,16 +146,14 @@ export function BookingWizard() {
         });
         setStep(3);
       } catch (err) {
-        setSubmitError(
-          err instanceof BookingError ? err.message : t("errors.genericSubmit"),
-        );
+        setSubmitError(err instanceof BookingError ? err.message : t("errors.genericSubmit"));
       } finally {
         setSubmitting(false);
       }
       return;
     }
 
-    setStep((s) => Math.min(s + 1, 3));
+    setStep((s) => Math.min(s + 1, LAST_STEP));
   }
 
   function handleBack() {
@@ -147,6 +163,16 @@ export function BookingWizard() {
   function updatePatient(field: keyof PatientDetails, value: string) {
     setState((prev) => ({ ...prev, patient: { ...prev.patient, [field]: value } }));
     setErrors((prev) => ({ ...prev, [field]: undefined }));
+  }
+
+  function toggleReasonTag(label: string) {
+    setState((prev) => {
+      const tags = prev.patient.reasonTags.includes(label)
+        ? prev.patient.reasonTags.filter((t) => t !== label)
+        : [...prev.patient.reasonTags, label];
+      return { ...prev, patient: { ...prev.patient, reasonTags: tags } };
+    });
+    setErrors((prev) => ({ ...prev, reason: undefined }));
   }
 
   const canProceed = step < 2 ? validateStep(step) : true;
@@ -240,8 +266,17 @@ export function BookingWizard() {
                   onSelect={(time) => setState((prev) => ({ ...prev, time }))}
                 />
               )}
-              {step === 2 && <StepDetails patient={state.patient} errors={errors} onChange={updatePatient} />}
-              {step === 3 && (
+              {step === 2 && (
+                <StepDetails
+                  patient={state.patient}
+                  errors={errors}
+                  reasonOptions={reasonOptions}
+                  onChange={updatePatient}
+                  onToggleReasonTag={toggleReasonTag}
+                />
+              )}
+              {step === 3 && <StepPayment settings={settings ?? { upiId: "", payeeName: "", bookingFeeAmount: 0 }} />}
+              {step === 4 && (
                 <StepConfirmation
                   doctor={selectedDoctor}
                   service={selectedService}
@@ -275,7 +310,9 @@ export function BookingWizard() {
                       ? submitting
                         ? t("booking.bookingInProgress")
                         : t("booking.confirmAppointment")
-                      : t("booking.continueBtn")}
+                      : step === 3
+                        ? "I've Paid, Continue"
+                        : t("booking.continueBtn")}
                   </Button>
                 </div>
               </div>

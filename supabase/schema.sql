@@ -34,7 +34,7 @@ create table if not exists appointments (
   date_of_birth date,
   reason text not null,
   message text,
-  status text not null default 'pending' check (status in ('pending', 'confirmed', 'cancelled', 'completed')),
+  status text not null default 'pending' check (status in ('pending', 'confirmed', 'cancelled', 'completed', 'no-show')),
   created_at timestamptz not null default now()
 );
 
@@ -119,3 +119,83 @@ on conflict (id) do update set name = excluded.name, title = excluded.title;
 insert into services (id, name, duration_minutes) values
   ('gynecological-consultation', 'Gynecological Consultation', 30)
 on conflict (id) do update set name = excluded.name, duration_minutes = excluded.duration_minutes;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- v2 — reason checklist, booking-fee settings, payment tracking.
+-- ─────────────────────────────────────────────────────────────────────────
+
+-- "Reason for visit" is now checkboxes (admin-managed) + free text + voice
+-- dictation (which just fills the free text box) — any combination.
+alter table appointments alter column reason drop not null;
+alter table appointments drop constraint if exists appointments_status_check;
+alter table appointments add constraint appointments_status_check
+  check (status in ('pending', 'confirmed', 'cancelled', 'completed', 'no-show'));
+alter table appointments add column if not exists reason_tags text[] not null default '{}';
+
+alter table appointments add column if not exists payment_status text not null default 'pending'
+  check (payment_status in ('pending', 'paid', 'failed'));
+alter table appointments add column if not exists payment_amount numeric;
+alter table appointments add column if not exists payment_confirmed_at timestamptz;
+
+create table if not exists reason_options (
+  id uuid primary key default gen_random_uuid(),
+  label text not null unique,
+  sort_order int not null default 0,
+  is_active boolean not null default true,
+  created_at timestamptz not null default now()
+);
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint where conname = 'reason_options_label_key'
+  ) then
+    alter table reason_options add constraint reason_options_label_key unique (label);
+  end if;
+end $$;
+
+alter table reason_options enable row level security;
+
+drop policy if exists "Public can view active reason options" on reason_options;
+create policy "Public can view active reason options" on reason_options
+  for select using (is_active = true);
+
+drop policy if exists "Staff can manage reason options" on reason_options;
+create policy "Staff can manage reason options" on reason_options
+  for all using (auth.role() = 'authenticated');
+
+insert into reason_options (label, sort_order) values
+  ('Routine Checkup', 1),
+  ('Pregnancy Consultation', 2),
+  ('Menstrual Health', 3),
+  ('Follow-up Visit', 4),
+  ('Fertility Consultation', 5),
+  ('Other', 6)
+on conflict (label) do nothing;
+
+-- Simple key/value settings the admin can edit (UPI id, booking fee, ...).
+-- Values are stored as text and parsed by the app where needed (e.g. the fee
+-- amount) so this table never needs a schema change to add a new setting.
+create table if not exists app_settings (
+  key text primary key,
+  value text not null,
+  updated_at timestamptz not null default now()
+);
+
+alter table app_settings enable row level security;
+
+-- Public can read settings (the booking flow needs the UPI id + fee amount
+-- before the patient has signed in — there's no patient auth in this app).
+drop policy if exists "Public can view settings" on app_settings;
+create policy "Public can view settings" on app_settings
+  for select using (true);
+
+drop policy if exists "Staff can manage settings" on app_settings;
+create policy "Staff can manage settings" on app_settings
+  for all using (auth.role() = 'authenticated');
+
+insert into app_settings (key, value) values
+  ('upi_id', 'brdhospital@upi'),
+  ('booking_fee_amount', '100'),
+  ('payee_name', 'BRD Hospital')
+on conflict (key) do nothing;
