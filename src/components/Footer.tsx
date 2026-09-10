@@ -1,8 +1,8 @@
+import { useNavigate, useLocation } from "react-router-dom";
 import { Mail, MapPin, Phone, Clock } from "lucide-react";
 import { Container } from "./ui/Container";
 import { Logo } from "./Logo";
 import { FacebookIcon, InstagramIcon, TwitterIcon } from "./SocialIcons";
-import { useBooking } from "../context/BookingContext";
 import { useLanguage } from "../context/LanguageContext";
 import craftlaneeLogo from "../assets/craftlanee-logo-mark-white.png";
 
@@ -13,7 +13,8 @@ const socials = [
 ];
 
 export function Footer() {
-  const { openBooking } = useBooking();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useLanguage();
 
   const quickLinks = [
@@ -25,6 +26,10 @@ export function Footer() {
   const serviceLinks = [t("footer.gynecologicalCare")];
 
   function handleNav(href: string) {
+    if (location.pathname !== "/") {
+      navigate(`/${href}`);
+      return;
+    }
     document.querySelector(href)?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
@@ -89,7 +94,7 @@ export function Footer() {
                     href="#"
                     onClick={(e) => {
                       e.preventDefault();
-                      openBooking();
+                      navigate("/book");
                     }}
                     className="text-sm text-cream/60 transition-colors hover:text-rose-300"
                   >

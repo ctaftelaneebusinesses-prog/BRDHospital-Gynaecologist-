@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "./context/LanguageContext";
+import { LanguageWelcomeModal } from "./components/LanguageWelcomeModal";
 import { MarketingSite } from "./pages/MarketingSite";
+import { BookingPage } from "./pages/BookingPage";
 import { AdminLogin } from "./pages/admin/AdminLogin";
 import { AdminLayout } from "./pages/admin/AdminLayout";
 import { OverviewTab } from "./pages/admin/OverviewTab";
@@ -13,9 +15,11 @@ import { ProtectedRoute } from "./components/admin/ProtectedRoute";
 function App() {
   return (
     <LanguageProvider>
+      <LanguageWelcomeModal />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<MarketingSite />} />
+          <Route path="/book" element={<BookingPage />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route
             path="/admin"

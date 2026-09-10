@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { Container } from "./ui/Container";
 import { Button } from "./ui/Button";
 import { LanguageSwitcher } from "./LanguageSwitcher";
-import { useBooking } from "../context/BookingContext";
 import { useLanguage } from "../context/LanguageContext";
 import { Logo } from "./Logo";
 import craftlaneeLogo from "../assets/craftlanee-logo-mark.png";
@@ -12,7 +12,8 @@ import craftlaneeLogo from "../assets/craftlanee-logo-mark.png";
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { openBooking } = useBooking();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useLanguage();
 
   const navLinks = [
@@ -39,6 +40,10 @@ export function Navbar() {
 
   function handleNavClick(href: string) {
     setMobileOpen(false);
+    if (location.pathname !== "/") {
+      navigate(`/${href}`);
+      return;
+    }
     const el = document.querySelector(href);
     el?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
@@ -89,7 +94,7 @@ export function Navbar() {
 
           <div className="hidden items-center gap-1 lg:flex">
             <LanguageSwitcher />
-            <Button size="sm" onClick={() => openBooking()}>
+            <Button size="sm" onClick={() => navigate("/book")}>
               {t("nav.bookAppointment")}
             </Button>
           </div>
@@ -134,7 +139,7 @@ export function Navbar() {
                 className="mt-2 w-full"
                 onClick={() => {
                   setMobileOpen(false);
-                  openBooking();
+                  navigate("/book");
                 }}
               >
                 {t("nav.bookAppointment")}

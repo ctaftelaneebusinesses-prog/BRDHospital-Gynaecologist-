@@ -7,7 +7,7 @@ import { Img } from "../ui/Img";
 import { Button } from "../ui/Button";
 import { doctors } from "../../data/doctors";
 import { photos } from "../../data/images";
-import { useBooking } from "../../context/BookingContext";
+import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../../context/LanguageContext";
 
 // Language names are always shown in their own script, regardless of the active site language.
@@ -109,7 +109,7 @@ function DoctorFlipCard({
 
 export function DoctorSpotlight() {
   const doctor = doctors[0];
-  const { openBooking } = useBooking();
+  const navigate = useNavigate();
   const { t, tList } = useLanguage();
 
   const profileTitle = t(`doctorProfiles.${doctor.id}.title`) || doctor.title;
@@ -200,7 +200,7 @@ export function DoctorSpotlight() {
           </Reveal>
 
           <Reveal delay={0.2} className="mt-9">
-            <Button size="lg" onClick={() => openBooking()}>
+            <Button size="lg" onClick={() => navigate("/book")}>
               {t("doctorSpotlight.bookConsultation")}
             </Button>
           </Reveal>

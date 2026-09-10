@@ -4,11 +4,11 @@ import { Reveal } from "../ui/Reveal";
 import { Button } from "../ui/Button";
 import { Img } from "../ui/Img";
 import { photos } from "../../data/images";
-import { useBooking } from "../../context/BookingContext";
+import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../../context/LanguageContext";
 
 export function FinalCta() {
-  const { openBooking } = useBooking();
+  const navigate = useNavigate();
   const { t } = useLanguage();
 
   return (
@@ -40,7 +40,7 @@ export function FinalCta() {
                 variant="secondary"
                 className="mt-9 !bg-cream !text-plum hover:!bg-rose-50"
                 icon={<ArrowRight size={18} />}
-                onClick={() => openBooking()}
+                onClick={() => navigate("/book")}
               >
                 {t("finalCta.button")}
               </Button>

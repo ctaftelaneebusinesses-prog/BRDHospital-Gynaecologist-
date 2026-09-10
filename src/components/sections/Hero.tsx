@@ -3,11 +3,11 @@ import { ArrowRight, Check, Sparkles } from "lucide-react";
 import { Container } from "../ui/Container";
 import { Button } from "../ui/Button";
 import { WombRevealVisual } from "../WombRevealVisual";
-import { useBooking } from "../../context/BookingContext";
+import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../../context/LanguageContext";
 
 export function Hero() {
-  const { openBooking } = useBooking();
+  const navigate = useNavigate();
   const { t } = useLanguage();
 
   const trustIndicators = [t("hero.trust1"), t("hero.trust2"), t("hero.trust3")];
@@ -59,7 +59,7 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
             className="mt-9 flex flex-wrap items-center gap-4"
           >
-            <Button size="lg" icon={<ArrowRight size={18} />} onClick={() => openBooking()}>
+            <Button size="lg" icon={<ArrowRight size={18} />} onClick={() => navigate("/book")}>
               {t("hero.bookAppointment")}
             </Button>
             <Button size="lg" variant="outline" onClick={scrollToServices}>

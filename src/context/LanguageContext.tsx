@@ -4,12 +4,18 @@ import { translations, type LanguageCode } from "../i18n/translations";
 type Translations = typeof translations.en;
 
 const STORAGE_KEY = "brd-hospital-language";
+const CHOSEN_KEY = "brd-hospital-language-chosen";
 
 function getInitialLanguage(): LanguageCode {
   if (typeof window === "undefined") return "en";
   const stored = window.localStorage.getItem(STORAGE_KEY);
   if (stored && stored in translations) return stored as LanguageCode;
   return "en";
+}
+
+function getInitialHasChosen(): boolean {
+  if (typeof window === "undefined") return true;
+  return window.localStorage.getItem(CHOSEN_KEY) === "true";
 }
 
 function getByPath(obj: unknown, path: string): unknown {
@@ -24,6 +30,8 @@ function getByPath(obj: unknown, path: string): unknown {
 interface LanguageContextValue {
   language: LanguageCode;
   setLanguage: (language: LanguageCode) => void;
+  hasChosenLanguage: boolean;
+  confirmLanguage: (language: LanguageCode) => void;
   t: (key: string, vars?: Record<string, string | number>) => string;
   tList: (key: string) => string[];
 }
@@ -32,6 +40,7 @@ const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<LanguageCode>(getInitialLanguage);
+  const [hasChosenLanguage, setHasChosenLanguage] = useState<boolean>(getInitialHasChosen);
 
   const setLanguage = useCallback((next: LanguageCode) => {
     setLanguageState(next);
@@ -41,6 +50,19 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       // ignore storage failures (private browsing, etc.)
     }
   }, []);
+
+  const confirmLanguage = useCallback(
+    (next: LanguageCode) => {
+      setLanguage(next);
+      setHasChosenLanguage(true);
+      try {
+        window.localStorage.setItem(CHOSEN_KEY, "true");
+      } catch {
+        // ignore storage failures (private browsing, etc.)
+      }
+    },
+    [setLanguage],
+  );
 
   const t = useCallback(
     (key: string, vars?: Record<string, string | number>) => {
@@ -69,7 +91,10 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     [language],
   );
 
-  const value = useMemo(() => ({ language, setLanguage, t, tList }), [language, setLanguage, t, tList]);
+  const value = useMemo(
+    () => ({ language, setLanguage, hasChosenLanguage, confirmLanguage, t, tList }),
+    [language, setLanguage, hasChosenLanguage, confirmLanguage, t, tList],
+  );
 
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 }

@@ -1,7 +1,7 @@
-import { BookingProvider } from "../context/BookingContext";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
-import { BookingWizard } from "../components/booking/BookingWizard";
 import { Hero } from "../components/sections/Hero";
 import { TrustStrip } from "../components/sections/TrustStrip";
 import { EmotionalCollage } from "../components/sections/EmotionalCollage";
@@ -13,8 +13,18 @@ import { Stats } from "../components/sections/Stats";
 import { FinalCta } from "../components/sections/FinalCta";
 
 export function MarketingSite() {
+  const { hash } = useLocation();
+
+  useEffect(() => {
+    if (!hash) return;
+    const timer = window.setTimeout(() => {
+      document.querySelector(hash)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
+    return () => window.clearTimeout(timer);
+  }, [hash]);
+
   return (
-    <BookingProvider>
+    <>
       <Navbar />
       <main>
         <Hero />
@@ -28,7 +38,6 @@ export function MarketingSite() {
         <FinalCta />
       </main>
       <Footer />
-      <BookingWizard />
-    </BookingProvider>
+    </>
   );
 }

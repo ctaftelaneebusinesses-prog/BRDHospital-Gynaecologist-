@@ -7,7 +7,7 @@ import { Reveal } from "../ui/Reveal";
 import { Img } from "../ui/Img";
 import { Button } from "../ui/Button";
 import { journeyStages } from "../../data/journey";
-import { useBooking } from "../../context/BookingContext";
+import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../../context/LanguageContext";
 
 const STAGE_TEXT_KEYS: Record<string, string> = {
@@ -59,7 +59,7 @@ function HeartBurst() {
 }
 
 export function PregnancyJourney() {
-  const { openBooking } = useBooking();
+  const navigate = useNavigate();
   const { t, tList } = useLanguage();
   const [activeIndex, setActiveIndex] = useState(0);
   const [bursting, setBursting] = useState(false);
@@ -189,7 +189,7 @@ export function PregnancyJourney() {
           <Button
             size="lg"
             icon={<ArrowRight size={18} />}
-            onClick={() => openBooking()}
+            onClick={() => navigate("/book")}
           >
             {t("journey.ctaButton")}
           </Button>

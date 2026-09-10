@@ -66,12 +66,18 @@ export const translations = {
       continueBtn: "Continue",
       confirmAppointment: "Confirm Appointment",
       bookingInProgress: "Booking…",
-      closeAria: "Close booking",
+      backToHome: "Back to Home",
     },
     timeSlot: {
       timezoneNote: "All times shown in your local timezone",
       morning: "Morning",
       afternoon: "Afternoon",
+    },
+    datePicker: {
+      prevMonth: "Previous month",
+      nextMonth: "Next month",
+      notAvailable: "Not available this day",
+      weekdays: ["S", "M", "T", "W", "T", "F", "S"],
     },
     stepDetails: {
       fullName: "Full Name",
@@ -84,8 +90,26 @@ export const translations = {
       dob: "Date of Birth",
       reason: "Reason for Visit",
       reasonPlaceholder: "e.g. Routine checkup, pregnancy consultation...",
+      reasonDropdownPlaceholder: "Tap to select reason(s) for visit",
+      reasonHelper: "Select any that apply, describe it below, or use your voice — whatever's easiest.",
       message: "Optional Message",
       messagePlaceholder: "Anything else you'd like us to know before your visit...",
+    },
+    stepPayment: {
+      heading: "Confirm with a small booking fee",
+      instructions: "To secure your slot, please scan the QR code below and pay ₹{amount} via any UPI app.",
+      generatingQr: "Generating QR code…",
+      payingTo: "Paying to {payee} · {upi}",
+      step1Instructions:
+        "After paying, tap below to open WhatsApp and send us a screenshot of the payment confirmation so we can verify it quickly.",
+      shareWhatsapp: "Share Screenshot on WhatsApp",
+      step2Label: "Enter your UPI transaction ID",
+      step2Helper:
+        "After paying, your UPI app shows a transaction / reference ID (UTR). Enter it here so our staff can verify your payment.",
+      transactionPlaceholder: "e.g. 234567891234",
+      disclaimer:
+        "Your appointment will be booked once you submit below. We'll mark it confirmed as soon as your payment is verified — this usually takes a little while, not necessarily right away.",
+      whatsappMessage: "Hi, I just paid the ₹{amount} booking fee for my appointment. Sharing my payment screenshot here.",
     },
     errors: {
       fullNameRequired: "Please enter your full name.",
@@ -94,7 +118,8 @@ export const translations = {
       emailRequired: "Please enter your email.",
       emailInvalid: "Please enter a valid email address.",
       dobRequired: "Please enter your date of birth.",
-      reasonRequired: "Please tell us the reason for your visit.",
+      reasonRequired: "Select at least one option, describe it, or use the mic.",
+      upiTransactionIdRequired: "Please enter the UPI transaction ID from your payment.",
       genericSubmit: "Something went wrong. Please try again.",
     },
     confirmation: {
@@ -268,12 +293,18 @@ export const translations = {
       continueBtn: "जारी रखें",
       confirmAppointment: "अपॉइंटमेंट की पुष्टि करें",
       bookingInProgress: "बुक हो रही है…",
-      closeAria: "बुकिंग बंद करें",
+      backToHome: "होम पर वापस जाएं",
     },
     timeSlot: {
       timezoneNote: "सभी समय आपके स्थानीय समय क्षेत्र में दिखाए गए हैं",
       morning: "सुबह",
       afternoon: "दोपहर",
+    },
+    datePicker: {
+      prevMonth: "पिछला महीना",
+      nextMonth: "अगला महीना",
+      notAvailable: "इस दिन उपलब्ध नहीं है",
+      weekdays: ["र", "सो", "मं", "बु", "गु", "शु", "श"],
     },
     stepDetails: {
       fullName: "पूरा नाम",
@@ -286,8 +317,26 @@ export const translations = {
       dob: "जन्म तिथि",
       reason: "मिलने का कारण",
       reasonPlaceholder: "जैसे: नियमित जांच, गर्भावस्था परामर्श...",
+      reasonDropdownPlaceholder: "मिलने के कारण चुनने के लिए टैप करें",
+      reasonHelper: "जो भी लागू हो उसे चुनें, नीचे बताएं, या अपनी आवाज़ का उपयोग करें — जो भी आसान लगे।",
       message: "अतिरिक्त संदेश (वैकल्पिक)",
       messagePlaceholder: "मिलने से पहले हमें कुछ और बताना चाहें तो यहां लिखें...",
+    },
+    stepPayment: {
+      heading: "एक छोटी बुकिंग फीस के साथ पुष्टि करें",
+      instructions: "अपनी स्लॉट सुरक्षित करने के लिए, कृपया नीचे दिए गए QR कोड को स्कैन करें और किसी भी UPI ऐप के माध्यम से ₹{amount} का भुगतान करें।",
+      generatingQr: "QR कोड बन रहा है…",
+      payingTo: "{payee} को भुगतान · {upi}",
+      step1Instructions:
+        "भुगतान करने के बाद, WhatsApp खोलने और भुगतान पुष्टि का स्क्रीनशॉट भेजने के लिए नीचे टैप करें ताकि हम इसे जल्दी सत्यापित कर सकें।",
+      shareWhatsapp: "WhatsApp पर स्क्रीनशॉट भेजें",
+      step2Label: "अपनी UPI लेनदेन आईडी दर्ज करें",
+      step2Helper:
+        "भुगतान के बाद, आपका UPI ऐप एक लेनदेन / संदर्भ आईडी (UTR) दिखाता है। कृपया इसे यहां दर्ज करें ताकि हमारा स्टाफ आपके भुगतान को सत्यापित कर सके।",
+      transactionPlaceholder: "जैसे: 234567891234",
+      disclaimer:
+        "नीचे सबमिट करते ही आपकी अपॉइंटमेंट बुक हो जाएगी। भुगतान सत्यापित होते ही हम इसे पुष्ट कर देंगे — इसमें थोड़ा समय लग सकता है, ज़रूरी नहीं कि तुरंत हो।",
+      whatsappMessage: "नमस्ते, मैंने अपनी अपॉइंटमेंट के लिए ₹{amount} बुकिंग फीस का भुगतान कर दिया है। यहां मेरे भुगतान का स्क्रीनशॉट भेज रहा/रही हूं।",
     },
     errors: {
       fullNameRequired: "कृपया अपना पूरा नाम दर्ज करें।",
@@ -296,7 +345,8 @@ export const translations = {
       emailRequired: "कृपया अपना ईमेल दर्ज करें।",
       emailInvalid: "कृपया एक मान्य ईमेल पता दर्ज करें।",
       dobRequired: "कृपया अपनी जन्म तिथि दर्ज करें।",
-      reasonRequired: "कृपया मिलने का कारण बताएं।",
+      reasonRequired: "कम से कम एक विकल्प चुनें, उसे बताएं, या माइक का उपयोग करें।",
+      upiTransactionIdRequired: "कृपया अपने भुगतान की UPI लेनदेन आईडी दर्ज करें।",
       genericSubmit: "कुछ गड़बड़ हो गई। कृपया पुनः प्रयास करें।",
     },
     confirmation: {
@@ -470,12 +520,18 @@ export const translations = {
       continueBtn: "కొనసాగించండి",
       confirmAppointment: "అపాయింట్‌మెంట్ నిర్ధారించండి",
       bookingInProgress: "బుక్ చేస్తోంది…",
-      closeAria: "బుకింగ్ మూసివేయండి",
+      backToHome: "హోమ్‌కు తిరిగి వెళ్లండి",
     },
     timeSlot: {
       timezoneNote: "అన్ని సమయాలు మీ స్థానిక సమయ మండలంలో చూపబడ్డాయి",
       morning: "ఉదయం",
       afternoon: "మధ్యాహ్నం",
+    },
+    datePicker: {
+      prevMonth: "మునుపటి నెల",
+      nextMonth: "తదుపరి నెల",
+      notAvailable: "ఈ రోజు అందుబాటులో లేదు",
+      weekdays: ["ఆ", "సో", "మం", "బు", "గు", "శు", "శ"],
     },
     stepDetails: {
       fullName: "పూర్తి పేరు",
@@ -488,8 +544,26 @@ export const translations = {
       dob: "పుట్టిన తేదీ",
       reason: "సందర్శన కారణం",
       reasonPlaceholder: "ఉదా: సాధారణ తనిఖీ, గర్భధారణ సంప్రదింపు...",
+      reasonDropdownPlaceholder: "సందర్శన కారణం(లు) ఎంచుకోవడానికి తాకండి",
+      reasonHelper: "వర్తించే వాటిని ఎంచుకోండి, కింద వివరించండి, లేదా మీ వాయిస్ ఉపయోగించండి — ఏది సులభమో అది.",
       message: "అదనపు సందేశం (ఐచ్ఛికం)",
       messagePlaceholder: "మీ సందర్శనకు ముందు మాకు తెలియజేయాలనుకుంటే ఇక్కడ రాయండి...",
+    },
+    stepPayment: {
+      heading: "చిన్న బుకింగ్ ఫీజుతో నిర్ధారించండి",
+      instructions: "మీ స్లాట్‌ను భద్రపరచడానికి, దయచేసి కింద ఉన్న QR కోడ్‌ను స్కాన్ చేసి ఏదైనా UPI యాప్ ద్వారా ₹{amount} చెల్లించండి.",
+      generatingQr: "QR కోడ్ తయారవుతోంది…",
+      payingTo: "{payee}కి చెల్లింపు · {upi}",
+      step1Instructions:
+        "చెల్లించిన తర్వాత, WhatsApp తెరిచి చెల్లింపు నిర్ధారణ స్క్రీన్‌షాట్ పంపడానికి కింద తాకండి, తద్వారా మేము దానిని త్వరగా ధృవీకరించగలము.",
+      shareWhatsapp: "WhatsAppలో స్క్రీన్‌షాట్ పంపండి",
+      step2Label: "మీ UPI లావాదేవీ IDని నమోదు చేయండి",
+      step2Helper:
+        "చెల్లించిన తర్వాత, మీ UPI యాప్ ఒక లావాదేవీ / రిఫరెన్స్ ID (UTR) చూపిస్తుంది. మా సిబ్బంది మీ చెల్లింపును ధృవీకరించడానికి దానిని ఇక్కడ నమోదు చేయండి.",
+      transactionPlaceholder: "ఉదా: 234567891234",
+      disclaimer:
+        "మీరు కింద సమర్పించగానే మీ అపాయింట్‌మెంట్ బుక్ అవుతుంది. మీ చెల్లింపు ధృవీకరించబడిన వెంటనే మేము దానిని నిర్ధారించినట్లు గుర్తిస్తాము — దీనికి కొంచెం సమయం పట్టవచ్చు, వెంటనే జరగకపోవచ్చు.",
+      whatsappMessage: "నమస్తే, నేను నా అపాయింట్‌మెంట్ కోసం ₹{amount} బుకింగ్ ఫీజు చెల్లించాను. నా చెల్లింపు స్క్రీన్‌షాట్‌ను ఇక్కడ పంపుతున్నాను.",
     },
     errors: {
       fullNameRequired: "దయచేసి మీ పూర్తి పేరు నమోదు చేయండి.",
@@ -498,7 +572,8 @@ export const translations = {
       emailRequired: "దయచేసి మీ ఇమెయిల్ నమోదు చేయండి.",
       emailInvalid: "దయచేసి సరైన ఇమెయిల్ చిరునామా నమోదు చేయండి.",
       dobRequired: "దయచేసి మీ పుట్టిన తేదీ నమోదు చేయండి.",
-      reasonRequired: "దయచేసి సందర్శన కారణం తెలియజేయండి.",
+      reasonRequired: "కనీసం ఒక ఎంపికను ఎంచుకోండి, వివరించండి, లేదా మైక్ ఉపయోగించండి.",
+      upiTransactionIdRequired: "దయచేసి మీ చెల్లింపు యొక్క UPI లావాదేవీ ID నమోదు చేయండి.",
       genericSubmit: "ఏదో తప్పు జరిగింది. దయచేసి మళ్లీ ప్రయత్నించండి.",
     },
     confirmation: {
@@ -672,12 +747,18 @@ export const translations = {
       continueBtn: "தொடரவும்",
       confirmAppointment: "அப்பாயிண்ட்மென்ட்டை உறுதிப்படுத்தவும்",
       bookingInProgress: "பதிவு செய்யப்படுகிறது…",
-      closeAria: "பதிவை மூடு",
+      backToHome: "முகப்புக்குத் திரும்பு",
     },
     timeSlot: {
       timezoneNote: "அனைத்து நேரங்களும் உங்கள் உள்ளூர் நேர மண்டலத்தில் காட்டப்படுகின்றன",
       morning: "காலை",
       afternoon: "மதியம்",
+    },
+    datePicker: {
+      prevMonth: "முந்தைய மாதம்",
+      nextMonth: "அடுத்த மாதம்",
+      notAvailable: "இந்த நாள் கிடைக்கவில்லை",
+      weekdays: ["ஞா", "தி", "செ", "பு", "வி", "வெ", "ச"],
     },
     stepDetails: {
       fullName: "முழுப் பெயர்",
@@ -690,8 +771,26 @@ export const translations = {
       dob: "பிறந்த தேதி",
       reason: "வருகைக்கான காரணம்",
       reasonPlaceholder: "எ.கா: வழக்கமான பரிசோதனை, கர்ப்ப ஆலோசனை...",
+      reasonDropdownPlaceholder: "வருகைக்கான காரணத்தை(களை) தேர்ந்தெடுக்க தட்டவும்",
+      reasonHelper: "பொருந்துவனவற்றைத் தேர்ந்தெடுக்கவும், கீழே விவரிக்கவும், அல்லது உங்கள் குரலைப் பயன்படுத்தவும் — எது எளிதோ அது.",
       message: "கூடுதல் செய்தி (விருப்பத்தேர்வு)",
       messagePlaceholder: "உங்கள் வருகைக்கு முன் எங்களுக்கு தெரிவிக்க விரும்பும் ஏதேனும் இருந்தால் இங்கே எழுதவும்...",
+    },
+    stepPayment: {
+      heading: "ஒரு சிறிய பதிவுக் கட்டணத்துடன் உறுதிப்படுத்தவும்",
+      instructions: "உங்கள் நேரத்தைப் பாதுகாக்க, கீழே உள்ள QR குறியீட்டை ஸ்கேன் செய்து எந்த UPI ஆப்பின் மூலமும் ₹{amount} செலுத்தவும்.",
+      generatingQr: "QR குறியீடு உருவாக்கப்படுகிறது…",
+      payingTo: "{payee}க்கு செலுத்துகிறீர்கள் · {upi}",
+      step1Instructions:
+        "செலுத்திய பிறகு, WhatsAppஐத் திறந்து பணம் செலுத்திய உறுதிப்படுத்தலின் ஸ்கிரீன்ஷாட்டை அனுப்ப கீழே தட்டவும், இதனால் நாங்கள் அதை விரைவாக சரிபார்க்க முடியும்.",
+      shareWhatsapp: "WhatsAppல் ஸ்கிரீன்ஷாட்டை பகிரவும்",
+      step2Label: "உங்கள் UPI பரிவர்த்தனை ஐடியை உள்ளிடவும்",
+      step2Helper:
+        "செலுத்திய பிறகு, உங்கள் UPI ஆப் ஒரு பரிவர்த்தனை / குறிப்பு ஐடி (UTR) காட்டும். எங்கள் ஊழியர்கள் உங்கள் பணம் செலுத்துதலை சரிபார்க்க இதை இங்கே உள்ளிடவும்.",
+      transactionPlaceholder: "எ.கா: 234567891234",
+      disclaimer:
+        "கீழே சமர்ப்பித்தவுடன் உங்கள் அப்பாயிண்ட்மென்ட் பதிவு செய்யப்படும். உங்கள் பணம் செலுத்துதல் சரிபார்க்கப்பட்டவுடன் அதை உறுதி என குறிப்பிடுவோம் — இதற்கு சிறிது நேரம் ஆகலாம், உடனடியாக நடக்காமல் இருக்கலாம்.",
+      whatsappMessage: "வணக்கம், நான் என் அப்பாயிண்ட்மென்ட்டுக்காக ₹{amount} பதிவுக் கட்டணத்தைச் செலுத்திவிட்டேன். எனது பணம் செலுத்திய ஸ்கிரீன்ஷாட்டை இங்கே பகிர்கிறேன்.",
     },
     errors: {
       fullNameRequired: "தயவுசெய்து உங்கள் முழுப் பெயரை உள்ளிடவும்.",
@@ -700,7 +799,8 @@ export const translations = {
       emailRequired: "தயவுசெய்து உங்கள் மின்னஞ்சலை உள்ளிடவும்.",
       emailInvalid: "தயவுசெய்து சரியான மின்னஞ்சல் முகவரியை உள்ளிடவும்.",
       dobRequired: "தயவுசெய்து உங்கள் பிறந்த தேதியை உள்ளிடவும்.",
-      reasonRequired: "தயவுசெய்து வருகைக்கான காரணத்தைக் கூறவும்.",
+      reasonRequired: "குறைந்தது ஒரு விருப்பத்தைத் தேர்ந்தெடுக்கவும், விவரிக்கவும், அல்லது மைக்கைப் பயன்படுத்தவும்.",
+      upiTransactionIdRequired: "தயவுசெய்து உங்கள் பணம் செலுத்தலின் UPI பரிவர்த்தனை ஐடியை உள்ளிடவும்.",
       genericSubmit: "ஏதோ தவறு நடந்தது. மீண்டும் முயற்சிக்கவும்.",
     },
     confirmation: {
@@ -874,12 +974,18 @@ export const translations = {
       continueBtn: "ಮುಂದುವರಿಸಿ",
       confirmAppointment: "ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ದೃಢೀಕರಿಸಿ",
       bookingInProgress: "ಬುಕ್ ಆಗುತ್ತಿದೆ…",
-      closeAria: "ಬುಕಿಂಗ್ ಮುಚ್ಚಿ",
+      backToHome: "ಮುಖಪುಟಕ್ಕೆ ಹಿಂತಿರುಗಿ",
     },
     timeSlot: {
       timezoneNote: "ಎಲ್ಲಾ ಸಮಯಗಳನ್ನು ನಿಮ್ಮ ಸ್ಥಳೀಯ ಸಮಯ ವಲಯದಲ್ಲಿ ತೋರಿಸಲಾಗಿದೆ",
       morning: "ಬೆಳಿಗ್ಗೆ",
       afternoon: "ಮಧ್ಯಾಹ್ನ",
+    },
+    datePicker: {
+      prevMonth: "ಹಿಂದಿನ ತಿಂಗಳು",
+      nextMonth: "ಮುಂದಿನ ತಿಂಗಳು",
+      notAvailable: "ಈ ದಿನ ಲಭ್ಯವಿಲ್ಲ",
+      weekdays: ["ಭಾ", "ಸೋ", "ಮಂ", "ಬು", "ಗು", "ಶು", "ಶ"],
     },
     stepDetails: {
       fullName: "ಪೂರ್ಣ ಹೆಸರು",
@@ -892,8 +998,26 @@ export const translations = {
       dob: "ಹುಟ್ಟಿದ ದಿನಾಂಕ",
       reason: "ಭೇಟಿಯ ಕಾರಣ",
       reasonPlaceholder: "ಉದಾ: ಸಾಮಾನ್ಯ ತಪಾಸಣೆ, ಗರ್ಭಧಾರಣೆ ಸಮಾಲೋಚನೆ...",
+      reasonDropdownPlaceholder: "ಭೇಟಿಯ ಕಾರಣ(ಗಳನ್ನು) ಆಯ್ಕೆ ಮಾಡಲು ಸ್ಪರ್ಶಿಸಿ",
+      reasonHelper: "ಅನ್ವಯವಾಗುವುದನ್ನು ಆಯ್ಕೆಮಾಡಿ, ಕೆಳಗೆ ವಿವರಿಸಿ, ಅಥವಾ ನಿಮ್ಮ ಧ್ವನಿಯನ್ನು ಬಳಸಿ — ಯಾವುದು ಸುಲಭವೋ ಅದನ್ನು.",
       message: "ಹೆಚ್ಚುವರಿ ಸಂದೇಶ (ಐಚ್ಛಿಕ)",
       messagePlaceholder: "ನಿಮ್ಮ ಭೇಟಿಗೆ ಮೊದಲು ನಮಗೆ ತಿಳಿಸಲು ಬಯಸುವ ಏನಾದರೂ ಇದ್ದರೆ ಇಲ್ಲಿ ಬರೆಯಿರಿ...",
+    },
+    stepPayment: {
+      heading: "ಸಣ್ಣ ಬುಕಿಂಗ್ ಶುಲ್ಕದೊಂದಿಗೆ ದೃಢೀಕರಿಸಿ",
+      instructions: "ನಿಮ್ಮ ಸ್ಲಾಟ್ ಅನ್ನು ಭದ್ರಪಡಿಸಲು, ದಯವಿಟ್ಟು ಕೆಳಗಿನ QR ಕೋಡ್ ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ ಮತ್ತು ಯಾವುದೇ UPI ಆ್ಯಪ್ ಮೂಲಕ ₹{amount} ಪಾವತಿಸಿ.",
+      generatingQr: "QR ಕೋಡ್ ರಚಿಸಲಾಗುತ್ತಿದೆ…",
+      payingTo: "{payee} ಗೆ ಪಾವತಿ · {upi}",
+      step1Instructions:
+        "ಪಾವತಿಸಿದ ನಂತರ, WhatsApp ತೆರೆಯಲು ಮತ್ತು ಪಾವತಿ ದೃಢೀಕರಣದ ಸ್ಕ್ರೀನ್‌ಶಾಟ್ ಕಳುಹಿಸಲು ಕೆಳಗೆ ಸ್ಪರ್ಶಿಸಿ, ಇದರಿಂದ ನಾವು ಅದನ್ನು ಬೇಗನೆ ಪರಿಶೀಲಿಸಬಹುದು.",
+      shareWhatsapp: "WhatsAppನಲ್ಲಿ ಸ್ಕ್ರೀನ್‌ಶಾಟ್ ಹಂಚಿಕೊಳ್ಳಿ",
+      step2Label: "ನಿಮ್ಮ UPI ವಹಿವಾಟು IDಯನ್ನು ನಮೂದಿಸಿ",
+      step2Helper:
+        "ಪಾವತಿಸಿದ ನಂತರ, ನಿಮ್ಮ UPI ಆ್ಯಪ್ ಒಂದು ವಹಿವಾಟು / ಉಲ್ಲೇಖ ID (UTR) ತೋರಿಸುತ್ತದೆ. ನಮ್ಮ ಸಿಬ್ಬಂದಿ ನಿಮ್ಮ ಪಾವತಿಯನ್ನು ಪರಿಶೀಲಿಸಲು ಇದನ್ನು ಇಲ್ಲಿ ನಮೂದಿಸಿ.",
+      transactionPlaceholder: "ಉದಾ: 234567891234",
+      disclaimer:
+        "ನೀವು ಕೆಳಗೆ ಸಲ್ಲಿಸಿದ ತಕ್ಷಣ ನಿಮ್ಮ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಬುಕ್ ಆಗುತ್ತದೆ. ನಿಮ್ಮ ಪಾವತಿ ಪರಿಶೀಲನೆಯಾದ ತಕ್ಷಣ ನಾವು ಅದನ್ನು ದೃಢೀಕರಿಸಿದಂತೆ ಗುರುತಿಸುತ್ತೇವೆ — ಇದಕ್ಕೆ ಸ್ವಲ್ಪ ಸಮಯ ಬೇಕಾಗಬಹುದು, ತಕ್ಷಣ ಆಗದೇ ಇರಬಹುದು.",
+      whatsappMessage: "ನಮಸ್ಕಾರ, ನಾನು ನನ್ನ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್‌ಗಾಗಿ ₹{amount} ಬುಕಿಂಗ್ ಶುಲ್ಕವನ್ನು ಪಾವತಿಸಿದ್ದೇನೆ. ನನ್ನ ಪಾವತಿ ಸ್ಕ್ರೀನ್‌ಶಾಟ್ ಅನ್ನು ಇಲ್ಲಿ ಹಂಚಿಕೊಳ್ಳುತ್ತಿದ್ದೇನೆ.",
     },
     errors: {
       fullNameRequired: "ದಯವಿಟ್ಟು ನಿಮ್ಮ ಪೂರ್ಣ ಹೆಸರನ್ನು ನಮೂದಿಸಿ.",
@@ -902,7 +1026,8 @@ export const translations = {
       emailRequired: "ದಯವಿಟ್ಟು ನಿಮ್ಮ ಇಮೇಲ್ ಅನ್ನು ನಮೂದಿಸಿ.",
       emailInvalid: "ದಯವಿಟ್ಟು ಮಾನ್ಯ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ.",
       dobRequired: "ದಯವಿಟ್ಟು ನಿಮ್ಮ ಹುಟ್ಟಿದ ದಿನಾಂಕವನ್ನು ನಮೂದಿಸಿ.",
-      reasonRequired: "ದಯವಿಟ್ಟು ಭೇಟಿಯ ಕಾರಣವನ್ನು ತಿಳಿಸಿ.",
+      reasonRequired: "ಕನಿಷ್ಠ ಒಂದು ಆಯ್ಕೆಯನ್ನು ಆರಿಸಿ, ವಿವರಿಸಿ, ಅಥವಾ ಮೈಕ್ ಬಳಸಿ.",
+      upiTransactionIdRequired: "ದಯವಿಟ್ಟು ನಿಮ್ಮ ಪಾವತಿಯ UPI ವಹಿವಾಟು ID ಅನ್ನು ನಮೂದಿಸಿ.",
       genericSubmit: "ಏನೋ ತಪ್ಪಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
     },
     confirmation: {

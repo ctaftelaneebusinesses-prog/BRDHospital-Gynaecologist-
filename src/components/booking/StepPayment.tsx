@@ -3,6 +3,7 @@ import QRCode from "qrcode";
 import { MessageCircleHeart, ShieldCheck } from "lucide-react";
 import type { AppSettings } from "../../lib/api/settings";
 import type { PatientDetails } from "./types";
+import { useLanguage } from "../../context/LanguageContext";
 
 interface StepPaymentProps {
   settings: AppSettings;
@@ -16,6 +17,7 @@ const inputClass =
 const errorClass = "border-red-300 focus:border-red-400 focus:ring-red-100";
 
 export function StepPayment({ settings, patient, errors, onChange }: StepPaymentProps) {
+  const { t } = useLanguage();
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
 
   useEffect(() => {
@@ -28,39 +30,30 @@ export function StepPayment({ settings, patient, errors, onChange }: StepPayment
       .catch(() => setQrDataUrl(null));
   }, [settings]);
 
-  const whatsappMessage = encodeURIComponent(
-    `Hi, I just paid the ₹${settings.bookingFeeAmount} booking fee for my appointment. Sharing my payment screenshot here.`,
-  );
+  const whatsappMessage = encodeURIComponent(t("stepPayment.whatsappMessage", { amount: settings.bookingFeeAmount }));
   const whatsappUrl = `https://wa.me/${settings.whatsappNumber}?text=${whatsappMessage}`;
 
   return (
     <div className="rounded-[1.75rem] bg-white p-5 text-center shadow-card ring-1 ring-plum/5 sm:p-7">
-      <h3 className="font-serif text-xl font-medium text-plum">Confirm with a small booking fee</h3>
+      <h3 className="font-serif text-xl font-medium text-plum">{t("stepPayment.heading")}</h3>
       <p className="mx-auto mt-2 max-w-md text-sm text-ink/60">
-        To secure your slot, please scan the QR code below and pay{" "}
-        <span className="font-semibold text-plum">₹{settings.bookingFeeAmount}</span> via any UPI app.
+        {t("stepPayment.instructions", { amount: settings.bookingFeeAmount })}
       </p>
 
       <div className="mx-auto mt-6 flex h-64 w-64 items-center justify-center rounded-2xl bg-cream-dark/60 p-4 ring-1 ring-plum/8">
         {qrDataUrl ? (
           <img src={qrDataUrl} alt="UPI payment QR code" className="h-full w-full" />
         ) : (
-          <p className="text-xs text-ink/40">Generating QR code…</p>
+          <p className="text-xs text-ink/40">{t("stepPayment.generatingQr")}</p>
         )}
       </div>
 
-      <p className="mt-3 text-xs text-ink/45">
-        Paying to <span className="font-medium text-ink/60">{settings.payeeName}</span> ·{" "}
-        {settings.upiId}
-      </p>
+      <p className="mt-3 text-xs text-ink/45">{t("stepPayment.payingTo", { payee: settings.payeeName, upi: settings.upiId })}</p>
 
       <div className="mx-auto mt-6 max-w-md rounded-2xl bg-sage-50 p-4 text-left text-sm text-sage-700">
         <div className="flex items-start gap-2.5">
           <MessageCircleHeart size={18} className="mt-0.5 shrink-0" />
-          <p>
-            Step 1 — After paying, tap below to open WhatsApp and send us a screenshot of the payment
-            confirmation so we can verify it quickly.
-          </p>
+          <p>{t("stepPayment.step1Instructions")}</p>
         </div>
         <a
           href={whatsappUrl}
@@ -68,33 +61,27 @@ export function StepPayment({ settings, patient, errors, onChange }: StepPayment
           rel="noopener noreferrer"
           className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-sage-600 px-4 py-2.5 text-sm font-semibold text-cream transition-colors hover:bg-sage-700"
         >
-          Share Screenshot on WhatsApp
+          {t("stepPayment.shareWhatsapp")}
         </a>
       </div>
 
       <div className="mx-auto mt-4 max-w-md text-left">
-        <p className="mb-2 text-sm font-medium text-plum">Step 2 — Enter your UPI transaction ID</p>
-        <p className="mb-2 text-xs text-ink/50">
-          After paying, your UPI app shows a transaction / reference ID (UTR). Enter it here so our
-          staff can verify your payment.
-        </p>
+        <p className="mb-2 text-sm font-medium text-plum">{t("stepPayment.step2Label")}</p>
+        <p className="mb-2 text-xs text-ink/50">{t("stepPayment.step2Helper")}</p>
         <input
           type="text"
           autoComplete="off"
           value={patient.upiTransactionId}
           onChange={(e) => onChange("upiTransactionId", e.target.value)}
-          placeholder="e.g. 234567891234"
+          placeholder={t("stepPayment.transactionPlaceholder")}
           className={`${inputClass} ${errors.upiTransactionId ? errorClass : ""}`}
         />
-        {errors.upiTransactionId && <p className="mt-1.5 text-xs text-red-500">{errors.upiTransactionId}</p>}
+        {errors.upiTransactionId && <p className="mt-1.5 text-xs text-red-500">{t(errors.upiTransactionId)}</p>}
       </div>
 
       <div className="mx-auto mt-4 flex max-w-md items-start gap-2.5 rounded-2xl bg-rose-50 p-4 text-left text-sm text-rose-700">
         <ShieldCheck size={18} className="mt-0.5 shrink-0" />
-        <p>
-          Your appointment will be booked once you submit below. We'll mark it confirmed as soon as
-          your payment is verified — this usually takes a little while, not necessarily right away.
-        </p>
+        <p>{t("stepPayment.disclaimer")}</p>
       </div>
     </div>
   );

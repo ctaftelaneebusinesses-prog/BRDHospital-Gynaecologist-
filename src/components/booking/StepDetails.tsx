@@ -52,7 +52,7 @@ export function StepDetails({ patient, errors, reasonOptions, onChange, onToggle
             placeholder={t("stepDetails.fullNamePlaceholder")}
             className={`${inputClass} ${errors.fullName ? errorClass : ""}`}
           />
-          {errors.fullName && <p className="mt-1.5 text-xs text-red-500">{errors.fullName}</p>}
+          {errors.fullName && <p className="mt-1.5 text-xs text-red-500">{t(errors.fullName)}</p>}
         </div>
 
         <div>
@@ -68,7 +68,7 @@ export function StepDetails({ patient, errors, reasonOptions, onChange, onToggle
             placeholder={t("stepDetails.phonePlaceholder")}
             className={`${inputClass} ${errors.phone ? errorClass : ""}`}
           />
-          {errors.phone && <p className="mt-1.5 text-xs text-red-500">{errors.phone}</p>}
+          {errors.phone && <p className="mt-1.5 text-xs text-red-500">{t(errors.phone)}</p>}
         </div>
 
         <div>
@@ -84,7 +84,7 @@ export function StepDetails({ patient, errors, reasonOptions, onChange, onToggle
             placeholder={t("stepDetails.emailPlaceholder")}
             className={`${inputClass} ${errors.email ? errorClass : ""}`}
           />
-          {errors.email && <p className="mt-1.5 text-xs text-red-500">{errors.email}</p>}
+          {errors.email && <p className="mt-1.5 text-xs text-red-500">{t(errors.email)}</p>}
         </div>
 
         <div className="sm:col-span-2">
@@ -98,7 +98,7 @@ export function StepDetails({ patient, errors, reasonOptions, onChange, onToggle
               className={`${inputClass} flex items-center justify-between gap-3 text-left ${errors.reason ? errorClass : ""}`}
             >
               <span className={`truncate ${patient.reasonTags.length ? "text-ink" : "text-ink/35"}`}>
-                {patient.reasonTags.length ? patient.reasonTags.join(", ") : "Tap to select reason(s) for visit"}
+                {patient.reasonTags.length ? patient.reasonTags.join(", ") : t("stepDetails.reasonDropdownPlaceholder")}
               </span>
               <ChevronDown
                 size={16}
@@ -139,9 +139,7 @@ export function StepDetails({ patient, errors, reasonOptions, onChange, onToggle
             )}
           </div>
 
-          <p className="mb-1.5 mt-4 text-xs text-ink/45">
-            Select any that apply, describe it below, or use your voice — whatever's easiest.
-          </p>
+          <p className="mb-1.5 mt-4 text-xs text-ink/45">{t("stepDetails.reasonHelper")}</p>
           <div className="relative">
             <textarea
               id="reason"
@@ -157,7 +155,7 @@ export function StepDetails({ patient, errors, reasonOptions, onChange, onToggle
               onTranscript={(text) => onChange("reason", patient.reason ? `${patient.reason} ${text}` : text)}
             />
           </div>
-          {errors.reason && <p className="mt-1.5 text-xs text-red-500">{errors.reason}</p>}
+          {errors.reason && <p className="mt-1.5 text-xs text-red-500">{t(errors.reason)}</p>}
         </div>
       </div>
     </div>

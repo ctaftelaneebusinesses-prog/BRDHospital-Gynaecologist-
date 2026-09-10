@@ -1,22 +1,23 @@
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Check, X } from "lucide-react";
-import { useBooking } from "../../context/BookingContext";
-import { useLanguage } from "../../context/LanguageContext";
-import { Button } from "../ui/Button";
-import { DatePicker } from "./DatePicker";
-import { TimeSlotSelector } from "./TimeSlotSelector";
-import { StepDetails } from "./StepDetails";
-import { StepPayment } from "./StepPayment";
-import { StepConfirmation } from "./StepConfirmation";
-import { emptyBookingState, type BookingState, type PatientDetails } from "./types";
-import { appointmentServices, timeSlots } from "../../data/booking";
-import { doctors } from "../../data/doctors";
-import { createAppointment, getBookedSlots, BookingError } from "../../lib/api/appointments";
-import { getBlockedSlotsForDate } from "../../lib/api/blockedSlots";
-import { notifyNewBooking } from "../../lib/api/notifications";
-import { getActiveReasonOptions, type ReasonOption } from "../../lib/api/reasonOptions";
-import { getSettings, type AppSettings } from "../../lib/api/settings";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft, ArrowRight, Check } from "lucide-react";
+import { Navbar } from "../components/Navbar";
+import { Footer } from "../components/Footer";
+import { Button } from "../components/ui/Button";
+import { DatePicker } from "../components/booking/DatePicker";
+import { TimeSlotSelector } from "../components/booking/TimeSlotSelector";
+import { StepDetails } from "../components/booking/StepDetails";
+import { StepPayment } from "../components/booking/StepPayment";
+import { StepConfirmation } from "../components/booking/StepConfirmation";
+import { emptyBookingState, type BookingState, type PatientDetails } from "../components/booking/types";
+import { appointmentServices, timeSlots } from "../data/booking";
+import { doctors } from "../data/doctors";
+import { createAppointment, getBookedSlots, BookingError } from "../lib/api/appointments";
+import { getBlockedSlotsForDate } from "../lib/api/blockedSlots";
+import { notifyNewBooking } from "../lib/api/notifications";
+import { getActiveReasonOptions, type ReasonOption } from "../lib/api/reasonOptions";
+import { getSettings, type AppSettings } from "../lib/api/settings";
+import { useLanguage } from "../context/LanguageContext";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^[+]?[\d\s()-]{7,}$/;
@@ -25,8 +26,8 @@ const LAST_STEP = 4;
 const selectedDoctor = doctors[0];
 const selectedService = appointmentServices[0];
 
-export function BookingWizard() {
-  const { isOpen, closeBooking } = useBooking();
+export function BookingPage() {
+  const navigate = useNavigate();
   const { t } = useLanguage();
   const STEP_LABELS = [
     t("booking.stepDate"),
@@ -49,14 +50,10 @@ export function BookingWizard() {
   const [settings, setSettings] = useState<AppSettings | null>(null);
 
   useEffect(() => {
-    if (!isOpen) return;
-    setState(emptyBookingState);
-    setErrors({});
-    setSubmitError(null);
-    setStep(0);
+    window.scrollTo(0, 0);
     getActiveReasonOptions().then(setReasonOptions);
     getSettings().then(setSettings);
-  }, [isOpen]);
+  }, []);
 
   useEffect(() => {
     if (!state.date) {
@@ -76,23 +73,6 @@ export function BookingWizard() {
     };
   }, [state.date]);
 
-  useEffect(() => {
-    document.body.style.overflow = isOpen ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isOpen]);
-
-  useEffect(() => {
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape" && isOpen) closeBooking();
-    }
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [isOpen, closeBooking]);
-
-  if (!isOpen) return null;
-
   const isLastStep = step === LAST_STEP;
   const isConfirmation = step === LAST_STEP;
   const unavailable = blockedSlots.wholeDayBlocked
@@ -111,13 +91,13 @@ export function BookingWizard() {
     const nextErrors: Partial<Record<keyof PatientDetails, string>> = {};
     const { fullName, phone, email, reason, reasonTags } = state.patient;
 
-    if (!fullName.trim()) nextErrors.fullName = t("errors.fullNameRequired");
-    if (!phone.trim()) nextErrors.phone = t("errors.phoneRequired");
-    else if (!PHONE_RE.test(phone.trim())) nextErrors.phone = t("errors.phoneInvalid");
+    if (!fullName.trim()) nextErrors.fullName = "errors.fullNameRequired";
+    if (!phone.trim()) nextErrors.phone = "errors.phoneRequired";
+    else if (!PHONE_RE.test(phone.trim())) nextErrors.phone = "errors.phoneInvalid";
     // Email is optional — only validate its format if the patient entered one.
-    if (email.trim() && !EMAIL_RE.test(email.trim())) nextErrors.email = t("errors.emailInvalid");
+    if (email.trim() && !EMAIL_RE.test(email.trim())) nextErrors.email = "errors.emailInvalid";
     if (reasonTags.length === 0 && !reason.trim()) {
-      nextErrors.reason = "Select at least one option, describe it, or use the mic.";
+      nextErrors.reason = "errors.reasonRequired";
     }
 
     setErrors(nextErrors);
@@ -126,7 +106,7 @@ export function BookingWizard() {
 
   function validatePayment(): boolean {
     if (!state.patient.upiTransactionId.trim()) {
-      setErrors((prev) => ({ ...prev, upiTransactionId: "Please enter the UPI transaction ID from your payment." }));
+      setErrors((prev) => ({ ...prev, upiTransactionId: "errors.upiTransactionIdRequired" }));
       return false;
     }
     setErrors((prev) => ({ ...prev, upiTransactionId: undefined }));
@@ -165,6 +145,7 @@ export function BookingWizard() {
           reason: [...state.patient.reasonTags, state.patient.reason.trim()].filter(Boolean).join(", "),
         });
         setStep(4);
+        window.scrollTo(0, 0);
       } catch (err) {
         setSubmitError(err instanceof BookingError ? err.message : t("errors.genericSubmit"));
       } finally {
@@ -174,10 +155,12 @@ export function BookingWizard() {
     }
 
     setStep((s) => Math.min(s + 1, LAST_STEP));
+    window.scrollTo(0, 0);
   }
 
   function handleBack() {
     setStep((s) => Math.max(s - 1, 0));
+    window.scrollTo(0, 0);
   }
 
   function updatePatient(field: keyof PatientDetails, value: string) {
@@ -198,42 +181,31 @@ export function BookingWizard() {
   const canProceed = step < 2 ? validateStep(step) : true;
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          className="fixed inset-0 z-[60] flex items-end justify-center bg-plum/50 backdrop-blur-sm sm:items-center sm:p-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) closeBooking();
-          }}
-        >
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 40 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-t-[2rem] bg-cream shadow-2xl sm:max-h-[88vh] sm:rounded-[2rem]"
-          >
+    <>
+      <Navbar />
+      <main className="min-h-screen bg-cream-dark/40 pb-20 pt-28 sm:pt-32">
+        <div className="mx-auto w-full max-w-3xl px-5 sm:px-8">
+          {!isConfirmation && (
+            <button
+              type="button"
+              onClick={() => navigate("/")}
+              className="mb-5 flex items-center gap-1.5 text-sm font-medium text-plum/60 transition-colors hover:text-plum"
+            >
+              <ArrowLeft size={16} />
+              {t("confirmation.backToHome")}
+            </button>
+          )}
+
+          <div className="flex flex-col overflow-hidden rounded-[2rem] bg-cream shadow-card ring-1 ring-plum/5">
             <div className="flex shrink-0 items-center justify-between border-b border-plum/8 px-5 py-4 sm:px-8">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-rose-500">
-                  {t("booking.title")}
-                </p>
+                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-rose-500">{t("booking.title")}</p>
                 {!isConfirmation && (
                   <p className="mt-0.5 font-serif text-lg font-medium text-plum">
                     {t("booking.stepOf", { n: step + 1, label: STEP_LABELS[step] })}
                   </p>
                 )}
               </div>
-              <button
-                onClick={closeBooking}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-plum/60 transition-colors hover:bg-plum/5 hover:text-plum"
-                aria-label={t("booking.closeAria")}
-              >
-                <X size={20} />
-              </button>
             </div>
 
             {!isConfirmation && (
@@ -272,7 +244,7 @@ export function BookingWizard() {
               </div>
             )}
 
-            <div className="flex-1 overflow-y-auto px-5 py-6 sm:px-8 sm:py-8">
+            <div className="px-5 py-6 sm:px-8 sm:py-8">
               {step === 0 && (
                 <DatePicker
                   selected={state.date}
@@ -311,7 +283,7 @@ export function BookingWizard() {
                   date={state.date}
                   time={state.time}
                   patientName={state.patient.fullName}
-                  onClose={closeBooking}
+                  onClose={() => navigate("/")}
                 />
               )}
             </div>
@@ -343,9 +315,10 @@ export function BookingWizard() {
                 </div>
               </div>
             )}
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </>
   );
 }
