@@ -60,6 +60,7 @@ src/
       AdminLayout.tsx        # shared shell (nav) for the tabs below
       OverviewTab.tsx
       AppointmentsTab.tsx
+      AvailabilityTab.tsx    # block a time slot or a whole day
       PaymentsTab.tsx
       SettingsTab.tsx
   components/
@@ -80,6 +81,7 @@ src/
     csvExport.ts             # admin "Download Excel" (CSV) helper
     api/
       appointments.ts        # createAppointment, getBookedSlots, listAppointments, updateAppointmentStatus
+      blockedSlots.ts        # doctor availability overrides — block a slot or a whole day
       notifications.ts       # notifyNewBooking (fires at booking time) + sendConfirmationEmail (fires once staff confirm status + payment)
 supabase/
   schema.sql                 # full DB schema + row-level security + seed data — run this once, see BACKEND_SETUP.md
@@ -132,9 +134,11 @@ Supabase SQL Editor.
   cancelled / completed / no-show, and payment: pending / paid / failed —
   independent dropdowns; search by name/phone/email/UPI transaction ID and
   filter by date; click a patient's name to open `AppointmentDetailModal`
-  with every field), **Payments** (manually-tracked payment status + CSV
-  export), **Settings** (booking fee, UPI ID, payee name, WhatsApp number,
-  reason checklist).
+  with every field), **Availability** (block an individual time slot or an
+  entire day, on top of the fixed daily schedule in `src/data/booking.ts` —
+  see below), **Payments** (manually-tracked payment status + CSV export),
+  **Settings** (booking fee, UPI ID, payee name, WhatsApp number, reason
+  checklist).
 - All tabs read from `AdminDataContext`, which loads appointments once via
   `listAppointments()` and shares them — a tab doesn't refetch on its own.
 - Payment verification is manual, not automated: the booking flow's payment
@@ -143,6 +147,17 @@ Supabase SQL Editor.
   type in the transaction ID their UPI app showed. Staff see that ID in the
   Appointments table/detail modal and cross-check it themselves before
   marking a booking Paid — there's no payment gateway integration.
+- Availability is layered, not a single source of truth — for a given date,
+  a slot is unbookable if it's already booked (`getBookedSlots`, real
+  `appointments` rows) **or** individually blocked (`blocked_slots` row with
+  a `blocked_time`) **or** the whole day is blocked (`blocked_slots` row with
+  `blocked_time = null`, which the `AvailabilityTab` UI calls "Block Entire
+  Day"). `DatePicker` greys out fully-blocked days in the calendar itself
+  (via `getFullyBlockedDates`, refetched per visible month); `TimeSlotSelector`
+  disables individually-blocked and already-booked times within a picked day.
+  There's still only one doctor (`doctors[0]`), so `blocked_slots` rows are
+  scoped to that doctor's id — extend the doctor picker before extending this
+  if a second doctor is ever added.
 
 ## 7. Internationalization (i18n)
 

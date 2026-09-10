@@ -12,7 +12,7 @@ export function FinalCta() {
   const { t } = useLanguage();
 
   return (
-    <section className="relative overflow-hidden py-24 sm:py-32">
+    <section className="relative overflow-hidden py-14 sm:py-20">
       <Container>
         <div className="relative overflow-hidden rounded-[2.5rem]">
           <Img

@@ -38,7 +38,7 @@ export function BabyEmotions() {
   }
 
   return (
-    <section id="baby-emotions" className="relative py-24 sm:py-32">
+    <section id="baby-emotions" className="relative py-14 sm:py-20">
       <Container>
         <SectionHeading
           eyebrow={t("babyEmotions.eyebrow")}
@@ -46,7 +46,7 @@ export function BabyEmotions() {
           description={t("babyEmotions.description")}
         />
 
-        <div className="mt-16 grid gap-6 md:grid-cols-3">
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
           {babyEmotions.map((emotion, index) => {
             const isPlaying = playingId === emotion.id;
             const label = t(LABEL_KEYS[emotion.id] ?? "") || emotion.label;

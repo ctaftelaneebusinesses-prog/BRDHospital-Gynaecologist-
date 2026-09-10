@@ -120,7 +120,7 @@ export function DoctorSpotlight() {
   const languageNames = doctor.languages.map((lang) => NATIVE_LANGUAGE_NAMES[lang] ?? lang);
 
   return (
-    <section id="doctor" className="relative overflow-hidden pb-24 pt-16 sm:pb-32 sm:pt-20">
+    <section id="doctor" className="relative overflow-hidden pb-14 pt-12 sm:pb-20 sm:pt-16">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-rose-300/60 to-transparent" />
       <div className="pointer-events-none absolute -left-24 top-20 h-80 w-80 rounded-full bg-sage-200/30 blur-3xl" />
       <div className="pointer-events-none absolute -right-24 bottom-10 h-96 w-96 rounded-full bg-rose-200/40 blur-3xl" />

@@ -29,6 +29,3 @@ export const timeSlots: string[] = [
   "04:30 PM",
   "05:00 PM",
 ];
-
-/** Slots that are pre-booked in the demo, to make the picker feel alive. Keyed by ISO date. */
-export const unavailableSlotsByDate: Record<string, string[]> = {};

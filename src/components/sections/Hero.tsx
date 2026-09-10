@@ -17,7 +17,7 @@ export function Hero() {
   }
 
   return (
-    <section id="home" className="relative overflow-hidden pb-8 pt-32 sm:pb-10 sm:pt-40">
+    <section id="home" className="relative overflow-hidden pb-8 pt-28 sm:pb-10 sm:pt-32">
       <div className="pointer-events-none absolute inset-0 bg-noise opacity-[0.35]" />
       <div className="pointer-events-none absolute -left-32 top-10 h-96 w-96 rounded-full bg-rose-200/50 blur-3xl" />
       <div className="pointer-events-none absolute -right-24 top-1/3 h-80 w-80 rounded-full bg-sage-200/40 blur-3xl" />

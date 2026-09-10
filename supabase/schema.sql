@@ -217,3 +217,37 @@ alter table appointments add column if not exists upi_transaction_id text;
 insert into app_settings (key, value) values
   ('whatsapp_number', '911234567890')
 on conflict (key) do nothing;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- v4 — doctor availability overrides (block a specific slot, or a whole
+-- day, on top of the fixed daily schedule in src/data/booking.ts).
+-- ─────────────────────────────────────────────────────────────────────────
+
+create table if not exists blocked_slots (
+  id uuid primary key default gen_random_uuid(),
+  doctor_id text not null references doctors(id),
+  blocked_date date not null,
+  blocked_time text, -- null = the entire day is blocked; otherwise one of the fixed slot labels, e.g. "09:00 AM"
+  reason text,
+  created_at timestamptz not null default now()
+);
+
+-- A given date can only be "whole day blocked" once, and a given slot can
+-- only be individually blocked once — coalesce folds null (whole day) to a
+-- single sentinel value so it participates in the uniqueness check too.
+create unique index if not exists blocked_slots_unique
+  on blocked_slots (doctor_id, blocked_date, coalesce(blocked_time, ''));
+
+create index if not exists blocked_slots_doctor_date_idx on blocked_slots (doctor_id, blocked_date);
+
+alter table blocked_slots enable row level security;
+
+-- Public can read (the booking flow needs to know what's blocked before a
+-- patient has signed in), but this table never holds any patient data.
+drop policy if exists "Public can view blocked slots" on blocked_slots;
+create policy "Public can view blocked slots" on blocked_slots
+  for select using (true);
+
+drop policy if exists "Staff can manage blocked slots" on blocked_slots;
+create policy "Staff can manage blocked slots" on blocked_slots
+  for all using (auth.role() = 'authenticated');

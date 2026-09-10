@@ -14,6 +14,11 @@ update** — it added the `v3` block at the bottom (optional email, the
 `upi_transaction_id` column, and a `whatsapp_number` setting). It's safe to
 re-run the whole file any time; every statement is idempotent.
 
+**⚠️ Re-run it again if you set this project up before the availability
+update** — it added a `v4` block: a new `blocked_slots` table backing the
+admin **Availability** tab (block one time slot, or a whole day). Same
+deal — safe to re-run the whole file.
+
 ## 1. Create a Supabase project
 
 1. Go to [supabase.com](https://supabase.com) → sign up (free) → **New project**.
@@ -152,6 +157,11 @@ networks can't route to, so direct connections there may hang or fail with
   full detail view (contact info, UPI transaction ID, reason, payment
   amount, when payment was confirmed, when it was booked). Status and
   payment each have their own dropdown, independent of each other.
+- **Availability** (`/admin` → Availability): block a specific time slot on
+  a specific date (e.g. "9–9:30 tomorrow, doctor's out"), or block the whole
+  day in one click. Blocked days grey out in the patient-facing date picker;
+  blocked slots within an open day show as struck-through and unclickable —
+  on top of whatever's already booked, so double-booking still can't happen.
 - **Email notifications**: two Supabase Edge Functions + Resend, once you
   complete step 5 above — staff get notified the moment a patient books
   (`notify-new-booking`), and the patient gets their confirmation email once

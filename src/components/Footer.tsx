@@ -29,9 +29,9 @@ export function Footer() {
   }
 
   return (
-    <footer className="relative bg-plum pt-20 text-cream/80">
+    <footer className="relative bg-plum pt-14 text-cream/80">
       <Container>
-        <div className="grid gap-12 pb-16 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-12 pb-12 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <a href="#home" onClick={(e) => { e.preventDefault(); handleNav("#home"); }} className="flex items-center gap-2.5">
               <Logo className="h-10 w-10 shrink-0 [&_circle:first-child]:fill-cream [&_circle:last-child]:fill-rose-500 [&_path]:fill-plum" />

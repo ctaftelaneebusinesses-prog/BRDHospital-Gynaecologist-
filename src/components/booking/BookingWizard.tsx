@@ -10,9 +10,10 @@ import { StepDetails } from "./StepDetails";
 import { StepPayment } from "./StepPayment";
 import { StepConfirmation } from "./StepConfirmation";
 import { emptyBookingState, type BookingState, type PatientDetails } from "./types";
-import { appointmentServices, unavailableSlotsByDate } from "../../data/booking";
+import { appointmentServices, timeSlots } from "../../data/booking";
 import { doctors } from "../../data/doctors";
 import { createAppointment, getBookedSlots, BookingError } from "../../lib/api/appointments";
+import { getBlockedSlotsForDate } from "../../lib/api/blockedSlots";
 import { notifyNewBooking } from "../../lib/api/notifications";
 import { getActiveReasonOptions, type ReasonOption } from "../../lib/api/reasonOptions";
 import { getSettings, type AppSettings } from "../../lib/api/settings";
@@ -38,6 +39,10 @@ export function BookingWizard() {
   const [state, setState] = useState<BookingState>(emptyBookingState);
   const [errors, setErrors] = useState<Partial<Record<keyof PatientDetails, string>>>({});
   const [serverBookedSlots, setServerBookedSlots] = useState<string[]>([]);
+  const [blockedSlots, setBlockedSlots] = useState<{ wholeDayBlocked: boolean; times: string[] }>({
+    wholeDayBlocked: false,
+    times: [],
+  });
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [reasonOptions, setReasonOptions] = useState<ReasonOption[]>([]);
@@ -56,11 +61,15 @@ export function BookingWizard() {
   useEffect(() => {
     if (!state.date) {
       setServerBookedSlots([]);
+      setBlockedSlots({ wholeDayBlocked: false, times: [] });
       return;
     }
     let cancelled = false;
     getBookedSlots(selectedDoctor.id, state.date).then((slots) => {
       if (!cancelled) setServerBookedSlots(slots);
+    });
+    getBlockedSlotsForDate(selectedDoctor.id, state.date).then((result) => {
+      if (!cancelled) setBlockedSlots(result);
     });
     return () => {
       cancelled = true;
@@ -86,8 +95,9 @@ export function BookingWizard() {
 
   const isLastStep = step === LAST_STEP;
   const isConfirmation = step === LAST_STEP;
-  const dateKey = state.date ? state.date.toISOString().split("T")[0] : "";
-  const unavailable = Array.from(new Set([...(unavailableSlotsByDate[dateKey] ?? []), ...serverBookedSlots]));
+  const unavailable = blockedSlots.wholeDayBlocked
+    ? timeSlots
+    : Array.from(new Set([...blockedSlots.times, ...serverBookedSlots]));
 
   function validateStep(current: number): boolean {
     if (current === 0) return Boolean(state.date);
@@ -267,6 +277,7 @@ export function BookingWizard() {
                 <DatePicker
                   selected={state.date}
                   onSelect={(date) => setState((prev) => ({ ...prev, date, time: null }))}
+                  doctorId={selectedDoctor.id}
                 />
               )}
               {step === 1 && (

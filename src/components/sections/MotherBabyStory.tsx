@@ -33,7 +33,7 @@ export function MotherBabyStory() {
   ];
 
   return (
-    <section className="relative py-24 sm:py-32">
+    <section className="relative py-14 sm:py-20">
       <Container>
         <SectionHeading
           eyebrow={t("motherBabyStory.eyebrow")}
@@ -41,7 +41,7 @@ export function MotherBabyStory() {
           description={t("motherBabyStory.description")}
         />
 
-        <div className="mt-16 grid gap-6 md:grid-cols-3">
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
           {storyCards.map((card, index) => (
             <Reveal key={card.id} delay={index * 0.1}>
               <div className="group relative aspect-[3/4] overflow-hidden rounded-[2rem] shadow-card">

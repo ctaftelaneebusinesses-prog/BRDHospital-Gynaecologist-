@@ -84,7 +84,7 @@ export function PregnancyJourney() {
   }
 
   return (
-    <section id="pregnancy-journey" className="relative overflow-hidden bg-cream-dark/60 py-24 sm:py-32">
+    <section id="pregnancy-journey" className="relative overflow-hidden bg-cream-dark/60 py-14 sm:py-20">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-rose-300/60 to-transparent" />
 
       <Container>

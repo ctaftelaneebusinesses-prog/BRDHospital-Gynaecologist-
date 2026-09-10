@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { getFullyBlockedDates } from "../../lib/api/blockedSlots";
 
 interface DatePickerProps {
   selected: Date | null;
   onSelect: (date: Date) => void;
+  doctorId: string;
 }
 
 const WEEKDAYS = ["S", "M", "T", "W", "T", "F", "S"];
@@ -19,11 +21,24 @@ function startOfDay(d: Date) {
   return copy;
 }
 
-export function DatePicker({ selected, onSelect }: DatePickerProps) {
+export function DatePicker({ selected, onSelect, doctorId }: DatePickerProps) {
   const today = startOfDay(new Date());
   const [viewDate, setViewDate] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
+  const [blockedDates, setBlockedDates] = useState<Set<string>>(new Set());
 
   const maxDate = new Date(today.getFullYear(), today.getMonth() + 3, 0);
+
+  useEffect(() => {
+    const from = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
+    const to = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 0);
+    let cancelled = false;
+    getFullyBlockedDates(doctorId, from, to).then((dates) => {
+      if (!cancelled) setBlockedDates(new Set(dates));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [doctorId, viewDate]);
 
   const firstOfMonth = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
   const daysInMonth = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 0).getDate();
@@ -70,7 +85,8 @@ export function DatePicker({ selected, onSelect }: DatePickerProps) {
 
         {cells.map((date, i) => {
           if (!date) return <span key={`empty-${i}`} />;
-          const disabled = date < today;
+          const isBlocked = blockedDates.has(date.toISOString().split("T")[0]);
+          const disabled = date < today || isBlocked;
           const isSelected = selected && isSameDay(date, selected);
           const isToday = isSameDay(date, today);
 
@@ -79,13 +95,16 @@ export function DatePicker({ selected, onSelect }: DatePickerProps) {
               key={date.toISOString()}
               type="button"
               disabled={disabled}
+              title={isBlocked ? "Not available this day" : undefined}
               onClick={() => onSelect(date)}
               className={`relative mx-auto flex h-10 w-10 items-center justify-center rounded-full text-sm font-medium transition-colors ${
                 isSelected
                   ? "bg-rose-600 text-cream shadow-md"
-                  : disabled
-                    ? "text-ink/25"
-                    : "text-ink/75 hover:bg-rose-50"
+                  : isBlocked
+                    ? "text-ink/20 line-through"
+                    : disabled
+                      ? "text-ink/25"
+                      : "text-ink/75 hover:bg-rose-50"
               }`}
             >
               {date.getDate()}
