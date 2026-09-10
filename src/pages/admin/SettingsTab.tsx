@@ -18,6 +18,7 @@ export function SettingsTab() {
   const [options, setOptions] = useState<ReasonOption[]>([]);
   const [newLabel, setNewLabel] = useState("");
   const [loadingOptions, setLoadingOptions] = useState(true);
+  const [addingOption, setAddingOption] = useState(false);
 
   useEffect(() => {
     getSettings().then(setSettings);
@@ -50,9 +51,14 @@ export function SettingsTab() {
   async function handleAddOption(e: FormEvent) {
     e.preventDefault();
     if (!newLabel.trim()) return;
-    await addReasonOption(newLabel.trim());
-    setNewLabel("");
-    refreshOptions();
+    setAddingOption(true);
+    try {
+      await addReasonOption(newLabel.trim());
+      setNewLabel("");
+      refreshOptions();
+    } finally {
+      setAddingOption(false);
+    }
   }
 
   async function handleToggleActive(option: ReasonOption) {
@@ -148,12 +154,14 @@ export function SettingsTab() {
             value={newLabel}
             onChange={(e) => setNewLabel(e.target.value)}
             placeholder="Add a new reason…"
-            className="flex-1 rounded-xl border border-plum/12 bg-cream px-4 py-2.5 text-sm text-plum outline-none focus:border-rose-400"
+            disabled={addingOption}
+            className="flex-1 rounded-xl border border-plum/12 bg-cream px-4 py-2.5 text-sm text-plum outline-none focus:border-rose-400 disabled:opacity-60"
           />
-          <Button type="submit" size="sm" icon={<Plus size={14} />} iconPosition="left">
-            Add
+          <Button type="submit" size="sm" disabled={addingOption} icon={<Plus size={14} />} iconPosition="left">
+            {addingOption ? "Translating…" : "Add"}
           </Button>
         </form>
+        <p className="mt-2 text-xs text-ink/40">New reasons are automatically translated into every supported language.</p>
 
         {loadingOptions ? (
           <p className="mt-4 text-sm text-ink/50">Loading…</p>

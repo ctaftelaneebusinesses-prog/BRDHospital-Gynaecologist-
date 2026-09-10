@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 import motherDefault from "../assets/backgorundremovedmom.png";
 import wombIllustration from "../assets/wombIllustration.webp";
 import babyLaughSound from "../assets/BabyLau.mp3";
-import { playExclusiveSound } from "../lib/sound";
+import { playExclusiveSound, stopCurrentSound } from "../lib/sound";
 import { useLanguage } from "../context/LanguageContext";
 
 /**
@@ -32,6 +32,7 @@ export function WombRevealVisual({ className = "" }: { className?: string }) {
   }
 
   function handleClose() {
+    stopCurrentSound();
     setRevealed(false);
     setKickToast(null);
     zoom.start({ scale: 1, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } });

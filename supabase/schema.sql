@@ -145,6 +145,11 @@ create table if not exists reason_options (
   created_at timestamptz not null default now()
 );
 
+-- Per-language labels ({"en": "...", "hi": "...", "te": "...", "ta": "...", "kn": "..."}),
+-- auto-populated by translateToAllLanguages() whenever an admin adds a new option, so the
+-- patient-facing checklist is never English-only just because it was added after launch.
+alter table reason_options add column if not exists translations jsonb;
+
 do $$
 begin
   if not exists (
@@ -164,14 +169,16 @@ drop policy if exists "Staff can manage reason options" on reason_options;
 create policy "Staff can manage reason options" on reason_options
   for all using (auth.role() = 'authenticated');
 
-insert into reason_options (label, sort_order) values
-  ('Routine Checkup', 1),
-  ('Pregnancy Consultation', 2),
-  ('Menstrual Health', 3),
-  ('Follow-up Visit', 4),
-  ('Fertility Consultation', 5),
-  ('Other', 6)
-on conflict (label) do nothing;
+insert into reason_options (label, sort_order, translations) values
+  ('Routine Checkup', 1, '{"en":"Routine Checkup","hi":"नियमित जाँच","te":"సాధారణ తనిఖీ","ta":"வழக்கமான சரிபார்ப்பு","kn":"ನಿಯಮಿತ ತಪಾಸಣೆ"}'),
+  ('Pregnancy Consultation', 2, '{"en":"Pregnancy Consultation","hi":"गर्भावस्था परामर्श","te":"గర్భధారణ సంప్రదింపులు","ta":"கர்ப்ப ஆலோசனை","kn":"ಗರ್ಭಧಾರಣೆಯ ಸಮಾಲೋಚನೆ"}'),
+  ('Menstrual Health', 3, '{"en":"Menstrual Health","hi":"मासिक धर्म स्वास्थ्य","te":"ఋతుస్రావం ఆరోగ్యం","ta":"மாதவிடாய் ஆரோக்கியம்","kn":"ಋತುಚಕ್ರದ ಆರೋಗ್ಯ"}'),
+  ('Follow-up Visit', 4, '{"en":"Follow-up Visit","hi":"फ़ॉलो - अप विज़िट","te":"ఫాలో-అప్ సందర్శన","ta":"பின்தொடர்தல் வருகை","kn":"ಅನುಸರಣಾ ಭೇಟಿ"}'),
+  ('Fertility Consultation', 5, '{"en":"Fertility Consultation","hi":"प्रजनन परामर्श","te":"సంతానోత్పత్తి సంప్రదింపులు","ta":"கருவுறுதல் ஆலோசனை","kn":"ಫಲವತ್ತತೆ ಸಮಾಲೋಚನೆ"}'),
+  ('Other', 6, '{"en":"Other","hi":"अन्य","te":"ఇతర","ta":"மற்றவை","kn":"ಇತರೆ"}'),
+  ('Irregular Periods', 7, '{"en":"Irregular Periods","hi":"अनियमित अवधि","te":"క్రమరహిత కాలాలు","ta":"ஒழுங்கற்ற காலங்கள்","kn":"ಅನಿಯಮಿತ ಋತುಚಕ್ರಗಳು"}'),
+  ('PCODS', 8, '{"en":"PCODS","hi":"PCODS","te":"PCODS","ta":"PCODS","kn":"PCODS"}')
+on conflict (label) do update set translations = excluded.translations;
 
 -- Simple key/value settings the admin can edit (UPI id, booking fee, ...).
 -- Values are stored as text and parsed by the app where needed (e.g. the fee

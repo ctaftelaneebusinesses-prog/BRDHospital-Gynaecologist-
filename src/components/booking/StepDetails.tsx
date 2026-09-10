@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Check, ChevronDown } from "lucide-react";
 import type { PatientDetails } from "./types";
-import type { ReasonOption } from "../../lib/api/reasonOptions";
+import { getReasonLabel, type ReasonOption } from "../../lib/api/reasonOptions";
 import { VoiceDictationButton } from "./VoiceDictationButton";
 import { useLanguage } from "../../context/LanguageContext";
 
@@ -19,7 +19,7 @@ const errorClass = "border-red-300 focus:border-red-400 focus:ring-red-100";
 const labelClass = "mb-1.5 block text-xs font-semibold uppercase tracking-[0.06em] text-ink/55";
 
 export function StepDetails({ patient, errors, reasonOptions, onChange, onToggleReasonTag }: StepDetailsProps) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [reasonOpen, setReasonOpen] = useState(false);
   const reasonRef = useRef<HTMLDivElement>(null);
   const reasonPanelRef = useRef<HTMLDivElement>(null);
@@ -98,7 +98,14 @@ export function StepDetails({ patient, errors, reasonOptions, onChange, onToggle
               className={`${inputClass} flex items-center justify-between gap-3 text-left ${errors.reason ? errorClass : ""}`}
             >
               <span className={`truncate ${patient.reasonTags.length ? "text-ink" : "text-ink/35"}`}>
-                {patient.reasonTags.length ? patient.reasonTags.join(", ") : t("stepDetails.reasonDropdownPlaceholder")}
+                {patient.reasonTags.length
+                  ? patient.reasonTags
+                      .map((label) => {
+                        const option = reasonOptions.find((o) => o.label === label);
+                        return option ? getReasonLabel(option, language) : label;
+                      })
+                      .join(", ")
+                  : t("stepDetails.reasonDropdownPlaceholder")}
               </span>
               <ChevronDown
                 size={16}
@@ -131,7 +138,7 @@ export function StepDetails({ patient, errors, reasonOptions, onChange, onToggle
                       >
                         {selected && <Check size={13} strokeWidth={3} className="text-cream" />}
                       </span>
-                      {option.label}
+                      {getReasonLabel(option, language)}
                     </label>
                   );
                 })}

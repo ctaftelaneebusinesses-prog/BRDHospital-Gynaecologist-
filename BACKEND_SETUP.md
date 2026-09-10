@@ -19,6 +19,13 @@ update** — it added a `v4` block: a new `blocked_slots` table backing the
 admin **Availability** tab (block one time slot, or a whole day). Same
 deal — safe to re-run the whole file.
 
+**⚠️ Re-run it again if you set this project up before the multilingual
+reason-checklist update** — `reason_options` gained a `translations` jsonb
+column (per-language labels), auto-filled whenever an admin adds a new
+option via `addReasonOption()` (see `src/lib/translate.ts`), and the six
+seeded options were backfilled with translations for all 5 languages. Same
+deal — safe to re-run the whole file.
+
 ## 1. Create a Supabase project
 
 1. Go to [supabase.com](https://supabase.com) → sign up (free) → **New project**.
