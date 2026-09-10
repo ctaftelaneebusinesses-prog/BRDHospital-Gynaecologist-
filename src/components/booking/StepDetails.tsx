@@ -22,6 +22,7 @@ export function StepDetails({ patient, errors, reasonOptions, onChange, onToggle
   const { t } = useLanguage();
   const [reasonOpen, setReasonOpen] = useState(false);
   const reasonRef = useRef<HTMLDivElement>(null);
+  const reasonPanelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function onClickOutside(e: MouseEvent) {
@@ -30,6 +31,10 @@ export function StepDetails({ patient, errors, reasonOptions, onChange, onToggle
     document.addEventListener("mousedown", onClickOutside);
     return () => document.removeEventListener("mousedown", onClickOutside);
   }, []);
+
+  useEffect(() => {
+    if (reasonOpen) reasonPanelRef.current?.scrollIntoView({ block: "nearest" });
+  }, [reasonOpen]);
 
   return (
     <div className="rounded-[1.75rem] bg-white p-5 shadow-card ring-1 ring-plum/5 sm:p-7">
@@ -85,7 +90,7 @@ export function StepDetails({ patient, errors, reasonOptions, onChange, onToggle
         <div className="sm:col-span-2">
           <label className={labelClass}>{t("stepDetails.reason")}</label>
 
-          <div className="relative" ref={reasonRef}>
+          <div ref={reasonRef}>
             <button
               type="button"
               onClick={() => setReasonOpen((v) => !v)}
@@ -102,7 +107,10 @@ export function StepDetails({ patient, errors, reasonOptions, onChange, onToggle
             </button>
 
             {reasonOpen && (
-              <div className="absolute z-10 mt-2 max-h-64 w-full overflow-y-auto rounded-2xl border border-plum/10 bg-white p-2 shadow-card">
+              <div
+                ref={reasonPanelRef}
+                className="relative z-10 mt-2 max-h-64 w-full touch-pan-y overflow-y-auto overscroll-contain rounded-2xl border border-plum/10 bg-white p-2 shadow-card"
+              >
                 {reasonOptions.map((option) => {
                   const selected = patient.reasonTags.includes(option.label);
                   return (
