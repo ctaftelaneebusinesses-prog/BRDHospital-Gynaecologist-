@@ -64,9 +64,9 @@ export function StepDetails({ patient, errors, reasonOptions, onChange, onToggle
             type="tel"
             autoComplete="off"
             inputMode="tel"
-            maxLength={15}
+            maxLength={12}
             value={patient.phone}
-            onChange={(e) => onChange("phone", e.target.value.replace(/[^\d+\s()-]/g, "").slice(0, 15))}
+            onChange={(e) => onChange("phone", e.target.value.replace(/[^\d+\s()-]/g, "").slice(0, 12))}
             placeholder={t("stepDetails.phonePlaceholder")}
             className={`${inputClass} ${errors.phone ? errorClass : ""}`}
           />
