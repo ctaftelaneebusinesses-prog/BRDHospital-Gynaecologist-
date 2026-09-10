@@ -20,8 +20,13 @@ import { getSettings, type AppSettings } from "../lib/api/settings";
 import { useLanguage } from "../context/LanguageContext";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PHONE_RE = /^[+]?[\d\s()-]{7,}$/;
 const LAST_STEP = 4;
+
+/** A valid Indian phone number is exactly 10 digits, optionally prefixed with the 91 country code. */
+function isValidPhone(phone: string): boolean {
+  const digits = phone.replace(/\D/g, "");
+  return digits.length === 10 || (digits.length === 12 && digits.startsWith("91"));
+}
 
 const selectedDoctor = doctors[0];
 const selectedService = appointmentServices[0];
@@ -93,7 +98,7 @@ export function BookingPage() {
 
     if (!fullName.trim()) nextErrors.fullName = "errors.fullNameRequired";
     if (!phone.trim()) nextErrors.phone = "errors.phoneRequired";
-    else if (!PHONE_RE.test(phone.trim())) nextErrors.phone = "errors.phoneInvalid";
+    else if (!isValidPhone(phone)) nextErrors.phone = "errors.phoneInvalid";
     // Email is optional — only validate its format if the patient entered one.
     if (email.trim() && !EMAIL_RE.test(email.trim())) nextErrors.email = "errors.emailInvalid";
     if (reasonTags.length === 0 && !reason.trim()) {
