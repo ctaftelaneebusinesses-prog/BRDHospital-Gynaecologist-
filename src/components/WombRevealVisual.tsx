@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { AnimatePresence, motion, useAnimation } from "framer-motion";
 import { X } from "lucide-react";
 import motherDefault from "../assets/backgorundremovedmom.png";
 import wombIllustration from "../assets/wombIllustration.webp";
+import babyLaughWomb from "../assets/baby-laugh-womb.mp4";
 import babyLaughSound from "../assets/BabyLau.mp3";
 import { playExclusiveSound, stopCurrentSound } from "../lib/sound";
 import { useLanguage } from "../context/LanguageContext";
@@ -14,17 +15,16 @@ import { useLanguage } from "../context/LanguageContext";
  */
 const BELLY = { cxPct: 36, cyPct: 70.5, leftPct: 14, topPct: 55.5, sizePct: 44 };
 
-const KICK_MESSAGES = ["Your little one just moved! 💕", "Did you feel that? 💕"];
+const KICK_MESSAGES = ["Someone's giggling in there!", "That's a happy wiggle!", "Your little one is laughing!"];
 
 export function WombRevealVisual({ className = "" }: { className?: string }) {
   const { t } = useLanguage();
   const [revealed, setRevealed] = useState(false);
   const [kickToast, setKickToast] = useState<string | null>(null);
+  const [laughing, setLaughing] = useState(false);
   const zoom = useAnimation();
-  const kick = useAnimation();
   const toastTimer = useRef<number | undefined>(undefined);
-
-  useEffect(() => () => window.clearTimeout(toastTimer.current), []);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   function handleReveal() {
     setRevealed(true);
@@ -33,22 +33,35 @@ export function WombRevealVisual({ className = "" }: { className?: string }) {
 
   function handleClose() {
     stopCurrentSound();
+    videoRef.current?.pause();
     setRevealed(false);
+    setLaughing(false);
     setKickToast(null);
     zoom.start({ scale: 1, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } });
   }
 
   function handleKick() {
-    playExclusiveSound(babyLaughSound, 0.6);
-    kick.start({
-      rotate: [0, -3.2, 2.6, -1.6, 0.8, 0],
-      scale: [1, 1.05, 0.97, 1.03, 0.99, 1],
-      transition: { duration: 0.7, ease: "easeInOut" },
-    });
+    // Every tap restarts it from the beginning — including tapping the frozen
+    // last frame after a previous play finished, so the baby can laugh again.
+    setLaughing(true);
+
+    // The video is muted and silent by design — some browsers silently drop a
+    // <video>'s embedded audio track even on a gesture-triggered play() (video
+    // keeps playing, sound just never comes through). Routing the sound via the
+    // same Audio()-based player used everywhere else on the site sidesteps that
+    // entirely, since that path is already proven to work reliably.
+    playExclusiveSound(babyLaughSound, 0.7);
+
+    const video = videoRef.current;
+    if (video) {
+      video.currentTime = 0;
+      video.play().catch(() => {});
+    }
+
     const msg = KICK_MESSAGES[Math.floor(Math.random() * KICK_MESSAGES.length)];
     setKickToast(msg);
     window.clearTimeout(toastTimer.current);
-    toastTimer.current = window.setTimeout(() => setKickToast(null), 2200);
+    toastTimer.current = window.setTimeout(() => setKickToast(null), 2500);
   }
 
   return (
@@ -111,7 +124,7 @@ export function WombRevealVisual({ className = "" }: { className?: string }) {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.82, transition: { duration: 0.35 } }}
               transition={{ duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute cursor-pointer"
+              className="absolute cursor-pointer overflow-hidden rounded-full"
               style={{
                 left: `${BELLY.leftPct}%`,
                 top: `${BELLY.topPct}%`,
@@ -119,23 +132,24 @@ export function WombRevealVisual({ className = "" }: { className?: string }) {
                 aspectRatio: "1 / 1",
               }}
             >
-              <motion.span animate={kick} className="absolute inset-0 block">
-                <img
-                  src={wombIllustration}
-                  alt="Illustrated view of the baby inside the womb, with umbilical cord and placenta"
-                  className="h-full w-full object-contain drop-shadow-[0_8px_24px_rgba(233,75,130,0.35)]"
-                  loading="eager"
-                />
-              </motion.span>
-
-              {kickToast && (
-                <motion.span
-                  initial={{ scale: 0.6, opacity: 0 }}
-                  animate={{ scale: [0.6, 1.5], opacity: [0.5, 0] }}
-                  transition={{ duration: 0.8, ease: "easeOut" }}
-                  className="absolute inset-0 rounded-full ring-2 ring-rose-300"
-                />
-              )}
+              <img
+                src={wombIllustration}
+                alt="Illustrated view of the baby inside the womb, with umbilical cord and placenta"
+                className={`absolute inset-0 h-full w-full object-contain drop-shadow-[0_8px_24px_rgba(233,75,130,0.35)] ${laughing ? "opacity-0" : "opacity-100"}`}
+                loading="eager"
+              />
+              {/* Always mounted (not conditionally rendered) so videoRef is already attached
+                  by the time handleKick runs — play() must fire synchronously inside that
+                  click handler for the browser to allow audio. */}
+              {/* No onEnded handler on purpose — once played, the video stays on its
+                  final frame instead of reverting back to the static illustration. */}
+              <video
+                ref={videoRef}
+                src={babyLaughWomb}
+                playsInline
+                muted
+                className={`absolute inset-0 h-full w-full object-cover drop-shadow-[0_8px_24px_rgba(233,75,130,0.35)] ${laughing ? "opacity-100" : "pointer-events-none opacity-0"}`}
+              />
             </motion.button>
           )}
         </AnimatePresence>
