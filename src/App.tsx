@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LanguageProvider } from "./context/LanguageContext";
 import { LanguageWelcomeModal } from "./components/LanguageWelcomeModal";
 import { MarketingSite } from "./pages/MarketingSite";
@@ -35,6 +35,7 @@ function App() {
             <Route path="payments" element={<PaymentsTab />} />
             <Route path="settings" element={<SettingsTab />} />
           </Route>
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
     </LanguageProvider>

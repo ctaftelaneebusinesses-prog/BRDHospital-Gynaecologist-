@@ -39,7 +39,7 @@ export function Footer() {
         <div className="grid gap-12 pb-12 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <a href="#home" onClick={(e) => { e.preventDefault(); handleNav("#home"); }} className="flex items-center gap-2.5">
-              <Logo className="h-10 w-10 shrink-0 [&_circle:first-child]:fill-cream [&_circle:last-child]:fill-rose-500 [&_path]:fill-plum" />
+              <Logo className="h-10 w-10 shrink-0" />
               <span className="font-serif text-lg font-medium text-cream">
                 BRD <span className="text-rose-300">Hospital</span>
               </span>
@@ -110,7 +110,14 @@ export function Footer() {
             <ul className="mt-5 space-y-4 text-sm text-cream/60">
               <li className="flex items-start gap-3">
                 <Phone size={16} className="mt-0.5 shrink-0 text-rose-300" />
-                077290 28405
+                <div className="flex flex-col gap-1">
+                  <a href="tel:08570255002" className="transition-colors hover:text-rose-300">
+                    0857 025 5002
+                  </a>
+                  <a href="tel:+917729028405" className="transition-colors hover:text-rose-300">
+                    +91 77290 28405
+                  </a>
+                </div>
               </li>
               <li className="flex items-start gap-3">
                 <Mail size={16} className="mt-0.5 shrink-0 text-rose-300" />
