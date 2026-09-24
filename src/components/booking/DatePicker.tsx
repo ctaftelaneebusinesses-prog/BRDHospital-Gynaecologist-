@@ -28,6 +28,15 @@ function startOfDay(d: Date) {
   return copy;
 }
 
+/** Local date parts — `.toISOString()` converts to UTC first, which silently shifts
+ * the date back a day for any timezone ahead of UTC (e.g. IST). */
+function toIsoDate(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 export function DatePicker({ selected, onSelect, doctorId }: DatePickerProps) {
   const { t, tList, language } = useLanguage();
   const weekdays = tList("datePicker.weekdays");
@@ -98,7 +107,7 @@ export function DatePicker({ selected, onSelect, doctorId }: DatePickerProps) {
 
         {cells.map((date, i) => {
           if (!date) return <span key={`empty-${i}`} />;
-          const isBlocked = blockedDates.has(date.toISOString().split("T")[0]);
+          const isBlocked = blockedDates.has(toIsoDate(date));
           const disabled = date < today || isBlocked;
           const isSelected = selected && isSameDay(date, selected);
           const isToday = isSameDay(date, today);

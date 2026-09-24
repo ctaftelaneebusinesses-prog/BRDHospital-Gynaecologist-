@@ -1,11 +1,14 @@
 import type { ReactNode } from "react";
 import { X } from "lucide-react";
+import { WhatsappIcon } from "../SocialIcons";
 import type { Appointment, AppointmentStatus, PaymentStatus } from "../../lib/api/appointments";
 
 interface AppointmentDetailModalProps {
   appointment: Appointment;
   doctorName: string;
   serviceName: string;
+  /** Pre-filled WhatsApp link to the patient — shown once the appointment is confirmed. */
+  whatsappUrl: string;
   onClose: () => void;
 }
 
@@ -41,7 +44,7 @@ function Row({ label, value }: { label: string; value: ReactNode }) {
   );
 }
 
-export function AppointmentDetailModal({ appointment: a, doctorName, serviceName, onClose }: AppointmentDetailModalProps) {
+export function AppointmentDetailModal({ appointment: a, doctorName, serviceName, whatsappUrl, onClose }: AppointmentDetailModalProps) {
   const reasonCombined = [...(a.reason_tags ?? []), a.reason].filter(Boolean).join(", ") || "—";
 
   return (
@@ -75,6 +78,18 @@ export function AppointmentDetailModal({ appointment: a, doctorName, serviceName
               Payment: {a.payment_status}
             </span>
           </div>
+
+          {a.status === "confirmed" && (
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1ebe5a]"
+            >
+              <WhatsappIcon className="h-5 w-5" />
+              Send Confirmation on WhatsApp
+            </a>
+          )}
 
           <div className="mt-2 divide-y divide-plum/8">
             <Row label="Full Name" value={a.full_name} />

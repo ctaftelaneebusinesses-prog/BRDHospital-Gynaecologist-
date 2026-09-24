@@ -13,6 +13,8 @@ import { appointmentServices } from "../../data/booking";
 import { downloadCsv } from "../../lib/csvExport";
 import { sendConfirmationEmail } from "../../lib/api/notifications";
 import { AppointmentDetailModal } from "../../components/admin/AppointmentDetailModal";
+import { WhatsappIcon } from "../../components/SocialIcons";
+import { buildPatientConfirmationMessage, buildWhatsappUrl } from "../../lib/whatsapp";
 
 const STATUS_FILTERS: (AppointmentStatus | "all")[] = [
   "all",
@@ -44,6 +46,19 @@ function doctorName(id: string) {
 }
 function serviceName(id: string) {
   return appointmentServices.find((s) => s.id === id)?.name ?? id;
+}
+/** Opens the admin's WhatsApp with a pre-filled confirmation message addressed to the patient. */
+function patientWhatsappUrl(a: Appointment) {
+  return buildWhatsappUrl(
+    a.phone,
+    buildPatientConfirmationMessage({
+      patientName: a.full_name,
+      doctorName: doctorName(a.doctor_id),
+      serviceName: serviceName(a.service_id),
+      appointmentDate: a.appointment_date,
+      appointmentTime: a.appointment_time,
+    }),
+  );
 }
 
 export function AppointmentsTab() {
@@ -257,18 +272,32 @@ export function AppointmentsTab() {
                     <p className="text-xs text-ink/45">{a.email || <span className="italic text-ink/30">no email</span>}</p>
                   </td>
                   <td className="px-5 py-4">
-                    <select
-                      value={a.status}
-                      disabled={updatingId === a.id}
-                      onChange={(e) => handleStatusChange(a, e.target.value as AppointmentStatus)}
-                      className={`rounded-lg border-none px-2 py-1.5 text-xs font-medium capitalize outline-none disabled:opacity-50 ${STATUS_STYLES[a.status]}`}
-                    >
-                      <option value="pending">Pending</option>
-                      <option value="confirmed">Confirmed</option>
-                      <option value="completed">Completed</option>
-                      <option value="cancelled">Cancelled</option>
-                      <option value="no-show">No-show</option>
-                    </select>
+                    <div className="flex items-center gap-2">
+                      <select
+                        value={a.status}
+                        disabled={updatingId === a.id}
+                        onChange={(e) => handleStatusChange(a, e.target.value as AppointmentStatus)}
+                        className={`rounded-lg border-none px-2 py-1.5 text-xs font-medium capitalize outline-none disabled:opacity-50 ${STATUS_STYLES[a.status]}`}
+                      >
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                        <option value="no-show">No-show</option>
+                      </select>
+                      {a.status === "confirmed" && (
+                        <a
+                          href={patientWhatsappUrl(a)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="Send confirmation to patient on WhatsApp"
+                          aria-label="Send confirmation to patient on WhatsApp"
+                          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#25D366] text-white shadow-sm transition-colors hover:bg-[#1ebe5a]"
+                        >
+                          <WhatsappIcon className="h-4 w-4" />
+                        </a>
+                      )}
+                    </div>
                   </td>
                   <td className="px-5 py-4">
                     <select
@@ -302,6 +331,7 @@ export function AppointmentsTab() {
           appointment={selected}
           doctorName={doctorName(selected.doctor_id)}
           serviceName={serviceName(selected.service_id)}
+          whatsappUrl={patientWhatsappUrl(selected)}
           onClose={() => setSelected(null)}
         />
       )}

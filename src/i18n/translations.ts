@@ -131,6 +131,8 @@ export const translations = {
       time: "Time",
       addToCalendar: "Add to Calendar",
       backToHome: "Back to Home",
+      sendWhatsapp: "Send Booking to WhatsApp",
+      sendWhatsappHint: "Tap to send your booking details to the clinic on WhatsApp. You will receive a confirmation message once the clinic confirms.",
     },
     emotionalCollage: {
       eyebrow: "Beyond Medicine",
@@ -358,6 +360,8 @@ export const translations = {
       time: "समय",
       addToCalendar: "कैलेंडर में जोड़ें",
       backToHome: "होम पर वापस जाएं",
+      sendWhatsapp: "बुकिंग WhatsApp पर भेजें",
+      sendWhatsappHint: "अपनी बुकिंग का विवरण WhatsApp पर क्लिनिक को भेजने के लिए टैप करें। क्लिनिक द्वारा पुष्टि होने पर आपको पुष्टि संदेश मिलेगा।",
     },
     emotionalCollage: {
       eyebrow: "चिकित्सा से परे",
@@ -585,6 +589,8 @@ export const translations = {
       time: "సమయం",
       addToCalendar: "క్యాలెండర్‌కు జోడించండి",
       backToHome: "హోమ్‌కు తిరిగి వెళ్లండి",
+      sendWhatsapp: "బుకింగ్‌ను WhatsAppకి పంపండి",
+      sendWhatsappHint: "మీ బుకింగ్ వివరాలను WhatsAppలో క్లినిక్‌కు పంపడానికి తాకండి. క్లినిక్ నిర్ధారించిన తర్వాత మీకు నిర్ధారణ సందేశం వస్తుంది.",
     },
     emotionalCollage: {
       eyebrow: "వైద్యానికి మించి",
@@ -812,6 +818,8 @@ export const translations = {
       time: "நேரம்",
       addToCalendar: "காலெண்டரில் சேர்க்கவும்",
       backToHome: "முகப்புக்குத் திரும்பு",
+      sendWhatsapp: "முன்பதிவை WhatsAppல் அனுப்பவும்",
+      sendWhatsappHint: "உங்கள் முன்பதிவு விவரங்களை WhatsAppல் கிளினிக்கிற்கு அனுப்ப தட்டவும். கிளினிக் உறுதிசெய்தவுடன் உங்களுக்கு உறுதிப்படுத்தல் செய்தி வரும்.",
     },
     emotionalCollage: {
       eyebrow: "மருத்துவத்திற்கு அப்பால்",
@@ -1039,6 +1047,8 @@ export const translations = {
       time: "ಸಮಯ",
       addToCalendar: "ಕ್ಯಾಲೆಂಡರ್‌ಗೆ ಸೇರಿಸಿ",
       backToHome: "ಮುಖಪುಟಕ್ಕೆ ಹಿಂತಿರುಗಿ",
+      sendWhatsapp: "ಬುಕಿಂಗ್ ಅನ್ನು WhatsAppಗೆ ಕಳುಹಿಸಿ",
+      sendWhatsappHint: "ನಿಮ್ಮ ಬುಕಿಂಗ್ ವಿವರಗಳನ್ನು WhatsAppನಲ್ಲಿ ಕ್ಲಿನಿಕ್‌ಗೆ ಕಳುಹಿಸಲು ಸ್ಪರ್ಶಿಸಿ. ಕ್ಲಿನಿಕ್ ದೃಢೀಕರಿಸಿದ ನಂತರ ನಿಮಗೆ ದೃಢೀಕರಣ ಸಂದೇಶ ಬರುತ್ತದೆ.",
     },
     emotionalCollage: {
       eyebrow: "ವೈದ್ಯಕೀಯಕ್ಕೂ ಮೀರಿ",

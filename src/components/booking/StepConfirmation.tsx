@@ -2,16 +2,21 @@ import { motion } from "framer-motion";
 import { CalendarPlus, CheckCircle2, Home } from "lucide-react";
 import { Button } from "../ui/Button";
 import { Img } from "../ui/Img";
+import { WhatsappIcon } from "../SocialIcons";
 import { useLanguage } from "../../context/LanguageContext";
 import type { Doctor } from "../../data/doctors";
 import type { AppointmentService } from "../../data/booking";
+import type { PatientDetails } from "./types";
+import { buildWhatsappUrl } from "../../lib/whatsapp";
 
 interface StepConfirmationProps {
   doctor: Doctor | undefined;
   service: AppointmentService | undefined;
   date: Date | null;
   time: string | null;
-  patientName: string;
+  patient: PatientDetails;
+  /** Admin's WhatsApp number (from Settings) — the booking details are sent here. */
+  adminWhatsappNumber: string;
   onClose: () => void;
 }
 
@@ -52,8 +57,48 @@ function buildIcsFile(service: AppointmentService | undefined, doctor: Doctor | 
   return new Blob([ics], { type: "text/calendar;charset=utf-8" });
 }
 
-export function StepConfirmation({ doctor, service, date, time, patientName, onClose }: StepConfirmationProps) {
+/** Written in English regardless of the patient's language — the clinic staff are the ones reading it. */
+function buildAdminMessage(
+  patient: PatientDetails,
+  doctor: Doctor | undefined,
+  service: AppointmentService | undefined,
+  date: Date | null,
+  time: string | null,
+) {
+  const reason = [...patient.reasonTags, patient.reason.trim()].filter(Boolean).join(", ");
+  return [
+    "*New Appointment Booking*",
+    "",
+    `Name: ${patient.fullName.trim()}`,
+    `Phone: ${patient.phone.trim()}`,
+    patient.email.trim() ? `Email: ${patient.email.trim()}` : null,
+    `Doctor: ${doctor?.name ?? "—"}`,
+    `Service: ${service?.name ?? "—"}`,
+    `Date: ${date ? DATE_FORMAT.format(date) : "—"}`,
+    `Time: ${time ?? "—"}`,
+    reason ? `Reason: ${reason}` : null,
+    patient.upiTransactionId.trim() ? `UPI Transaction ID: ${patient.upiTransactionId.trim()}` : null,
+    "",
+    "Please confirm my appointment.",
+  ]
+    .filter((line) => line !== null)
+    .join("\n");
+}
+
+export function StepConfirmation({
+  doctor,
+  service,
+  date,
+  time,
+  patient,
+  adminWhatsappNumber,
+  onClose,
+}: StepConfirmationProps) {
   const { t } = useLanguage();
+  const patientName = patient.fullName;
+  const whatsappUrl = adminWhatsappNumber
+    ? buildWhatsappUrl(adminWhatsappNumber, buildAdminMessage(patient, doctor, service, date, time))
+    : null;
 
   function handleAddToCalendar() {
     const blob = buildIcsFile(service, doctor, date, time);
@@ -100,6 +145,21 @@ export function StepConfirmation({ doctor, service, date, time, patientName, onC
         <SummaryTile label={t("confirmation.date")} value={date ? DATE_FORMAT.format(date) : "—"} />
         <SummaryTile label={t("confirmation.time")} value={time ?? "—"} />
       </div>
+
+      {whatsappUrl && (
+        <div className="mt-8 w-full max-w-md">
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-3.5 text-sm font-semibold text-white shadow-card transition-colors hover:bg-[#1ebe5a]"
+          >
+            <WhatsappIcon className="h-5 w-5" />
+            {t("confirmation.sendWhatsapp")}
+          </a>
+          <p className="mt-2 text-xs text-ink/50">{t("confirmation.sendWhatsappHint")}</p>
+        </div>
+      )}
 
       <div className="mt-9 flex flex-wrap justify-center gap-3">
         <Button variant="outline" icon={<CalendarPlus size={17} />} iconPosition="left" onClick={handleAddToCalendar}>

@@ -4,6 +4,8 @@ Marketing + booking site for BRD Hospital (a gynecology practice), plus a privat
 admin dashboard for staff to manage appointments and payments. React 19 +
 TypeScript + Vite on the frontend, Supabase (Postgres + Auth + Edge Functions)
 on the backend.
+##### ** Smart School Mnagment Gmail lo supabase **
+
 
 ## How to run the project
 

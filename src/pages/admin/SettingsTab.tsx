@@ -118,7 +118,7 @@ export function SettingsTab() {
           </div>
           <div className="sm:col-span-2">
             <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-ink/55">
-              WhatsApp number (patients are sent here to share their payment screenshot)
+              WhatsApp number (patients send their booking details and payment screenshot here)
             </label>
             <input
               type="text"

@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { LayoutGrid, CalendarClock, CalendarOff, Wallet, Settings, LogOut } from "lucide-react";
+import { LayoutGrid, CalendarClock, CalendarOff, Wallet, Baby, Settings, LogOut } from "lucide-react";
 import { AdminDataProvider, useAdminData } from "../../context/AdminDataContext";
 import { signOut } from "../../lib/auth";
 import { Logo } from "../../components/Logo";
@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { to: "/admin/appointments", label: "Appointments", icon: CalendarClock, end: false },
   { to: "/admin/availability", label: "Availability", icon: CalendarOff, end: false },
   { to: "/admin/payments", label: "Payments", icon: Wallet, end: false },
+  { to: "/admin/patients", label: "Patient Records", icon: Baby, end: false },
   { to: "/admin/settings", label: "Settings", icon: Settings, end: false },
 ];
 

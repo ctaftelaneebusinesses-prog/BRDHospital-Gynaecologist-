@@ -1,15 +1,25 @@
 import { useEffect, useMemo, useState } from "react";
-import { CalendarOff, Ban, Trash2, Clock } from "lucide-react";
+import { CalendarOff, Ban, Trash2, Clock, Plus } from "lucide-react";
 import {
   listBlockedSlots,
   addBlockedSlot,
   removeBlockedSlot,
   type BlockedSlot,
 } from "../../lib/api/blockedSlots";
+import { getSettings, updateTimeSlots } from "../../lib/api/settings";
 import { doctors } from "../../data/doctors";
-import { timeSlots } from "../../data/booking";
+import { timeSlots as fallbackTimeSlots, sortTimeSlots } from "../../data/booking";
 
 const selectedDoctor = doctors[0];
+
+/** Converts a native <input type="time"> value ("14:30") to the site's display label ("02:30 PM"). */
+function to12HourLabel(value24: string): string {
+  const [hStr, mStr] = value24.split(":");
+  let hours = Number(hStr) % 12;
+  if (hours === 0) hours = 12;
+  const period = Number(hStr) >= 12 ? "PM" : "AM";
+  return `${String(hours).padStart(2, "0")}:${mStr} ${period}`;
+}
 
 const DATE_FORMAT = new Intl.DateTimeFormat("en-US", { weekday: "short", day: "2-digit", month: "short", year: "numeric" });
 
@@ -30,6 +40,12 @@ export function AvailabilityTab() {
   const [reason, setReason] = useState("");
   const [saving, setSaving] = useState<string | null>(null);
 
+  const [timeSlots, setTimeSlots] = useState<string[]>(fallbackTimeSlots);
+  const [slotsLoading, setSlotsLoading] = useState(true);
+  const [newSlotTime, setNewSlotTime] = useState("09:00");
+  const [slotsError, setSlotsError] = useState<string | null>(null);
+  const [savingSlots, setSavingSlots] = useState(false);
+
   function refresh() {
     setLoading(true);
     listBlockedSlots(selectedDoctor.id, isoToDate(todayIso()))
@@ -37,7 +53,46 @@ export function AvailabilityTab() {
       .finally(() => setLoading(false));
   }
 
+  function refreshSlots() {
+    setSlotsLoading(true);
+    getSettings()
+      .then((s) => setTimeSlots(s.timeSlots))
+      .finally(() => setSlotsLoading(false));
+  }
+
   useEffect(refresh, []);
+  useEffect(refreshSlots, []);
+
+  async function persistTimeSlots(next: string[]) {
+    setSlotsError(null);
+    setSavingSlots(true);
+    const sorted = sortTimeSlots(next);
+    try {
+      await updateTimeSlots(sorted);
+      setTimeSlots(sorted);
+    } catch {
+      setSlotsError("Couldn't save the schedule change. Please try again.");
+    } finally {
+      setSavingSlots(false);
+    }
+  }
+
+  function handleAddSlot() {
+    const label = to12HourLabel(newSlotTime);
+    if (timeSlots.includes(label)) {
+      setSlotsError(`${label} is already in the schedule.`);
+      return;
+    }
+    persistTimeSlots([...timeSlots, label]);
+  }
+
+  function handleRemoveSlot(label: string) {
+    if (timeSlots.length <= 1) {
+      setSlotsError("At least one time slot is required.");
+      return;
+    }
+    persistTimeSlots(timeSlots.filter((t) => t !== label));
+  }
 
   const entriesForDate = useMemo(
     () => entries.filter((e) => e.blocked_date === selectedDate),
@@ -168,6 +223,60 @@ export function AvailabilityTab() {
             <Ban size={13} /> Tap a slot to block it; tap again to unblock.
           </p>
         </div>
+      </div>
+
+      <div className="mt-6 rounded-[1.75rem] bg-white p-5 shadow-card ring-1 ring-plum/5 sm:p-6">
+        <h2 className="font-serif text-lg font-medium text-plum">Working Hours</h2>
+        <p className="mt-1 text-sm text-ink/55">
+          Add or remove the times patients can pick from when booking — this changes the schedule everywhere, not
+          just for one day.
+        </p>
+
+        <div className="mt-4 flex flex-wrap items-end gap-3">
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-ink/55">
+              Add a time
+            </label>
+            <input
+              type="time"
+              value={newSlotTime}
+              onChange={(e) => setNewSlotTime(e.target.value)}
+              className="rounded-xl border border-plum/12 bg-cream px-4 py-2.5 text-sm text-plum outline-none focus:border-rose-400"
+            />
+          </div>
+          <button
+            onClick={handleAddSlot}
+            disabled={savingSlots}
+            className="flex items-center gap-1.5 rounded-full bg-plum px-4 py-2.5 text-sm font-semibold text-cream hover:bg-plum/90 disabled:opacity-50"
+          >
+            <Plus size={15} /> Add Slot
+          </button>
+        </div>
+
+        {slotsError && <p className="mt-2 text-xs text-rose-600">{slotsError}</p>}
+
+        {slotsLoading ? (
+          <p className="mt-4 text-sm text-ink/50">Loading…</p>
+        ) : (
+          <div className="mt-4 flex flex-wrap gap-2">
+            {timeSlots.map((time) => (
+              <span
+                key={time}
+                className="flex items-center gap-1.5 rounded-full border border-plum/10 bg-cream px-3 py-1.5 text-sm font-medium text-plum"
+              >
+                {time}
+                <button
+                  onClick={() => handleRemoveSlot(time)}
+                  disabled={savingSlots}
+                  aria-label={`Remove ${time}`}
+                  className="text-ink/40 hover:text-rose-600 disabled:opacity-50"
+                >
+                  ×
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="mt-6 rounded-[1.75rem] bg-white p-5 shadow-card ring-1 ring-plum/5 sm:p-6">

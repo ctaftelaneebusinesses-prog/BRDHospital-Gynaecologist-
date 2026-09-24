@@ -258,3 +258,57 @@ create policy "Public can view blocked slots" on blocked_slots
 drop policy if exists "Staff can manage blocked slots" on blocked_slots;
 create policy "Staff can manage blocked slots" on blocked_slots
   for all using (auth.role() = 'authenticated');
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- v5 — patient (maternity) records: mothers under care and their deliveries.
+-- A record starts as 'expecting' (pregnancy) and becomes 'delivered' once
+-- the baby is born; delivery + baby fields are required by the admin form
+-- only for delivered records, so they're nullable here.
+-- ─────────────────────────────────────────────────────────────────────────
+
+create table if not exists delivery_records (
+  id uuid primary key default gen_random_uuid(),
+  record_status text not null default 'delivered' check (record_status in ('expecting', 'delivered')),
+
+  -- Parents
+  mother_name text not null,
+  mother_age int check (mother_age between 10 and 70),
+  mother_occupation text,
+  mother_blood_group text,
+  father_name text not null,
+  father_occupation text,
+
+  -- Contact & address
+  contact_number text not null,
+  alternate_contact_number text,
+  address text not null,
+  district text not null,
+  state text not null,
+  pincode text,
+
+  -- Pregnancy / delivery
+  expected_delivery_date date,
+  delivery_date date,
+  delivery_type text, -- e.g. 'Normal', 'C-Section (Emergency)' — see DELIVERY_TYPES in src/lib/api/deliveryRecords.ts
+  gestation_weeks int check (gestation_weeks between 20 and 45),
+
+  -- Baby
+  baby_birth_date date,
+  baby_birth_time text,
+  baby_weight_kg numeric(4, 2) check (baby_weight_kg > 0 and baby_weight_kg < 10),
+  baby_gender text check (baby_gender in ('Boy', 'Girl', 'Other')),
+  baby_blood_group text,
+
+  notes text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists delivery_records_delivery_date_idx on delivery_records (delivery_date);
+
+alter table delivery_records enable row level security;
+
+-- Patient data — staff only, no public access at all.
+drop policy if exists "Staff can manage delivery records" on delivery_records;
+create policy "Staff can manage delivery records" on delivery_records
+  for all using (auth.role() = 'authenticated');

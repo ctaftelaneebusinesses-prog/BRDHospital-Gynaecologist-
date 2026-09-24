@@ -9,6 +9,7 @@ import { OverviewTab } from "./pages/admin/OverviewTab";
 import { AppointmentsTab } from "./pages/admin/AppointmentsTab";
 import { AvailabilityTab } from "./pages/admin/AvailabilityTab";
 import { PaymentsTab } from "./pages/admin/PaymentsTab";
+import { PatientRecordsTab } from "./pages/admin/PatientRecordsTab";
 import { SettingsTab } from "./pages/admin/SettingsTab";
 import { ProtectedRoute } from "./components/admin/ProtectedRoute";
 
@@ -33,6 +34,7 @@ function App() {
             <Route path="appointments" element={<AppointmentsTab />} />
             <Route path="availability" element={<AvailabilityTab />} />
             <Route path="payments" element={<PaymentsTab />} />
+            <Route path="patients" element={<PatientRecordsTab />} />
             <Route path="settings" element={<SettingsTab />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />

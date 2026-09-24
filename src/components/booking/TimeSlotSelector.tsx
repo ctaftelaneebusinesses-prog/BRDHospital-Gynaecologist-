@@ -1,15 +1,17 @@
 import { Clock } from "lucide-react";
-import { timeSlots } from "../../data/booking";
+import { timeSlots as fallbackTimeSlots } from "../../data/booking";
 import { useLanguage } from "../../context/LanguageContext";
 
 interface TimeSlotSelectorProps {
   selected: string | null;
   onSelect: (time: string) => void;
   unavailable?: string[];
+  slots?: string[];
 }
 
-export function TimeSlotSelector({ selected, onSelect, unavailable = [] }: TimeSlotSelectorProps) {
+export function TimeSlotSelector({ selected, onSelect, unavailable = [], slots = fallbackTimeSlots }: TimeSlotSelectorProps) {
   const { t } = useLanguage();
+  const timeSlots = slots;
   const morning = timeSlots.filter((slot) => slot.includes("AM"));
   const afternoon = timeSlots.filter((slot) => slot.includes("PM"));
 

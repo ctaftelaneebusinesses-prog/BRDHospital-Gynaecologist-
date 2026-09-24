@@ -38,8 +38,13 @@ export interface NewAppointmentInput {
   upiTransactionId: string;
 }
 
+/** Formats using the LOCAL date parts — `.toISOString()` converts to UTC first, which
+ * silently shifts the date back a day for any timezone ahead of UTC (e.g. IST). */
 function toIsoDate(date: Date): string {
-  return date.toISOString().split("T")[0];
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 /** Thrown when a booking can't be created — the message is safe to show to the patient. */
@@ -96,13 +101,12 @@ export async function getBookedSlots(doctorId: string, date: Date): Promise<stri
   return (data as { appointment_time: string }[]).map((row) => row.appointment_time);
 }
 
-/** Admin only (requires an authenticated session — enforced by RLS). */
+/** Admin only (requires an authenticated session — enforced by RLS). Newest bookings first, so new/unreviewed appointments surface at the top instead of sinking under older scheduled dates. */
 export async function listAppointments(): Promise<Appointment[]> {
   const { data, error } = await supabase
     .from("appointments")
     .select("*")
-    .order("appointment_date", { ascending: true })
-    .order("appointment_time", { ascending: true });
+    .order("created_at", { ascending: false });
 
   if (error) throw error;
   return data as Appointment[];

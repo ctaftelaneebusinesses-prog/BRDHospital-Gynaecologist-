@@ -9,8 +9,13 @@ export interface BlockedSlot {
   created_at: string;
 }
 
+/** Formats using the LOCAL date parts — `.toISOString()` converts to UTC first, which
+ * silently shifts the date back a day for any timezone ahead of UTC (e.g. IST). */
 function toIsoDate(date: Date): string {
-  return date.toISOString().split("T")[0];
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 /** For the booking flow: is this date fully blocked, and which individual slots are blocked on it. */

@@ -80,8 +80,9 @@ export function BookingPage() {
 
   const isLastStep = step === LAST_STEP;
   const isConfirmation = step === LAST_STEP;
+  const activeTimeSlots = settings?.timeSlots ?? timeSlots;
   const unavailable = blockedSlots.wholeDayBlocked
-    ? timeSlots
+    ? activeTimeSlots
     : Array.from(new Set([...blockedSlots.times, ...serverBookedSlots]));
 
   function validateStep(current: number): boolean {
@@ -261,6 +262,7 @@ export function BookingPage() {
                 <TimeSlotSelector
                   selected={state.time}
                   unavailable={unavailable}
+                  slots={activeTimeSlots}
                   onSelect={(time) => setState((prev) => ({ ...prev, time }))}
                 />
               )}
@@ -275,7 +277,7 @@ export function BookingPage() {
               )}
               {step === 3 && (
                 <StepPayment
-                  settings={settings ?? { upiId: "", payeeName: "", bookingFeeAmount: 0, whatsappNumber: "" }}
+                  settings={settings ?? { upiId: "", payeeName: "", bookingFeeAmount: 0, whatsappNumber: "", timeSlots }}
                   patient={state.patient}
                   errors={errors}
                   onChange={updatePatient}
@@ -287,7 +289,8 @@ export function BookingPage() {
                   service={selectedService}
                   date={state.date}
                   time={state.time}
-                  patientName={state.patient.fullName}
+                  patient={state.patient}
+                  adminWhatsappNumber={settings?.whatsappNumber ?? ""}
                   onClose={() => navigate("/")}
                 />
               )}
