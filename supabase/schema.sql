@@ -312,3 +312,14 @@ alter table delivery_records enable row level security;
 drop policy if exists "Staff can manage delivery records" on delivery_records;
 create policy "Staff can manage delivery records" on delivery_records
   for all using (auth.role() = 'authenticated');
+
+-- Blood group is mandatory: always for the mother, and for the baby once delivered.
+alter table delivery_records alter column mother_blood_group set not null;
+alter table delivery_records drop constraint if exists delivery_records_blood_group_check;
+alter table delivery_records add constraint delivery_records_blood_group_check check (
+  mother_blood_group in ('A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-')
+  and (
+    (record_status = 'expecting' and baby_blood_group is null)
+    or baby_blood_group in ('A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-')
+  )
+);

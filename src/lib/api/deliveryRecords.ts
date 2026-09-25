@@ -12,7 +12,7 @@ export const DELIVERY_TYPES = [
   "VBAC (Normal after C-Section)",
 ] as const;
 
-export const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "Not known"] as const;
+export const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"] as const;
 
 export const BABY_GENDERS: BabyGender[] = ["Boy", "Girl", "Other"];
 
